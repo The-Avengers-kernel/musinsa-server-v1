@@ -34,7 +34,7 @@ CREATE TABLE shipments(
 
 --shipping_statuses - 배송 상태
 create table shipping_statuses(
-    shipping_statuses_id number(10) not null,
+    shipping_statuses_id number(10) not null ,
     status varchar2(50) not null,
     hub_name	varchar2(100)	NULL,
     hub_status	varchar2(50)	NULL,
