@@ -17,12 +17,12 @@ CREATE TABLE orders (
     CONSTRAINT fk_orders_shipments
         FOREIGN KEY (shipping_id) REFERENCES shipping(shipping_id),
     CONSTRAINT fk_orders_payment_method
-        FOREIGN KEY (payment_method_id) REFERENCES payment_method(paymethod_id)
+        FOREIGN KEY (payment_method_id) REFERENCES payment_method(payment_method_id)
 );
 
 CREATE TABLE order_items (
     order_item_id           NUMBER(10) PRIMARY KEY NOT NULL,
-    product_id              NUBMER(10)     NOT NULL,
+    product_id              NUMBER(10)     NOT NULL,
     coupon_id               NUMBER(10)     NOT NULL,
     order_id                NUMBER(10)     NOT NULL,
     quantity                NUMBER(10),
@@ -79,9 +79,9 @@ CREATE TABLE user_carts (
 );
 
 CREATE TABLE sale_records (
-    sales_record_id         NUBMER(10) PRIMARY KEY NOT NULL,
-    order_item_id           NUBMER(10) NOT NULL,
-    user_id                 NUBMER(10) NOT NULL,
+    sales_record_id         NUMBER(10) PRIMARY KEY NOT NULL,
+    order_item_id           NUMBER(10) NOT NULL,
+    user_id                 NUMBER(10) NOT NULL,
     quantity                NUMBER(10)  CHECK (quantity > 0),
     sale_price              NUMBER(10)  CHECK (sale_price > 0),
     sale_date               TIMESTAMP,
@@ -98,7 +98,7 @@ CREATE TABLE payment_methods (
 );
 
 CREATE TABLE payment_benefits (
-    payment_benefit_id       NUBMER(10) PRIMARY KEY NOT NULL,
+    payment_benefit_id       NUMBER(10) PRIMARY KEY NOT NULL,
     payment_method_id       NUMBER(10) NOT NULL,
     benefit_type             VARCHAR2(10),
 
@@ -107,17 +107,17 @@ CREATE TABLE payment_benefits (
 );
 
 CREATE TABLE payment_companies (
-    payment_company_id      NUBMER(10) PRIMARY KEY NOT NULL,
-    payment_benefit_id      NUBMER(10) NOT NULL,
+    payment_company_id      NUMBER(10) PRIMARY KEY NOT NULL,
+    payment_benefit_id      NUMBER(10) NOT NULL,
     name                    VARCHAR2(50),
 
     CONSTRAINT fk_payment_companies_payment_benefits
-                               FOREIGN KEY (payment_company_id) REFERENCES payment_companies(payment_company_id)
+                               FOREIGN KEY (payment_benefit_id) REFERENCES payment_benefits(payment_benefit_id)
 );
 
 CREATE TABLE payment_company_discount_prices (
     payment_company_discount_price_id   NUMBER(10) PRIMARY KEY NOT NULL,
-    payment_benefit_id                  NUBMER(10) NOT NULL,
+    payment_benefit_id                  NUMBER(10) NOT NULL,
     discount_price          NUMBER(10)  CHECK (discount_price > 0),
 
     CONSTRAINT fk_payment_company_discount_prices_payment_benefits
@@ -126,7 +126,7 @@ CREATE TABLE payment_company_discount_prices (
 
 CREATE TABLE payment_company_discount_contract_terms (
     payment_company_discount_contract_terms_id NUMBER(10) PRIMARY KEY NOT NULL,
-    payment_benefit_id       NUBMER(10) NOT NULL,
+    payment_benefit_id       NUMBER(10) NOT NULL,
     contract_terms_price    NUMBER(10)  CHECK (contract_terms_price > 0),
 
     CONSTRAINT fk_payment_company_discount_contract_terms_payment_benefits
