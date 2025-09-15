@@ -2,16 +2,19 @@
 package com.avengers.musinsa.test;
 
 import java.util.List;
+
+import com.avengers.musinsa.global.base.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
-public class UserController {
+public class TestUserController {
     private final MybatisService mybatisService;
 
     @GetMapping("/")
@@ -50,4 +53,32 @@ public class UserController {
         }
     }
 
+    @GetMapping("/testUser")
+    public BaseResponse<TestDto.TestPrintDto> testPrintDtoBaseResponse() {
+
+        TestUser testUser = new TestUser();
+        testUser.setId(1L);
+        testUser.setName("어벤져스");
+        testUser.setEmail("aldern23@naver.com");
+        return BaseResponse.onSuccess(TestUserDtoConverter.toTestPrintDto(testUser));
+    }
+
+
+
+
+
+
+
+
+
+
+    @GetMapping("/testUserFail")
+    public BaseResponse<TestDto.TestPrintDto> testPrintDtoBaseFailResponse() {
+
+        TestUser testUser = new TestUser();
+        testUser.setId(1L);
+        testUser.setName("어벤져스");
+        testUser.setEmail("aldern23@naver.com");
+        return BaseResponse.onSuccess(TestUserDtoConverter.toTestPrintDto(testUser));
+    }
 }
