@@ -1,22 +1,9 @@
 package com.avengers.musinsa.order;
 
+import lombok.Getter;
+
+@Getter
 public class PaymentCompanyDiscountPrices {
-
     private Long paymentCompanyDiscountPriceId;
-
     private PaymentBenefits paymentBenefit;
-
     private Integer DiscountPrice;
-
-    public Integer getDiscountPrice() {
-        return DiscountPrice;
-    }
-
-    public PaymentBenefits getPaymentBenefit() {
-        return paymentBenefit;
-    }
-
-    public Long getPaymentCompanyDiscountPriceId() {
-        return paymentCompanyDiscountPriceId;
-    }
-}

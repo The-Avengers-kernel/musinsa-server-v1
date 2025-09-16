@@ -1,16 +1,9 @@
 package com.avengers.musinsa.order;
 
+import lombok.Getter;
+
+@Getter
 public class PaymentMethods {
-
     private Long paymentMethodId;
-
     private String paymentName;
-
-    public Long getPaymentMethodId() {
-        return paymentMethodId;
-    }
-
-    public String getPaymentName() {
-        return paymentName;
-    }
 }
