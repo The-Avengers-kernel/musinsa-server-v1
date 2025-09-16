@@ -10,19 +10,4 @@ public class ProductShippingStatus {
     private OrderItems orderItemId;
     private String trackNumber;
 
-    public Integer getProductShippingStatusId() {
-        return productShippingStatusId;
-    }
-
-    public ShippingStatuses getShippingStatusesId() {
-        return shippingStatusesId;
-    }
-
-    public OrderItems getOrderItemId() {
-        return orderItemId;
-    }
-
-    public String getTrackNumber() {
-        return trackNumber;
-    }
 }
