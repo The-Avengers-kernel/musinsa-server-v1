@@ -26,7 +26,6 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
 
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil) {
-
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
@@ -74,6 +73,7 @@ public class SecurityConfig {
         //oauth2
         http
                 .oauth2Login((oauth2) -> oauth2
+                        .loginPage("/login") // 커스텀 로그인 페이지 지정
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler)
@@ -82,7 +82,8 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/", "/login", "/main", "/product", "/testUser", "/testUserFail",
+                                "/oauth2/**", "/WEB-INF/views/**", "/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
