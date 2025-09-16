@@ -6,7 +6,10 @@ import lombok.Getter;
 @Getter
 public class OrderCancellationReturnExchanges {
     private Long orderCancellationReturnExchangesId;
+
     private OrderItems orderItem;
+    private Long orderItemId;
+
     private String cancellationReturnExchangeReason;
     private String returnMethod;
     private String returnPickupLocation;

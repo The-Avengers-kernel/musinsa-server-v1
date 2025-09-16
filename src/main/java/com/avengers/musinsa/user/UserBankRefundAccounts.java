@@ -5,7 +5,11 @@ import lombok.Getter;
 @Getter
 public class UserBankRefundAccounts {
     private Integer userBankRefundAccountId;
-    private User userId;
-    private BankNameLists bankNameListId;
-    private String userBankrefundAccount;
+    private Users user;
+    private Long userId;
+
+    private BankNameLists bankNameList;
+    private Long bankNameListId;
+
+    private String userBankRefundAccount;
 }

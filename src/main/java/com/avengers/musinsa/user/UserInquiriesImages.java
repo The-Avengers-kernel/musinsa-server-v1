@@ -5,7 +5,10 @@ import lombok.Getter;
 @Getter
 public class UserInquiriesImages {
     private Integer userInquiryImageId;
-    private UserInquiries userInquiriesId;
+
+    private UserInquiries userInquiry;
+    private Long userInquiryId;
+
     private String imageUrl;
 }
 

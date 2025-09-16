@@ -6,7 +6,10 @@ import lombok.Getter;
 @Getter
 public class ProductReviewStats {
     private Long ProductRatingStatId;
+
     private Reviews review;
+    private Long reviewId;
+
     private Integer reviewCount;
     private Integer totalReviews;
     private Integer ratingAvg;

@@ -1,5 +1,7 @@
 package com.avengers.musinsa.coupons;
 
+import com.avengers.musinsa.brand.Brands;
+import com.avengers.musinsa.user.Users;
 import lombok.Getter;
 
 import java.util.Date;
@@ -8,8 +10,13 @@ import java.util.Date;
 @Getter
 public class Coupons {
     private Integer couponId;
-    private User userId;
-    private Brands brandId;
+
+    private Users user;
+    private Long userId;
+
+    private Brands brand;
+    private Long brandId;
+
     private String couponName;
     private String couponCode;
     private String description;

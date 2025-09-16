@@ -5,7 +5,10 @@ import lombok.Getter;
 @Getter
 public class UserAddress {
     private Integer userAddressId;
-    private User userId;
+
+    private Users user;
+    private Long userId;
+
     private String addressName;
     private String location;
     private String phoneNumber;

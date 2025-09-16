@@ -1,13 +1,19 @@
 package com.avengers.musinsa.order;
 
+import com.avengers.musinsa.user.Users;
 import java.sql.Timestamp;
 import lombok.Getter;
 
 @Getter
 public class SalesRecords {
     private Long salesRecordId;
+
     private OrderItems orderItem;
+    private Long orderItemId;
+
     private Users user;
+    private Long userId;
+
     private Integer quantity;
     private Integer salePrice;
     private Timestamp saleDate;
