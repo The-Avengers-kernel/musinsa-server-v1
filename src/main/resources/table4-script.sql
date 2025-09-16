@@ -15,7 +15,7 @@ CREATE TABLE user
 
     -- 기본키
     CONSTRAINT PK_USER PRIMARY KEY (user_id)
-)
+);
 
 -- 사용자 배송지 테이블
 CREATE TABLE user_address
@@ -37,7 +37,7 @@ CREATE TABLE user_address
     CONSTRAINT FK_USER_TO_USER_ADDRESS FOREIGN KEY (user_id)
         REFERENCES user (user_id)
         ON DELETE CASCADE                   -- 사용자 삭제시 주소 테이블도
-)
+);
 
 -- 회원 적립 내역 테이블
 CREATE TABLE user_mileage_history
@@ -62,7 +62,7 @@ CREATE TABLE user_mileage_history
         REFERENCES order_items (order_item_id),
     CONSTRAINT FK_UMH_TYPE FOREIGN KEY (user_mileage_type_id)
         REFERENCES user_mileage_types (user_mileage_type_id)
-)
+);
 
 -- 유저 마일리지 종류(적립, 사용)
 CREATE TABLE user_mileage_types
@@ -72,7 +72,7 @@ CREATE TABLE user_mileage_types
 
     -- 기본키 설정
     CONSTRAINT PK_USER_MILEAGE_TYPES PRIMARY KEY (user_mileage_type_id)
-)
+);
 
 -- 은행이름 리스트
 CREATE TABLE bank_name_list
@@ -82,7 +82,7 @@ CREATE TABLE bank_name_list
 
     -- 기본키 설정
     CONSTRAINT PK_BANK_NAME_LIST PRIMARY KEY (bank_name_list_id)
-)
+);
 
 
 -- 환불계좌
@@ -102,7 +102,7 @@ CREATE TABLE user_bank_refund_account
         ON DELETE CASCADE,
     CONSTRAINT FK_UBRA_BANK_NAME_LIST FOREIGN KEY (bank_name_list_id)
         REFERENCES bank_name_list (bank_name_list_id)
-)
+);
 
 -- 회원 등급
 CREATE TABLE user_grades
@@ -121,7 +121,7 @@ CREATE TABLE user_grades
     CONSTRAINT FK_UG_USER FOREIGN KEY (user_id)
         REFERENCES user (user_id)
         ON DELETE CASCADE
-)
+);
 
 -- 1:1 문의 테이블
 CREATE TABLE user_inquiries
@@ -141,7 +141,7 @@ CREATE TABLE user_inquiries
     CONSTRAINT FK_UI_USER FOREIGN KEY (user_id)
         REFERENCES user (user_id)
         ON DELETE CASCADE
-)
+);
 
 -- 1:1 문의 이미지
 CREATE TABLE user_inquiries_images
@@ -157,7 +157,7 @@ CREATE TABLE user_inquiries_images
     CONSTRAINT FK_UII_USER_INQUIRIES_ID FOREIGN KEY (user_inquiries_id)
         REFERENCES user_inquiries (user_inquiries_id)
         ON DELETE CASCADE
-)
+);
 
 -- 문의 대분류
 CREATE TABLE inquiry_types
@@ -173,7 +173,7 @@ CREATE TABLE inquiry_types
     CONSTRAINT FK_IT_USER_INQUIRIES FOREIGN KEY (user_inquiry_id)
         REFERENCES user_inquiries (user_inquiry_id)
         ON DELETE CASCADE
-)
+);
 
 -- 문의 세부 유형
 CREATE TABLE inquiry_subtypes
@@ -190,7 +190,7 @@ CREATE TABLE inquiry_subtypes
         REFERENCES inquiry_types (inquiry_type_id)
         ON DELETE CASCADE
 
-)
+);
 
 -- 회원_쿠폰
 CREATE TABLE user_coupons
@@ -205,7 +205,7 @@ CREATE TABLE user_coupons
     CONSTRAINT FK_UC_USER FOREIGN KEY (user_id)
         REFERENCES user (user_id)
         ON DELETE CASCADE
-)
+);
 
 -- 유저 프로필 이미지
 CREATE TABLE user_profile_image
@@ -221,7 +221,7 @@ CREATE TABLE user_profile_image
     CONSTRAINT FK_UPI_USER FOREIGN KEY (user_id)
         REFERENCES user (user_id)
         ON DELETE CASCADE
-)
+);
 
 -- 회원 신체 정보
 CREATE TABLE user_physical_info
@@ -238,5 +238,5 @@ CREATE TABLE user_physical_info
     CONSTRAINT FK_UPIFO_USER FOREIGN KEY (user_id)
         REFERENCES user (user_id)
         ON DELETE CASCADE
-)
+);
 
