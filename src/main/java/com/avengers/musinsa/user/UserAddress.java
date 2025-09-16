@@ -1,0 +1,14 @@
+package com.avengers.musinsa.user;
+
+import lombok.Getter;
+
+@Getter
+public class UserAddress {
+    private Integer userAddressId;
+    private User userId;
+    private String addressName;
+    private String location;
+    private String phoneNumber;
+    private Integer isDefault;
+    private Integer isRecent;
+}
