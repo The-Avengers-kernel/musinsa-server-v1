@@ -1,0 +1,18 @@
+package com.avengers.musinsa.shipments;
+
+import lombok.Getter;
+
+import java.sql.Timestamp;
+import java.util.Date;
+
+//배송상태
+@Getter
+public class ShippingStatuses {
+    private Integer shippingStatuses;
+    private String status;
+    private String hubName;
+    private String hubStatus;
+    private Timestamp arrivalTime;
+    private Timestamp departureTime;
+
+}
