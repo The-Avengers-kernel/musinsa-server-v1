@@ -2,7 +2,7 @@ package com.avengers.musinsa.review;
 
 import java.sql.Timestamp;
 
-public class RecentProductViewHistory {
+public class RecentProductViewHistorys {
 
     private Long RecentProductViewHistoryId;
 
