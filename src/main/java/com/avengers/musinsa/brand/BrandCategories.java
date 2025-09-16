@@ -1,15 +1,9 @@
 package com.avengers.musinsa.brand;
 
+import lombok.Getter;
+
+@Getter
 public class BrandCategories {
     private Integer brandCategoryId;
-
     private String categoryName;
-
-    public Integer getBrandCategoryId() {
-        return brandCategoryId;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
 }
