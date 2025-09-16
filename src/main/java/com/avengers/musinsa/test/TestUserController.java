@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+
+@Controller
 @RequiredArgsConstructor
 public class TestUserController {
     private final MybatisService mybatisService;
@@ -71,7 +72,6 @@ public class TestUserController {
 
 
 
-
     @GetMapping("/testUserFail")
     public BaseResponse<TestDto.TestPrintDto> testPrintDtoBaseFailResponse() {
 
@@ -81,4 +81,17 @@ public class TestUserController {
         testUser.setEmail("aldern23@naver.com");
         return BaseResponse.onSuccess(TestUserDtoConverter.toTestPrintDto(testUser));
     }
+
+
+    @GetMapping("/main")
+    public String getMain() {
+        return "test/main";
+    }
+    @GetMapping("/product")
+    public String sidebar() {
+        return "test/product"; // sidebar.jsp로 이동
+    }
+
 }
+
+

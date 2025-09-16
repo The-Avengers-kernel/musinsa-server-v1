@@ -38,6 +38,20 @@ dependencies {
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // OAuth2 Client (소셜 로그인 등)
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // OAuth2 Resource Server (JWT 등 토큰 검증)
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JSON 직렬화/역직렬화
+
+
 }
 
 tasks.named('test') {
