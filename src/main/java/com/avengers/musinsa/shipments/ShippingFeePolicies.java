@@ -1,25 +1,14 @@
 package com.avengers.musinsa.shipments;
 
+import lombok.Getter;
+
 //배송비정책
+@Getter
 public class ShippingFeePolicies {
     private Integer shippingFeePolicyId;
     private ShippingFees shippingFeeId;
     private ShippingConditions shippingConditionsId;
     private Brand brandId;
 
-    public Integer getShippingFeePolicyId() {
-        return shippingFeePolicyId;
-    }
 
-    public ShippingFees getShippingFeeId() {
-        return shippingFeeId;
-    }
-
-    public ShippingConditions getShippingConditionsId() {
-        return shippingConditionsId;
-    }
-
-    public Brand getBrandId() {
-        return brandId;
-    }
 }

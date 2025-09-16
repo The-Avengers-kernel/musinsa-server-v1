@@ -1,15 +1,11 @@
 package com.avengers.musinsa.shipments;
 
+
+import lombok.Getter;
+
 //배송비조건
+@Getter
 public class ShippingFeeConditions {
     private Integer shippingFeeConditionsId;
     private String conditionName;
-
-    public Integer getShippingFeeConditionsId() {
-        return shippingFeeConditionsId;
-    }
-
-    public String getConditionName() {
-        return conditionName;
-    }
 }

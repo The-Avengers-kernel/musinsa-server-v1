@@ -1,6 +1,9 @@
 package com.avengers.musinsa.shipments;
 
+import lombok.Getter;
+
 //배송
+@Getter
 public class Shipments {
     private Integer shippingId;
     private ScheduledDeliveryInformation scheduledDeliveryInformationId;
@@ -13,43 +16,4 @@ public class Shipments {
     private String shippingDirectRequest;
     private String postalCode;
 
-    public Integer getShippingId() {
-        return shippingId;
-    }
-
-    public ScheduledDeliveryInformation getScheduledDeliveryInformationId() {
-        return scheduledDeliveryInformationId;
-    }
-
-    public ShippingRequestTypes getShippingRequestTypeId() {
-        return shippingRequestTypeId;
-    }
-
-    public ShippingStatuses getShippingStatusesId() {
-        return shippingStatusesId;
-    }
-
-    public String getShippingInquiry() {
-        return shippingInquiry;
-    }
-
-    public String getRecipientName() {
-        return recipientName;
-    }
-
-    public String getRecipientPhone() {
-        return recipientPhone;
-    }
-
-    public String getRecipientAddress() {
-        return recipientAddress;
-    }
-
-    public String getShippingDirectRequest() {
-        return shippingDirectRequest;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
 }
