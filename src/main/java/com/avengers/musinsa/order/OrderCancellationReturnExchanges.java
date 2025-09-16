@@ -1,4 +1,48 @@
 package com.avengers.musinsa.order;
 
+import java.sql.Timestamp;
+
 public class OrderCancellationReturnExchanges {
+
+    private Long orderCancellationReturnExchangesId;
+
+    private OrderItems orderItem;
+
+    private String cancellationReturnExchangeReason;
+
+    private String returnMethod;
+
+    private String returnPickupLocation;
+
+    private String returnDestination;
+
+    private Integer returnShippingFee;
+
+    private Timestamp returnDate;
+
+    private String exchangeMethod;
+
+    private String exchangePickupLocation;
+
+    private String exchangeDestination;
+
+    private Integer exchangeShippingFee;
+
+    private String cancellationReturnExchangeStatus;
+
+    private String returnCarrier;
+
+    private String returnTrackingNumber;
+
+    private String reshipmentCarrier;
+
+    private String reshipTrackingNumber;
+
+    private String refundMethod;
+
+    private String refundStatus;
+
+    private String noticesId;
+
+    private Timestamp completionDate;
 }
