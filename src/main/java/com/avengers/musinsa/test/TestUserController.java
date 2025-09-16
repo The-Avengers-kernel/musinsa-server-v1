@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.avengers.musinsa.global.base.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,11 +84,18 @@ public class TestUserController {
         return BaseResponse.onSuccess(TestUserDtoConverter.toTestPrintDto(testUser));
     }
 
-
     @GetMapping("/main")
-    public String getMain() {
+    public String getMain(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        // 로그인 상태 확인
+        if (userDetails != null) {
+            model.addAttribute("isLoggedIn", true);
+            model.addAttribute("username", userDetails.getUsername());
+        } else {
+            model.addAttribute("isLoggedIn", false);
+        }
         return "test/main";
     }
+
     @GetMapping("/product")
     public String sidebar() {
         return "test/product"; // sidebar.jsp로 이동
