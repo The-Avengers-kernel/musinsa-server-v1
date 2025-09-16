@@ -8,5 +8,4 @@ public class ShippingRequestTypes {
     private Integer shippingRequestTypeId;
     private String shippingRequestType;
 
-    }
 }
