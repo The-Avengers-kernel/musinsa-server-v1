@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class MaleRecommendationResponse {
+public class RecommendationResponse {
 
     private Long productId;
     private Long brandId;

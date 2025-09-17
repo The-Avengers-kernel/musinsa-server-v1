@@ -3,8 +3,8 @@
 
 <mapper namespace="com.avengers.musinsa.domain.product.mapper.ProductMapper">
 
-    <select id="getRecommendationList"
-            resultType="com.avengers.musinsa.domain.product.dto.response.MaleRecommendationResponse">
+    <select id="getRecommendationProductList"
+            resultType="com.avengers.musinsa.domain.product.dto.response.RecommendationResponse">
         SELECT p.product_id    AS productId,
                p.product_id    AS brandId,
                p.product_name  AS productName,
@@ -17,7 +17,7 @@
                  LEFT JOIN product_images img
                            ON p.product_id = img.product_id
                                AND img.image_type = 'MAIN'
-        WHERE p.gender = 'MALE'
+        WHERE p.gender = #{gender}
         ORDER BY p.created_at DESC
             FETCH FIRST 20 ROWS ONLY
     </select>
