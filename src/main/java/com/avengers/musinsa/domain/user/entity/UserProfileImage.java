@@ -6,7 +6,7 @@ import lombok.Getter;
 public class UserProfileImage {
     private Integer userProfileImageId;
 
-    private Users user;
+    private User user;
     private Long userId;
 
     private String profileImageUrl;

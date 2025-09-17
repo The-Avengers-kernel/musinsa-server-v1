@@ -1,5 +1,3 @@
-
-
 -- =====================================================
 -- 브랜드 관련 테이블
 -- =====================================================
@@ -87,20 +85,6 @@ CREATE TABLE event_hashtags
     CONSTRAINT pk_event_hashtags PRIMARY KEY (event_hashtag_id)
 );
 
--- 상품-이벤트 연결 테이블
-CREATE TABLE product_has_events
-(
-    product_id       NUMBER(10) NOT NULL,
-    event_hashtag_id NUMBER(10) NOT NULL,
-    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT pk_product_has_events PRIMARY KEY (product_id, event_hashtag_id),
-    CONSTRAINT fk_product_has_events_product
-        FOREIGN KEY (product_id) REFERENCES products (product_id),
-    CONSTRAINT fk_product_has_events_event
-        FOREIGN KEY (event_hashtag_id) REFERENCES event_hashtags (event_hashtag_id)
-);
-
 -- 택배 회사
 CREATE TABLE courier_companies
 (
@@ -138,9 +122,6 @@ CREATE TABLE qna
 
     CONSTRAINT pk_qna PRIMARY KEY (qna_id)
 );
-
-
-
 
 -- =====================================================
 -- 사용자 관련 테이블
@@ -189,7 +170,6 @@ CREATE TABLE user_addresses
     CONSTRAINT chk_user_addresses_is_recent CHECK (is_recent IN (0, 1))
 );
 
-
 -- 마일리지 타입
 CREATE TABLE user_mileage_types
 (
@@ -199,28 +179,6 @@ CREATE TABLE user_mileage_types
     updated_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT pk_user_mileage_types PRIMARY KEY (user_mileage_type_id)
-);
-
--- 사용자 마일리지 내역
-CREATE TABLE user_mileage_histories
-(
-    user_mileage_id      NUMBER(10)   NOT NULL,
-    user_id              NUMBER(10)   NOT NULL,
-    order_item_id        NUMBER(10)   NOT NULL,
-    user_mileage_type_id NUMBER(10)   NOT NULL,
-    amount               NUMBER(10)   NULL,
-    transaction_type     VARCHAR2(40) NULL,
-    expires_at           TIMESTAMP    NULL,
-    earned_at            TIMESTAMP    NULL,
-    created_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT pk_user_mileage_histories PRIMARY KEY (user_mileage_id),
-    CONSTRAINT fk_user_mileage_histories_user
-        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
-    CONSTRAINT fk_user_mileage_histories_order_item
-        FOREIGN KEY (order_item_id) REFERENCES order_items (order_item_id),
-    CONSTRAINT fk_user_mileage_histories_type
-        FOREIGN KEY (user_mileage_type_id) REFERENCES user_mileage_types (user_mileage_type_id)
 );
 
 -- 은행 목록
@@ -388,7 +346,6 @@ CREATE TABLE product_categories
         FOREIGN KEY (parent_product_category_id) REFERENCES product_categories (product_category_id)
 );
 
-
 -- 옵션 타입
 CREATE TABLE option_types
 (
@@ -420,6 +377,20 @@ CREATE TABLE products
     CONSTRAINT fk_products_category
         FOREIGN KEY (product_category_id) REFERENCES product_categories (product_category_id),
     CONSTRAINT chk_products_price CHECK (price > 0)
+);
+
+-- 상품-이벤트 연결 테이블
+CREATE TABLE product_has_events
+(
+    product_id       NUMBER(10) NOT NULL,
+    event_hashtag_id NUMBER(10) NOT NULL,
+    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT pk_product_has_events PRIMARY KEY (product_id, event_hashtag_id),
+    CONSTRAINT fk_product_has_events_product
+        FOREIGN KEY (product_id) REFERENCES products (product_id),
+    CONSTRAINT fk_product_has_events_event
+        FOREIGN KEY (event_hashtag_id) REFERENCES event_hashtags (event_hashtag_id)
 );
 
 -- 상품 옵션 타입
@@ -490,7 +461,6 @@ CREATE TABLE product_connection_tags
     CONSTRAINT fk_product_connection_tags_product
         FOREIGN KEY (product_id) REFERENCES products (product_id)
 );
-
 
 -- 상품 문의
 CREATE TABLE product_inquiries
@@ -614,7 +584,7 @@ CREATE TABLE comments
         FOREIGN KEY (review_id) REFERENCES reviews (review_id)
 );
 
--- 사용자 상품 좋아요
+-- 사용자 상품 좋아요 (product_likes 테이블 제거하고 이것만 사용)
 CREATE TABLE user_product_likes
 (
     user_product_like_id NUMBER(10) NOT NULL,
@@ -642,21 +612,6 @@ CREATE TABLE user_brand_likes
         FOREIGN KEY (user_id) REFERENCES users (user_id),
     CONSTRAINT fk_user_brand_likes_brand
         FOREIGN KEY (brand_id) REFERENCES brands (brand_id)
-);
-
--- 상품 좋아요
-CREATE TABLE product_likes
-(
-    product_like_id NUMBER(10) NOT NULL,
-    user_id         NUMBER(10) NOT NULL,
-    product_id      NUMBER(10) NOT NULL,
-    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT pk_product_likes PRIMARY KEY (product_like_id),
-    CONSTRAINT fk_product_likes_user
-        FOREIGN KEY (user_id) REFERENCES users (user_id),
-    CONSTRAINT fk_product_likes_product
-        FOREIGN KEY (product_id) REFERENCES products (product_id)
 );
 
 -- 상품 조회 로그
@@ -830,23 +785,6 @@ CREATE TABLE shipping_fee_policies
         FOREIGN KEY (brand_id) REFERENCES brands (brand_id)
 );
 
--- 상품 배송 상태
-CREATE TABLE product_shipping_statuses
-(
-    product_shipping_status_id NUMBER(10)    NOT NULL,
-    shipping_status_id         NUMBER(10)    NOT NULL,
-    order_item_id              NUMBER(10)    NOT NULL,
-    track_number               VARCHAR2(100) NULL,
-    created_at                 TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at                 TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT pk_product_shipping_statuses PRIMARY KEY (product_shipping_status_id),
-    CONSTRAINT fk_product_shipping_statuses_status
-        FOREIGN KEY (shipping_status_id) REFERENCES shipping_statuses (shipping_status_id),
-    CONSTRAINT fk_product_shipping_statuses_order_item
-        FOREIGN KEY (order_item_id) REFERENCES order_items (order_item_id)
-);
-
 -- =====================================================
 -- 쿠폰 관련 테이블
 -- =====================================================
@@ -885,8 +823,8 @@ CREATE TABLE coupon_conditions
     min_purchase_amount NUMBER(5)  NULL,
     min_quantity        NUMBER(5)  NULL,
     min_product_count   NUMBER(5)  NULL,
-    created_time        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_time        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT pk_coupon_conditions PRIMARY KEY (coupon_condition_id),
     CONSTRAINT fk_coupon_conditions_grade
@@ -906,8 +844,8 @@ CREATE TABLE coupon_discount_rules
     discount_percent        NUMBER(5)  NULL,
     discount_amount         NUMBER(10) NULL,
     max_discount_amount     NUMBER(10) NULL,
-    created_time            TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_time            TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at              TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT pk_coupon_discount_rules PRIMARY KEY (coupon_discount_rule_id),
     CONSTRAINT fk_coupon_discount_rules_coupon
@@ -1066,6 +1004,45 @@ CREATE TABLE order_items
     CONSTRAINT chk_order_items_total_price CHECK (total_price > 0)
 );
 
+-- 사용자 마일리지 내역
+CREATE TABLE user_mileage_histories
+(
+    user_mileage_id      NUMBER(10)   NOT NULL,
+    user_id              NUMBER(10)   NOT NULL,
+    order_item_id        NUMBER(10)   NOT NULL,
+    user_mileage_type_id NUMBER(10)   NOT NULL,
+    amount               NUMBER(10)   NULL,
+    transaction_type     VARCHAR2(40) NULL,
+    expires_at           TIMESTAMP    NULL,
+    earned_at            TIMESTAMP    NULL,
+    created_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT pk_user_mileage_histories PRIMARY KEY (user_mileage_id),
+    CONSTRAINT fk_user_mileage_histories_user
+        FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_user_mileage_histories_order_item
+        FOREIGN KEY (order_item_id) REFERENCES order_items (order_item_id),
+    CONSTRAINT fk_user_mileage_histories_type
+        FOREIGN KEY (user_mileage_type_id) REFERENCES user_mileage_types (user_mileage_type_id)
+);
+
+-- 상품 배송 상태
+CREATE TABLE product_shipping_statuses
+(
+    product_shipping_status_id NUMBER(10)    NOT NULL,
+    shipping_status_id         NUMBER(10)    NOT NULL,
+    order_item_id              NUMBER(10)    NOT NULL,
+    track_number               VARCHAR2(100) NULL,
+    created_at                 TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at                 TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT pk_product_shipping_statuses PRIMARY KEY (product_shipping_status_id),
+    CONSTRAINT fk_product_shipping_statuses_status
+        FOREIGN KEY (shipping_status_id) REFERENCES shipping_statuses (shipping_status_id),
+    CONSTRAINT fk_product_shipping_statuses_order_item
+        FOREIGN KEY (order_item_id) REFERENCES order_items (order_item_id)
+);
+
 -- 주문 취소/반품/교환
 CREATE TABLE order_cancellation_return_exchanges
 (
@@ -1122,7 +1099,6 @@ CREATE TABLE user_carts
     CONSTRAINT fk_user_carts_product
         FOREIGN KEY (product_id) REFERENCES products (product_id),
     CONSTRAINT chk_user_carts_quantity CHECK (cart_quantity > 0)
-
 );
 
 -- 판매 기록
@@ -1144,26 +1120,8 @@ CREATE TABLE sale_records
     CONSTRAINT chk_sale_records_price CHECK (sale_price > 0)
 );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 -- =====================================================
--- 시퀀스 생성 부분 (자동 증가 ID용)
+-- 시퀀스 생성
 -- =====================================================
 
 -- 브랜드 관련 시퀀스
@@ -1211,7 +1169,6 @@ CREATE SEQUENCE seq_product_review_stats START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_comments START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_user_product_likes START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_user_brand_likes START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE seq_product_likes START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_product_view_logs START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_recent_product_view_histories START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_search_keywords START WITH 1 INCREMENT BY 1;
@@ -1246,749 +1203,3 @@ CREATE SEQUENCE seq_order_items START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_order_cancellation_return_exchanges START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_user_carts START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_sale_records START WITH 1 INCREMENT BY 1;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- =====================================================
--- 트리거 생성 부분 (자동 ID 할당 및 타임스탬프 관리)
--- =====================================================
-
--- =====================================================
--- 브랜드 관련 트리거
--- =====================================================
-
-CREATE OR REPLACE TRIGGER trg_brands
-    BEFORE INSERT OR UPDATE ON brands
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.brand_id := seq_brands.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_brand_categories
-    BEFORE INSERT OR UPDATE ON brand_categories
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.brand_category_id := seq_brand_categories.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_brand_has_categories
-    BEFORE INSERT ON brand_has_categories
-    FOR EACH ROW
-BEGIN
-    :NEW.brand_has_category_id := seq_brand_has_categories.NEXTVAL;
-    :NEW.created_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_national_infos
-    BEFORE INSERT OR UPDATE ON national_infos
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.national_info_id := seq_national_infos.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_advertisements
-    BEFORE INSERT OR UPDATE ON advertisements
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.advertisement_id := seq_advertisements.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_event_hashtags
-    BEFORE INSERT OR UPDATE ON event_hashtags
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.event_hashtag_id := seq_event_hashtags.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_courier_companies
-    BEFORE INSERT OR UPDATE ON courier_companies
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.courier_company_id := seq_courier_companies.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_notices
-    BEFORE INSERT OR UPDATE ON notices
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.notice_id := seq_notices.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
--- =====================================================
--- 사용자 관련 트리거
--- =====================================================
-
-CREATE OR REPLACE TRIGGER trg_users
-    BEFORE INSERT OR UPDATE ON users
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.user_id := seq_users.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_user_addresses
-    BEFORE INSERT OR UPDATE ON user_addresses
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.user_address_id := seq_user_addresses.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_user_mileage_types
-    BEFORE INSERT OR UPDATE ON user_mileage_types
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.user_mileage_type_id := seq_user_mileage_types.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_user_mileage_histories
-    BEFORE INSERT ON user_mileage_histories
-    FOR EACH ROW
-BEGIN
-    :NEW.user_mileage_id := seq_user_mileage_histories.NEXTVAL;
-    :NEW.created_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_bank_name_lists
-    BEFORE INSERT OR UPDATE ON bank_name_lists
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.bank_name_list_id := seq_bank_name_lists.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_user_bank_refund_accounts
-    BEFORE INSERT OR UPDATE ON user_bank_refund_accounts
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.user_bank_refund_account_id := seq_user_bank_refund_accounts.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_user_grades
-    BEFORE INSERT OR UPDATE ON user_grades
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.grade_id := seq_user_grades.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_user_inquiries
-    BEFORE INSERT OR UPDATE ON user_inquiries
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.user_inquiry_id := seq_user_inquiries.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_user_inquiry_images
-    BEFORE INSERT ON user_inquiry_images
-    FOR EACH ROW
-BEGIN
-    :NEW.user_inquiry_image_id := seq_user_inquiry_images.NEXTVAL;
-    :NEW.created_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_inquiry_types
-    BEFORE INSERT OR UPDATE ON inquiry_types
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.inquiry_type_id := seq_inquiry_types.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_inquiry_subtypes
-    BEFORE INSERT OR UPDATE ON inquiry_subtypes
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.inquiry_subtype_id := seq_inquiry_subtypes.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_user_coupons
-    BEFORE INSERT OR UPDATE ON user_coupons
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.user_coupon_id := seq_user_coupons.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_user_profile_images
-    BEFORE INSERT OR UPDATE ON user_profile_images
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.user_profile_image_id := seq_user_profile_images.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_user_physical_infos
-    BEFORE INSERT OR UPDATE ON user_physical_infos
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.user_physical_info_id := seq_user_physical_infos.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
--- =====================================================
--- 상품 관련 트리거
--- =====================================================
-
-CREATE OR REPLACE TRIGGER trg_products
-    BEFORE INSERT OR UPDATE ON products
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.product_id := seq_products.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_product_categories
-    BEFORE INSERT OR UPDATE ON product_categories
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.product_category_id := seq_product_categories.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_option_types
-    BEFORE INSERT OR UPDATE ON option_types
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.option_type_id := seq_option_types.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_product_option_types
-    BEFORE INSERT OR UPDATE ON product_option_types
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.product_option_id := seq_product_option_types.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_product_variants
-    BEFORE INSERT OR UPDATE ON product_variants
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.product_variant_id := seq_product_variants.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_product_images
-    BEFORE INSERT OR UPDATE ON product_images
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.product_image_id := seq_product_images.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_product_connection_tags
-    BEFORE INSERT OR UPDATE ON product_connection_tags
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.product_connection_tag_id := seq_product_connection_tags.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_product_inquiries
-    BEFORE INSERT OR UPDATE ON product_inquiries
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.product_inquiry_id := seq_product_inquiries.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_product_inquiry_images
-    BEFORE INSERT ON product_inquiry_images
-    FOR EACH ROW
-BEGIN
-    :NEW.product_inquiry_image_id := seq_product_inquiry_images.NEXTVAL;
-    :NEW.created_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_product_inquiry_answers
-    BEFORE INSERT OR UPDATE ON product_inquiry_answers
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.product_inquiry_answer_id := seq_product_inquiry_answers.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
--- =====================================================
--- 리뷰 관련 트리거
--- =====================================================
-
-CREATE OR REPLACE TRIGGER trg_reviews
-    BEFORE INSERT OR UPDATE ON reviews
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.review_id := seq_reviews.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_review_images
-    BEFORE INSERT ON review_images
-    FOR EACH ROW
-BEGIN
-    :NEW.review_image_id := seq_review_images.NEXTVAL;
-    :NEW.created_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_product_review_stats
-    BEFORE INSERT OR UPDATE ON product_review_stats
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.product_review_stats_id := seq_product_review_stats.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_comments
-    BEFORE INSERT OR UPDATE ON comments
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.comment_id := seq_comments.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
--- 좋아요 및 조회 관련 트리거
-CREATE OR REPLACE TRIGGER trg_user_product_likes
-    BEFORE INSERT ON user_product_likes
-    FOR EACH ROW
-BEGIN
-    :NEW.user_product_like_id := seq_user_product_likes.NEXTVAL;
-    :NEW.created_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_user_brand_likes
-    BEFORE INSERT ON user_brand_likes
-    FOR EACH ROW
-BEGIN
-    :NEW.user_brand_like_id := seq_user_brand_likes.NEXTVAL;
-    :NEW.created_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_product_likes
-    BEFORE INSERT ON product_likes
-    FOR EACH ROW
-BEGIN
-    :NEW.product_like_id := seq_product_likes.NEXTVAL;
-    :NEW.created_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_product_view_logs
-    BEFORE INSERT ON product_view_logs
-    FOR EACH ROW
-BEGIN
-    :NEW.product_view_log_id := seq_product_view_logs.NEXTVAL;
-    IF :NEW.view_at IS NULL THEN
-        :NEW.view_at := CURRENT_TIMESTAMP;
-    END IF;
-END;
-
-CREATE OR REPLACE TRIGGER trg_recent_product_view_histories
-    BEFORE INSERT OR UPDATE ON recent_product_view_histories
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.recent_product_view_history_id := seq_recent_product_view_histories.NEXTVAL;
-    END IF;
-    IF :NEW.view_time IS NULL THEN
-        :NEW.view_time := CURRENT_TIMESTAMP;
-    END IF;
-END;
-
-CREATE OR REPLACE TRIGGER trg_search_keywords
-    BEFORE INSERT OR UPDATE ON search_keywords
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.search_keyword_id := seq_search_keywords.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_search_logs
-    BEFORE INSERT ON search_logs
-    FOR EACH ROW
-BEGIN
-    :NEW.search_log_id := seq_search_logs.NEXTVAL;
-    IF :NEW.search_datetime IS NULL THEN
-        :NEW.search_datetime := CURRENT_TIMESTAMP;
-    END IF;
-END;
-
--- =====================================================
--- 배송 관련 트리거
--- =====================================================
-
-CREATE OR REPLACE TRIGGER trg_shipping_statuses
-    BEFORE INSERT OR UPDATE ON shipping_statuses
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.shipping_status_id := seq_shipping_statuses.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_shipping_request_types
-    BEFORE INSERT OR UPDATE ON shipping_request_types
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.shipping_request_type_id := seq_shipping_request_types.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_scheduled_delivery_informations
-    BEFORE INSERT OR UPDATE ON scheduled_delivery_informations
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.scheduled_delivery_information_id := seq_scheduled_delivery_informations.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_shipments
-    BEFORE INSERT OR UPDATE ON shipments
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.shipping_id := seq_shipments.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_shipping_fees
-    BEFORE INSERT OR UPDATE ON shipping_fees
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.shipping_fee_id := seq_shipping_fees.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_shipping_fee_conditions
-    BEFORE INSERT OR UPDATE ON shipping_fee_conditions
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.shipping_fee_condition_id := seq_shipping_fee_conditions.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_shipping_fee_policies
-    BEFORE INSERT OR UPDATE ON shipping_fee_policies
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.shipping_fee_policy_id := seq_shipping_fee_policies.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_product_shipping_statuses
-    BEFORE INSERT OR UPDATE ON product_shipping_statuses
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.product_shipping_status_id := seq_product_shipping_statuses.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
--- =====================================================
--- 쿠폰 관련 트리거
--- =====================================================
-
-CREATE OR REPLACE TRIGGER trg_coupons
-    BEFORE INSERT OR UPDATE ON coupons
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.coupon_id := seq_coupons.NEXTVAL;
-        IF :NEW.created_at IS NULL THEN
-            :NEW.created_at := CURRENT_TIMESTAMP;
-        END IF;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_coupon_conditions
-    BEFORE INSERT OR UPDATE ON coupon_conditions
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.coupon_condition_id := seq_coupon_conditions.NEXTVAL;
-        IF :NEW.created_time IS NULL THEN
-            :NEW.created_time := CURRENT_TIMESTAMP;
-        END IF;
-    END IF;
-    :NEW.updated_time := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_coupon_discount_rules
-    BEFORE INSERT OR UPDATE ON coupon_discount_rules
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.coupon_discount_rule_id := seq_coupon_discount_rules.NEXTVAL;
-        IF :NEW.created_time IS NULL THEN
-            :NEW.created_time := CURRENT_TIMESTAMP;
-        END IF;
-    END IF;
-    :NEW.updated_time := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_coupon_types
-    BEFORE INSERT OR UPDATE ON coupon_types
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.coupon_type_id := seq_coupon_types.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
--- =====================================================
--- 결제 관련 트리거
--- =====================================================
-
-CREATE OR REPLACE TRIGGER trg_payment_methods
-    BEFORE INSERT OR UPDATE ON payment_methods
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.payment_method_id := seq_payment_methods.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_payment_benefits
-    BEFORE INSERT OR UPDATE ON payment_benefits
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.payment_benefit_id := seq_payment_benefits.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_payment_companies
-    BEFORE INSERT OR UPDATE ON payment_companies
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.payment_company_id := seq_payment_companies.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_payment_company_discount_prices
-    BEFORE INSERT OR UPDATE ON payment_company_discount_prices
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.payment_company_discount_price_id := seq_payment_company_discount_prices.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_payment_company_discount_contract_terms
-    BEFORE INSERT OR UPDATE ON payment_company_discount_contract_terms
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.payment_company_discount_contract_terms_id := seq_payment_company_discount_contract_terms.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
--- =====================================================
--- 주문 관련 트리거
--- =====================================================
-
-CREATE OR REPLACE TRIGGER trg_orders
-    BEFORE INSERT OR UPDATE ON orders
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.order_id := seq_orders.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_order_items
-    BEFORE INSERT OR UPDATE ON order_items
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.order_item_id := seq_order_items.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_order_cancellation_return_exchanges
-    BEFORE INSERT OR UPDATE ON order_cancellation_return_exchanges
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.order_cancellation_return_exchange_id := seq_order_cancellation_return_exchanges.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_user_carts
-    BEFORE INSERT OR UPDATE ON user_carts
-    FOR EACH ROW
-BEGIN
-    IF INSERTING THEN
-        :NEW.user_cart_id := seq_user_carts.NEXTVAL;
-        :NEW.created_at := CURRENT_TIMESTAMP;
-    END IF;
-    :NEW.updated_at := CURRENT_TIMESTAMP;
-END;
-
-CREATE OR REPLACE TRIGGER trg_sale_records
-    BEFORE INSERT ON sale_records
-    FOR EACH ROW
-BEGIN
-    :NEW.sale_record_id := seq_sale_records.NEXTVAL;
-    IF :NEW.sale_date IS NULL THEN
-        :NEW.sale_date := CURRENT_TIMESTAMP;
-    END IF;
-END;

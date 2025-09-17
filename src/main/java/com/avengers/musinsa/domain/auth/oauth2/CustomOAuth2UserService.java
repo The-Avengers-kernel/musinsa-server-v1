@@ -5,6 +5,8 @@ import com.avengers.musinsa.domain.auth.oauth2.dto.CustomOAuth2User;
 import com.avengers.musinsa.domain.auth.oauth2.dto.NaverResponse;
 import com.avengers.musinsa.domain.auth.oauth2.dto.OAuth2Response;
 import com.avengers.musinsa.domain.auth.oauth2.repository.UserRepository;
+
+import com.avengers.musinsa.domain.user.entity.User;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -13,62 +15,107 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-    private final UserRepository userRepository;
 
-    public CustomOAuth2UserService(UserRepository userRepository) {
+    private final UserService userService;
 
-        this.userRepository = userRepository;
+    public CustomOAuth2UserService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-
         System.out.println(oAuth2User);
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        OAuth2Response oAuth2Response = null;
+        NaverResponse naverResponse = null;
 
         if (registrationId.equals("naver")) {
-            oAuth2Response = new NaverResponse(oAuth2User.getAttributes());
+            naverResponse = new NaverResponse(oAuth2User.getAttributes());
         } else {
             return null;
         }
 
-        String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
-        UserEntity existData = userRepository.findByUsername(username);
+        String username = naverResponse.getProvider() + " " + naverResponse.getProviderId();
+        User existData = userService.findByUsername(username);
 
         if (existData == null) {
+            // 새 사용자 생성 - 추가 정보 포함
+            User newUser = User.builder()
+                    .userName(naverResponse.getName())
+                    .email(naverResponse.getEmail())
+                    .gender(naverResponse.getGender())
+                    .mobile(naverResponse.getMobile())
+                    .birthyear(parseBirthyear(naverResponse.getBirthyear()))
+                    .birthday(parseBirthday(naverResponse.getBirthyear(), naverResponse.getBirthday()))
+                    .ageGroup(naverResponse.getAgeGroup())
+                    .socialId(naverResponse.getProviderId())
+                    .socialType(naverResponse.getProvider())
+                    .isMember("Y")
+                    .role("ROLE_USER")
+                    .build();
 
-            UserEntity userEntity = new UserEntity();
-            userEntity.setUsername(username);
-            userEntity.setEmail(oAuth2Response.getEmail());
-            userEntity.setName(oAuth2Response.getName());
-            userEntity.setRole("ROLE_USER");
+            userService.saveUser(newUser);
 
-            userRepository.save(userEntity);
-
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(username);
-            userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole("ROLE_USER");
+            UserDTO userDTO = UserDTO.builder()
+                    .username(username)
+                    .name(naverResponse.getName())
+                    .role("ROLE_USER")
+                    .build();
 
             return new CustomOAuth2User(userDTO);
         } else {
+            // 기존 사용자 업데이트 - 추가 정보 포함
+            User updatedUser = User.builder()
+                    .userId(existData.getUserId())
+                    .userName(naverResponse.getName())
+                    .email(naverResponse.getEmail())
+                    .gender(naverResponse.getGender())
+                    .mobile(naverResponse.getMobile())
+                    .birthyear(parseBirthyear(naverResponse.getBirthyear()))
+                    .birthday(parseBirthday(naverResponse.getBirthyear(), naverResponse.getBirthday()))
+                    .ageGroup(naverResponse.getAgeGroup())
 
-            existData.setEmail(oAuth2Response.getEmail());
-            existData.setName(oAuth2Response.getName());
+                    .role("ROLE_USER")
+                    .build();
 
-            userRepository.save(existData);
+            userService.saveUser(updatedUser);
 
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(existData.getUsername());
-            userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole(existData.getRole());
+            UserDTO userDTO = UserDTO.builder()
+                    .username(username)
+                    .name(naverResponse.getName())
+                    .role("ROLE_USER")
+                    .build();
 
             return new CustomOAuth2User(userDTO);
         }
     }
 
+    // 출생연도 파싱
+    private Integer parseBirthyear(String birthyear) {
+        if (birthyear != null && !birthyear.isEmpty()) {
+            try {
+                return Integer.parseInt(birthyear);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    // 생일 파싱 (MM-DD 형태를 전체 날짜로 변환)
+    private Date parseBirthday(String birthyear, String birthday) {
+        if (birthyear != null && birthday != null && !birthyear.isEmpty() && !birthday.isEmpty()) {
+            try {
+                String fullBirthday = birthyear + "-" + birthday; // yyyy-MM-dd 형태
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                java.util.Date utilDate = sdf.parse(fullBirthday);
+                return new Date(utilDate.getTime());
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return null;
+    }
 }

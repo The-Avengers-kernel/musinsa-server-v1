@@ -10,6 +10,6 @@ public class UserBrandLikes {
     private Brands brand;
     private Long brandId;
 
-    private Users user;
+    private User user;
     private Long userId;
 }

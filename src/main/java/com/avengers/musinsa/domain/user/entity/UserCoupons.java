@@ -6,7 +6,7 @@ import lombok.Getter;
 public class UserCoupons {
     private Integer userCouponId;
 
-    private Users user;
+    private User user;
     private Long userId;
 
 }

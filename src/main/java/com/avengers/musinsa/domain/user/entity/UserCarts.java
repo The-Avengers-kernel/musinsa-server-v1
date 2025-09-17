@@ -7,7 +7,7 @@ import lombok.Getter;
 public class UserCarts {
     private Long userCartId;
 
-    private Users user;
+    private User user;
     private Long userId;
 
     private Products product;

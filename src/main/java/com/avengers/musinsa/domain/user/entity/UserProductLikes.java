@@ -7,7 +7,7 @@ import lombok.Getter;
 public class UserProductLikes {
     private Long userProductLikeId;
 
-    private Users user;
+    private User user;
     private Long userId;
 
     private Products product;
