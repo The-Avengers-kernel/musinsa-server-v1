@@ -1,6 +1,6 @@
 package com.avengers.musinsa.oauth2.dto;
 
-import com.avengers.musinsa.domain.user.dto.UserDTO;
+import com.avengers.musinsa.user.dto.UserDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 

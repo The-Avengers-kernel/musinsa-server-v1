@@ -1,6 +1,6 @@
 package com.avengers.musinsa.jwt;
 
-import com.avengers.musinsa.domain.user.dto.UserDTO;
+import com.avengers.musinsa.user.dto.UserDTO;
 import com.avengers.musinsa.oauth2.dto.CustomOAuth2User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,7 +23,8 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         //cookie들을 불러온 뒤 Authorization Key에 담긴 쿠키를 찾음
         String authorization = null;
@@ -71,7 +72,8 @@ public class JWTFilter extends OncePerRequestFilter {
         CustomOAuth2User customOAuth2User = new CustomOAuth2User(userDTO);
 
         //스프링 시큐리티 인증 토큰 생성
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null, customOAuth2User.getAuthorities());
+        Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null,
+                customOAuth2User.getAuthorities());
         //세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
 

@@ -1,6 +1,6 @@
 package com.avengers.musinsa.oauth2;
 
-import com.avengers.musinsa.domain.user.dto.UserDTO;
+import com.avengers.musinsa.user.dto.UserDTO;
 import com.avengers.musinsa.oauth2.dto.CustomOAuth2User;
 import com.avengers.musinsa.oauth2.dto.NaverResponse;
 import com.avengers.musinsa.oauth2.dto.OAuth2Response;
@@ -19,6 +19,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         this.userRepository = userRepository;
     }
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
@@ -31,13 +32,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (registrationId.equals("naver")) {
             oAuth2Response = new NaverResponse(oAuth2User.getAttributes());
-        }
-
-        else {
+        } else {
             return null;
         }
 
-        String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
+        String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
         UserEntity existData = userRepository.findByUsername(username);
 
         if (existData == null) {
@@ -56,8 +55,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userDTO.setRole("ROLE_USER");
 
             return new CustomOAuth2User(userDTO);
-        }
-        else {
+        } else {
 
             existData.setEmail(oAuth2Response.getEmail());
             existData.setName(oAuth2Response.getName());
