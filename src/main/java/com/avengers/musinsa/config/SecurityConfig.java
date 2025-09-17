@@ -1,9 +1,9 @@
 package com.avengers.musinsa.config;
 
-import com.avengers.musinsa.jwt.JWTFilter;
-import com.avengers.musinsa.jwt.JWTUtil;
-import com.avengers.musinsa.oauth2.CustomOAuth2UserService;
-import com.avengers.musinsa.oauth2.CustomSuccessHandler;
+import com.avengers.musinsa.domain.auth.jwt.JWTFilter;
+import com.avengers.musinsa.domain.auth.jwt.JWTUtil;
+import com.avengers.musinsa.domain.auth.oauth2.CustomOAuth2UserService;
+import com.avengers.musinsa.domain.auth.oauth2.CustomSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,8 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JWTUtil jwtUtil) {
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler,
+                          JWTUtil jwtUtil) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
