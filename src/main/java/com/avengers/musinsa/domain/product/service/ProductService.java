@@ -14,7 +14,6 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public List<RecommendationResponse> getRecommendationProductList(Gender gender) {
-        System.out.println(gender);
         return productRepository.getRecommendationProductList(gender);
     }
 }
