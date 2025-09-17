@@ -1,6 +1,6 @@
 package com.avengers.musinsa.domain.order.entity;
 
-import com.avengers.musinsa.domain.user.entity.Users;
+import com.avengers.musinsa.domain.user.entity.User;
 import java.sql.Timestamp;
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ public class SalesRecords {
     private OrderItems orderItem;
     private Long orderItemId;
 
-    private Users user;
+    private User user;
     private Long userId;
 
     private Integer quantity;

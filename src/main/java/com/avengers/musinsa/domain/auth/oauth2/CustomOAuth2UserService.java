@@ -43,16 +43,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (existData == null) {
             // 새 사용자 생성 - 추가 정보 포함
             User newUser = User.builder()
-                    .userName(naverResponse.getName())
+                    .name(naverResponse.getName())
                     .email(naverResponse.getEmail())
                     .gender(naverResponse.getGender())
                     .mobile(naverResponse.getMobile())
-                    .birthyear(parseBirthyear(naverResponse.getBirthyear()))
-                    .birthday(parseBirthday(naverResponse.getBirthyear(), naverResponse.getBirthday()))
+                    .birthyear(Integer.parseInt(naverResponse.getBirthyear()))
+                    .birthday(naverResponse.getBirthday())
                     .ageGroup(naverResponse.getAgeGroup())
                     .socialId(naverResponse.getProviderId())
                     .socialType(naverResponse.getProvider())
-                    .isMember("Y")
                     .role("ROLE_USER")
                     .build();
 
@@ -69,12 +68,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             // 기존 사용자 업데이트 - 추가 정보 포함
             User updatedUser = User.builder()
                     .userId(existData.getUserId())
-                    .userName(naverResponse.getName())
+                    .name(naverResponse.getName())
                     .email(naverResponse.getEmail())
                     .gender(naverResponse.getGender())
                     .mobile(naverResponse.getMobile())
-                    .birthyear(parseBirthyear(naverResponse.getBirthyear()))
-                    .birthday(parseBirthday(naverResponse.getBirthyear(), naverResponse.getBirthday()))
+                    .birthyear(Integer.parseInt(naverResponse.getBirthyear()))
+                    .birthday(naverResponse.getBirthday())
                     .ageGroup(naverResponse.getAgeGroup())
 
                     .role("ROLE_USER")
@@ -92,30 +91,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
     }
 
-    // 출생연도 파싱
-    private Integer parseBirthyear(String birthyear) {
-        if (birthyear != null && !birthyear.isEmpty()) {
-            try {
-                return Integer.parseInt(birthyear);
-            } catch (NumberFormatException e) {
-                return null;
-            }
-        }
-        return null;
-    }
 
-    // 생일 파싱 (MM-DD 형태를 전체 날짜로 변환)
-    private Date parseBirthday(String birthyear, String birthday) {
-        if (birthyear != null && birthday != null && !birthyear.isEmpty() && !birthday.isEmpty()) {
-            try {
-                String fullBirthday = birthyear + "-" + birthday; // yyyy-MM-dd 형태
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                java.util.Date utilDate = sdf.parse(fullBirthday);
-                return new Date(utilDate.getTime());
-            } catch (Exception e) {
-                return null;
-            }
-        }
-        return null;
-    }
+
 }

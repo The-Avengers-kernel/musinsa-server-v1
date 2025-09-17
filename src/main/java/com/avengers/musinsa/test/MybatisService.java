@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 public class MybatisService {
     private final MybatisTestRepository mybatisTestRepository;
 
-    public List<TestUser> getAllUsers() {
-        return this.mybatisTestRepository.findAllUsers();
+    public List<TestUser> getAllUser() {
+        return this.mybatisTestRepository.findAllUser();
     }
 
     public TestUser getUserById(Long id) {

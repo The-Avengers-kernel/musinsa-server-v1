@@ -1,7 +1,7 @@
 package com.avengers.musinsa.domain.coupons.entity;
 
 import com.avengers.musinsa.domain.brand.entity.Brands;
-import com.avengers.musinsa.domain.user.entity.Users;
+import com.avengers.musinsa.domain.user.entity.User;
 import lombok.Getter;
 
 import java.util.Date;
@@ -11,7 +11,7 @@ import java.util.Date;
 public class Coupons {
     private Integer couponId;
 
-    private Users user;
+    private User user;
     private Long userId;
 
     private Brands brand;

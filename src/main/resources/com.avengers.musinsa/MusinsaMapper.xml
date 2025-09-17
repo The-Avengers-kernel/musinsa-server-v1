@@ -3,7 +3,7 @@
 
 <mapper namespace="com.avengers.musinsa.test.MusinsaMapper">
     
-    <select id="findAllUsers" resultType="TestUser">
+    <select id="findAllUser" resultType="TestUser">
         SELECT id, name, email FROM users
     </select>
     

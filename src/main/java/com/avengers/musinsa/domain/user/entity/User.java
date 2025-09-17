@@ -1,17 +1,23 @@
 package com.avengers.musinsa.domain.user.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.swing.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     private Integer userId;
     private String name;
     private String nickname;
-    private Date birthday;
+    private String birthday;
     private Integer birthyear;
     private String gender;
     private String email;

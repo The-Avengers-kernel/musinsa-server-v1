@@ -2,14 +2,14 @@ package com.avengers.musinsa.domain.order.entity;
 
 import com.avengers.musinsa.domain.shipments.entity.Shipments;
 import com.avengers.musinsa.domain.user.entity.UserAddress;
-import com.avengers.musinsa.domain.user.entity.Users;
+import com.avengers.musinsa.domain.user.entity.User;
 import lombok.Getter;
 
 @Getter
 public class Orders {
     private Long orderId;
 
-    private Users user;
+    private User user;
     private Long userId;
 
     private UserAddress userAddress;

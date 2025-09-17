@@ -8,7 +8,7 @@
 
     <resultMap id="userResultMap" type="com.avengers.musinsa.domain.user.entity.User">
         <id property="userId" column="user_id"/>
-        <result property="userName" column="user_name"/>
+        <result property="name" column="user_name"/>
         <result property="nickname" column="nickname"/>
         <result property="gender" column="gender"/>
         <result property="birthday" column="birthday"/>
@@ -55,7 +55,7 @@
         user_name, nickname, gender, birthday, social_id, social_type,
         active_status, inactive_time, user_mileage, is_member, created_at, updated_at
         ) VALUES (
-        #{userName}, #{nickname}, #{gender}, #{birthday}, #{socialId}, #{socialType},
+        #{name}, #{nickname}, #{gender}, #{birthday}, #{socialId}, #{socialType},
         #{activeStatus}, #{inactiveTime}, #{userMileage}, #{isMember},
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
         )
@@ -63,7 +63,7 @@
 
     <update id="updateUser" parameterType="com.avengers.musinsa.domain.user.entity.User">
         UPDATE users SET
-        user_name = #{userName},
+        user_name = #{name},
         nickname = #{nickname},
         gender = #{gender},
         birthday = #{birthday},

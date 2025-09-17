@@ -1,7 +1,7 @@
 package com.avengers.musinsa.domain.coupons.entity;
 
 import com.avengers.musinsa.domain.user.entity.UserGrades;
-import com.avengers.musinsa.domain.user.entity.Users;
+import com.avengers.musinsa.domain.user.entity.User;
 import lombok.Getter;
 
 //쿠폰 조건
@@ -12,7 +12,7 @@ public class CouponConditions {
     private UserGrades userGrade;
     private Long userGradeId;
 
-    private Users user;
+    private User user;
     private Long userId;
 
     private Coupons coupon;

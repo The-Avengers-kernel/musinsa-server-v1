@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 public class MybatisTestRepository {
     private final MusinsaMapper musinsaMapper;
 
-    public List<TestUser> findAllUsers() {
-        return this.musinsaMapper.findAllUsers();
+    public List<TestUser> findAllUser() {
+        return this.musinsaMapper.findAllUser();
     }
 
     public TestUser findUserById(Long id) {

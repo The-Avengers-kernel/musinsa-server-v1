@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface MusinsaMapper {
-    List<TestUser> findAllUsers();
+    List<TestUser> findAllUser();
 
     TestUser findUserById(Long id);
 

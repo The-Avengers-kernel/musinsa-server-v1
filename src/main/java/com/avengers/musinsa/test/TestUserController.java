@@ -23,8 +23,8 @@ public class TestUserController {
     @GetMapping("/")
     public String home(Model model) {
         try {
-            List<TestUser> users = this.mybatisService.getAllUsers();
-            model.addAttribute("users", users);
+            List<TestUser> user = this.mybatisService.getAllUser();
+            model.addAttribute("user", user);
             return "test/testindex";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -51,7 +51,7 @@ public class TestUserController {
             return "redirect:/";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("users", this.mybatisService.getAllUsers());
+            model.addAttribute("user", this.mybatisService.getAllUser());
             return "test/testindex";
         }
     }
