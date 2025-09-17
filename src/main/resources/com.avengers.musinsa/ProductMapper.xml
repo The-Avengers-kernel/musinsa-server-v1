@@ -6,7 +6,7 @@
     <select id="getRecommendationProductList"
             resultType="com.avengers.musinsa.domain.product.dto.response.RecommendationResponse">
         SELECT p.product_id    AS productId,
-               p.product_id    AS brandId,
+               b.brand_id      AS brandId,
                p.product_name  AS productName,
                b.brand_name_kr AS productBrand,
                p.price         AS productPrice,
