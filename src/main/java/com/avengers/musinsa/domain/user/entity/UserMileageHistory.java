@@ -1,4 +1,4 @@
-package com.avengers.musinsa.user;
+package com.avengers.musinsa.domain.user.entity;
 
 import com.avengers.musinsa.order.OrderItems;
 import lombok.Getter;

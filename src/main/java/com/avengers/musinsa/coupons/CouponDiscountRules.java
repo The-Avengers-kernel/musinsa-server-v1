@@ -1,6 +1,6 @@
 package com.avengers.musinsa.coupons;
 
-import com.avengers.musinsa.user.Users;
+import com.avengers.musinsa.domain.user.entity.Users;
 import lombok.Getter;
 
 //쿠폰 할인규칙

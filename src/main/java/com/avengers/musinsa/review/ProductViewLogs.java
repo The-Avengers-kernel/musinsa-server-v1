@@ -1,7 +1,7 @@
 package com.avengers.musinsa.review;
 
 import com.avengers.musinsa.product.Products;
-import com.avengers.musinsa.user.Users;
+import com.avengers.musinsa.domain.user.entity.Users;
 import java.sql.Timestamp;
 import lombok.Getter;
 

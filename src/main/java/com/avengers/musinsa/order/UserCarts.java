@@ -1,7 +1,7 @@
 package com.avengers.musinsa.order;
 
 import com.avengers.musinsa.product.Products;
-import com.avengers.musinsa.user.Users;
+import com.avengers.musinsa.domain.user.entity.Users;
 import lombok.Getter;
 
 @Getter

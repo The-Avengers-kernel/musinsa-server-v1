@@ -1,7 +1,8 @@
-package com.avengers.musinsa.user;
+package com.avengers.musinsa.domain.user.entity;
 
 import lombok.Getter;
 
+import javax.swing.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -11,6 +12,13 @@ public class Users {
     private String name;
     private String nickname;
     private Date birthday;
+    private Integer birthyear;
+    private String gender;
+    private String email;
+    private String mobile;
+    private String ageGroup;
+
+
     private String socialId;
     private String socialType;
     private String activeStatus;

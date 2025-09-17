@@ -1,9 +1,8 @@
 package com.avengers.musinsa.order;
 
 import com.avengers.musinsa.shipments.Shipments;
-import com.avengers.musinsa.user.UserAddress;
-import com.avengers.musinsa.user.Users;
-import java.sql.Timestamp;
+import com.avengers.musinsa.domain.user.entity.UserAddress;
+import com.avengers.musinsa.domain.user.entity.Users;
 import lombok.Getter;
 
 @Getter

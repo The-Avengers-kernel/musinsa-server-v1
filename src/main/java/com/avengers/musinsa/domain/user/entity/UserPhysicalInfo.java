@@ -1,4 +1,4 @@
-package com.avengers.musinsa.user;
+package com.avengers.musinsa.domain.user.entity;
 
 import lombok.Getter;
 
