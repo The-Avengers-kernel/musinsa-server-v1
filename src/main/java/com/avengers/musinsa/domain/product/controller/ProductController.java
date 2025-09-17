@@ -20,9 +20,7 @@ public class ProductController {
 
     @GetMapping("/main/recommendations/{gender}")
     public List<RecommendationResponse> recommendationProducts(@PathVariable String gender, Model model) {
-        System.out.println("추천상품기능");
         Gender g = Gender.valueOf(gender.toUpperCase());
-        System.out.println(g);
         return productService.getRecommendationProductList(g);
     }
 }
