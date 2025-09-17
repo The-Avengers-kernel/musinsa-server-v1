@@ -9,13 +9,13 @@ import java.sql.Timestamp;
 public class UserMileageHistory {
     private Integer userMileageId;
 
-    private Users user;
+    private User user;
     private Long userId;
 
     private OrderItems orderItem;
     private Long orderItemId;
 
-    private UserMileageTypes userMileageType;
+    private UserMileageType userMileageType;
     private Long userMileageTypeId;
 
 

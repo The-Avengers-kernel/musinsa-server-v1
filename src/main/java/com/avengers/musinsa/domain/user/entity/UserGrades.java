@@ -6,7 +6,7 @@ import lombok.Getter;
 public class UserGrades {
     private Integer gradeId;
 
-    private Users user;
+    private User user;
     private Long userId;
 
     private String gradeName;

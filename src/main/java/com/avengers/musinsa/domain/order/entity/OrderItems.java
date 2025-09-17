@@ -1,17 +1,17 @@
 package com.avengers.musinsa.domain.order.entity;
 
-import com.avengers.musinsa.domain.coupons.entity.Coupons;
-import com.avengers.musinsa.domain.product.entity.Products;
+import com.avengers.musinsa.domain.coupons.entity.Coupon;
+import com.avengers.musinsa.domain.product.entity.Product;
 import lombok.Getter;
 
 @Getter
 public class OrderItems {
     private Long orderItemId;
 
-    private Products product;
+    private Product product;
     private Long productId;
 
-    private Coupons coupon;
+    private Coupon coupon;
     private Long couponId;
 
     private Orders order;
