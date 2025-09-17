@@ -26,4 +26,4 @@ public class Users {
     private Timestamp inactiveTime;
     private Integer userMileage;
     private String isMember;
-  }
+}

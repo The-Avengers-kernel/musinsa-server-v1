@@ -1,6 +1,6 @@
 package com.avengers.musinsa.domain.user.entity;
 
-import com.avengers.musinsa.order.OrderItems;
+import com.avengers.musinsa.domain.order.entity.OrderItems;
 import lombok.Getter;
 
 import java.sql.Timestamp;
