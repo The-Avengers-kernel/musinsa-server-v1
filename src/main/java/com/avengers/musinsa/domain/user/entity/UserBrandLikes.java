@@ -1,15 +1,15 @@
 package com.avengers.musinsa.domain.user.entity;
 
-import com.avengers.musinsa.domain.brand.entity.Brands;
+import com.avengers.musinsa.domain.brand.entity.Brand;
 import lombok.Getter;
 
 @Getter
 public class UserBrandLikes {
     private Long userBrandLikeId;
 
-    private Brands brand;
+    private Brand brand;
     private Long brandId;
 
-    private Users user;
+    private User user;
     private Long userId;
 }

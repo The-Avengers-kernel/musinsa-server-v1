@@ -6,7 +6,7 @@ import lombok.Getter;
 public class UserPhysicalInfo {
     private Integer userPhysicalInfoId;
 
-    private Users user;
+    private User user;
     private Long userId;
 
     private Integer height;
