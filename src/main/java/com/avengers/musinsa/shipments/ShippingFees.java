@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 public class ShippingFees {
     private Integer ShippingFeeId;
-    private String feeAmout;
+    private String feeAmount;
 
 }

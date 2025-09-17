@@ -5,5 +5,8 @@ import lombok.Getter;
 @Getter
 public class UserCoupons {
     private Integer userCouponId;
-    private User userId;
+
+    private Users user;
+    private Long userId;
+
 }

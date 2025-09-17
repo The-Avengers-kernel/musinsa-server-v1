@@ -5,7 +5,10 @@ import lombok.Getter;
 @Getter
 public class UserPhysicalInfo {
     private Integer userPhysicalInfoId;
-    private User userId;
+
+    private Users user;
+    private Long userId;
+
     private Integer height;
     private Integer weight;
 }

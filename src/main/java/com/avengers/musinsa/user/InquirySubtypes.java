@@ -4,7 +4,10 @@ import lombok.Getter;
 
 @Getter
 public class InquirySubtypes {
-    private Integer inquirysubtypeId;
-    private InquiryTypes inquiryTypeId;
+    private Integer inquirySubTypeId;
+
+    private InquiryTypes inquiryType;
+    private Long inquiryTypeId;
+
     private String subtypeName;
 }

@@ -5,7 +5,10 @@ import lombok.Getter;
 @Getter
 public class ProductVariants {
     private Integer productVariantId;
-    private Products productId;
+
+    private Products product;
+    private Long productId;
+
     private String skuCode;
     private String variantName;
     private Integer price;

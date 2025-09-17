@@ -1,14 +1,23 @@
 package com.avengers.musinsa.shipments;
 
+import com.avengers.musinsa.order.ScheduledDeliveryInformation;
 import lombok.Getter;
 
 //배송
 @Getter
 public class Shipments {
     private Integer shippingId;
-    private ScheduledDeliveryInformation scheduledDeliveryInformationId;
-    private ShippingRequestTypes shippingRequestTypeId;
-    private ShippingStatuses shippingStatusesId;
+
+    private ScheduledDeliveryInformation scheduledDeliveryInformation;
+    private Long scheduledDeliveryInformationId;
+
+    private ShippingRequestTypes shippingRequestType;
+    private Long shippingRequestTypeId;
+
+
+    private ShippingStatuses shippingStatuses;
+    private Long shippingStatusesId;
+
     private String shippingInquiry;
     private String recipientName;
     private String recipientPhone;

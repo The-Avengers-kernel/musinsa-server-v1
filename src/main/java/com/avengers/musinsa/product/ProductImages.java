@@ -5,7 +5,10 @@ import lombok.Getter;
 @Getter
 public class ProductImages {
     private Integer productImageId;
-    private Products productId;
+
+    private Products product;
+    private Long productId;
+
     private String imageType;
     private String imageUrl;
 }

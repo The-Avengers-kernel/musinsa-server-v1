@@ -1,14 +1,23 @@
 package com.avengers.musinsa.coupons;
 
+import com.avengers.musinsa.user.UserGrades;
+import com.avengers.musinsa.user.Users;
 import lombok.Getter;
 
 //쿠폰 조건
 @Getter
 public class CouponConditions {
     private Integer couponConditionId;
-    private UserGrades gradeId;
-    private User userId;
-    private Coupons couponId;
+
+    private UserGrades userGrade;
+    private Long userGradeId;
+
+    private Users user;
+    private Long userId;
+
+    private Coupons coupon;
+    private Long couponId;
+
     private Integer conditionType;
     private Integer minPurchaseAmount;
     private Integer minQuantity;

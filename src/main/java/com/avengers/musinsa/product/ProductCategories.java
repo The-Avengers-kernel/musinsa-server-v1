@@ -5,7 +5,10 @@ import lombok.Getter;
 @Getter
 public class ProductCategories {
     private Integer productCategoryId;
-    private ProductCategories parentProductCategoryId;
+
+    private ProductCategories parentProductCategory;
+    private Long parentProductCategoryId;
+
     private String categoryName;
     private String categoryImage;
     private Integer level;

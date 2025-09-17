@@ -5,7 +5,10 @@ import lombok.Getter;
 @Getter
 public class NationalInfos {
     private Integer nationalInfoId;
-    private Brands brandId;
-    private String natioanlImg;
+
+    private Brands brand;
+    private Long brandId;
+
+    private String nationalImg;
     private String nationalName;
 }
