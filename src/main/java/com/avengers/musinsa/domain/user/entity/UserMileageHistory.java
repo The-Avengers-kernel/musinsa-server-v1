@@ -1,6 +1,6 @@
 package com.avengers.musinsa.domain.user.entity;
 
-import com.avengers.musinsa.domain.order.entity.OrderItems;
+import com.avengers.musinsa.domain.order.entity.OrderItem;
 import lombok.Getter;
 
 import java.sql.Timestamp;
@@ -12,10 +12,10 @@ public class UserMileageHistory {
     private User user;
     private Long userId;
 
-    private OrderItems orderItem;
+    private OrderItem orderItem;
     private Long orderItemId;
 
-    private UserMileageTypes userMileageType;
+    private UserMileageType userMileageType;
     private Long userMileageTypeId;
 
 

@@ -1,6 +1,6 @@
 package com.avengers.musinsa.domain.order.entity;
 
-import com.avengers.musinsa.domain.shipments.entity.Shipments;
+import com.avengers.musinsa.domain.shipments.entity.Shipment;
 import com.avengers.musinsa.domain.user.entity.UserAddress;
 import com.avengers.musinsa.domain.user.entity.User;
 import lombok.Getter;
@@ -15,10 +15,10 @@ public class Orders {
     private UserAddress userAddress;
     private Long userAddressId;
 
-    private Shipments shipment;
+    private Shipment shipment;
     private Long shipmentId;
 
-    private PaymentMethods paymentMethod;
+    private PaymentMethod paymentMethod;
     private Long paymentMethodId;
 
     private Integer orderNumber;

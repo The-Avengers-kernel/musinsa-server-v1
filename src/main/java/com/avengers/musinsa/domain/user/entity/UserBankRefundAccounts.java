@@ -8,7 +8,7 @@ public class UserBankRefundAccounts {
     private User user;
     private Long userId;
 
-    private BankNameLists bankNameList;
+    private BankNameList bankNameList;
     private Long bankNameListId;
 
     private String userBankRefundAccount;
