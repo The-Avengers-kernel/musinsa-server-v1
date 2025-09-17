@@ -1,4 +1,4 @@
-package com.avengers.musinsa.domain.product.mapper;
+package com.avengers.musinsa.mapper;
 
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;

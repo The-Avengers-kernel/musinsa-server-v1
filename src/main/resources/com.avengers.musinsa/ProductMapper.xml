@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.avengers.musinsa.domain.product.mapper.ProductMapper">
+<mapper namespace="com.avengers.musinsa.mapper.ProductMapper">
 
     <select id="getRecommendationProductList"
             resultType="com.avengers.musinsa.domain.product.dto.response.RecommendationResponse">

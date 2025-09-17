@@ -3,7 +3,7 @@ package com.avengers.musinsa.domain.product.repository;
 
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
-import com.avengers.musinsa.domain.product.mapper.ProductMapper;
+import com.avengers.musinsa.mapper.ProductMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
