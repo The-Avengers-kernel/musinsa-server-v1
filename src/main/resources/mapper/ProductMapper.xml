@@ -14,11 +14,10 @@
         <result property="brandLikes" column="b_likes"/>
     </association>
 
-<!--    <association property="product" javaType="com.avengers.musinsa.domain.product.entity.ProductImage">
+&lt;!&ndash;    <association property="product" javaType="com.avengers.musinsa.domain.product.entity.ProductImage">
         <id property="brandId"></id>
-    </association>-->
+    </association>&ndash;&gt;
 </resultMap>
-
     <select id="findProductById" resultMap="productWithBrandMap">
         SELECT
             p.product_id,
@@ -33,6 +32,8 @@
             products p
         JOIN
             brands b ON p.brand_id = b.brand_id
+        WHERE
+            p.product_id=#{productId}
 
     </select>
 

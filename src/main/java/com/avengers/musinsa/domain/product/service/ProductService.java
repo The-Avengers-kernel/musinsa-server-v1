@@ -36,6 +36,8 @@ public class ProductService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+
     public List<RecommendationResponse> getRecommendationProductList(Gender gender) {
         return productRepository.getRecommendationProductList(gender);
     }

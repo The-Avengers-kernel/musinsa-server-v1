@@ -14,7 +14,7 @@ import org.apache.ibatis.annotations.Param;
 public interface ProductMapper {
     List<Product> findAllProducts();
 
-    Product findProductById(Long productID);
+    Product findProductById( Long productID);
 
     void insertProduct(Product product);
 

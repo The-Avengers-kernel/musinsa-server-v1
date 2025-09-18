@@ -1,4 +1,4 @@
-package com.avengers.musinsa.domain.user.mapper;
+package com.avengers.musinsa.mapper;
 
 import com.avengers.musinsa.domain.user.entity.User;
 import org.apache.ibatis.annotations.Mapper;

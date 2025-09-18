@@ -15,7 +15,6 @@ import java.util.List;
 
 @Repository // 이 클래스는 데이터 접근 계층
 @RequiredArgsConstructor // 필드를 초기화하는 생성자 코드를 자동으로 만들어주는 애너테이션
-
 public class ProductRepository {
     // ProductMapper 주입
     private final ProductMapper productMapper;

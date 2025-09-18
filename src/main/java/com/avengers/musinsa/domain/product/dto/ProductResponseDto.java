@@ -15,7 +15,7 @@ public class ProductResponseDto {
     private final String brandName;
     private final int brandLikeCnt;
 
-    private final Long productImageId;
-    private final String productImageUrl;
+    //private final Long productImageId;
+    //private final String productImageUrl;
 
 }

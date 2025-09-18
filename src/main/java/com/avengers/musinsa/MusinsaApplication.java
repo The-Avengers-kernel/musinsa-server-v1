@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.avengers.musinsa.domain.user.mapper")
+@MapperScan("com.avengers.musinsa.mapper")
 public class MusinsaApplication {
 
     public static void main(String[] args) {
