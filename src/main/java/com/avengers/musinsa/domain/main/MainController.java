@@ -13,6 +13,7 @@ public class MainController {
     private final TokenProviderService tokenProviderService;
     @GetMapping("/")
     public String getMainHompage(@CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+
         if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
             Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
             System.out.println("userId = " + userId);

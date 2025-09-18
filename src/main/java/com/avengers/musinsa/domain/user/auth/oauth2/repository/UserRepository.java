@@ -1,11 +1,9 @@
 package com.avengers.musinsa.domain.user.auth.oauth2.repository;
 
 import com.avengers.musinsa.domain.user.entity.User;
-import com.avengers.musinsa.domain.user.mapper.UserMapper;
+import com.avengers.musinsa.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import javax.net.ssl.SSLSession;
 
 @Repository
 @RequiredArgsConstructor
