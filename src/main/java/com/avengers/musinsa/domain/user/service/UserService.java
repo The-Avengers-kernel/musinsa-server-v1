@@ -3,9 +3,7 @@ package com.avengers.musinsa.domain.user.service;
 
 import com.avengers.musinsa.domain.user.auth.oauth2.repository.UserRepository;
 import com.avengers.musinsa.domain.user.entity.User;
-import com.avengers.musinsa.domain.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.id.AbstractUUIDGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

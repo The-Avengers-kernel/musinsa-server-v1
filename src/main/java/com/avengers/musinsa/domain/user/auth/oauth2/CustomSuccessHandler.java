@@ -44,7 +44,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addCookie(createCookie("Authorization", token));
 
         // 로그인 성공 후 메인 페이지로 리다이렉트
-        response.sendRedirect("http://localhost:8080/login/success?token=" + token);
+        response.sendRedirect("http://localhost:8080");
         System.out.println("Response status: " + response.getStatus());
         System.out.println("Response committed: " + response.isCommitted());
         System.out.println("왜 리다이렉트가 안돼?");
