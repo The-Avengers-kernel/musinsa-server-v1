@@ -77,7 +77,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .email(naverResponse.getEmail())
                     .mobile(naverResponse.getMobile())
                     .ageGroup(naverResponse.getAgeGroup())
-
                     .build();
 
             userService.saveUser(updatedUser);

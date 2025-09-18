@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @ToString
 public class User {
-    private Integer userId;
+    private Long userId;
     private String nickname;
     private String username; // OAuth2에서 사용하는 복합키
     private String gender;

@@ -5,6 +5,8 @@ import com.avengers.musinsa.domain.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import javax.net.ssl.SSLSession;
+
 @Repository
 @RequiredArgsConstructor
 public class UserRepository {
@@ -30,4 +32,7 @@ public class UserRepository {
         return userMapper.findByUserId(userId);
     }
 
+    public User findByUsernameId(String username) {
+        return userMapper.findByUsername(username);
+    }
 }
