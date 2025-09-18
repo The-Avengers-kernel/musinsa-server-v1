@@ -1,4 +1,4 @@
-package com.avengers.musinsa.domain.auth.jwt;
+package com.avengers.musinsa.domain.user.auth.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

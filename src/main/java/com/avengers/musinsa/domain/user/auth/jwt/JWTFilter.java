@@ -1,7 +1,7 @@
-package com.avengers.musinsa.domain.auth.jwt;
+package com.avengers.musinsa.domain.user.auth.jwt;
 
 import com.avengers.musinsa.domain.user.dto.UserDTO;
-import com.avengers.musinsa.domain.auth.oauth2.dto.CustomOAuth2User;
+import com.avengers.musinsa.domain.user.auth.oauth2.dto.CustomOAuth2User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

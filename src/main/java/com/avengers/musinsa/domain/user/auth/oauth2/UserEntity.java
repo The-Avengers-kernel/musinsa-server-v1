@@ -1,4 +1,4 @@
-package com.avengers.musinsa.domain.auth.oauth2;
+package com.avengers.musinsa.domain.user.auth.oauth2;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

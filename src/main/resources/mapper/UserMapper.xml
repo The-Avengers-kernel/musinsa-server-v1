@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avengers.musinsa.domain.user.mapper.UserMapper">
+
+
+    <insert id="insertUser" parameterType="com.avengers.musinsa.domain.user.entity.User"
+            keyProperty="userId" keyColumn="user_id">
+        INSERT INTO users (
+            user_id, user_name, nickname, gender, birthday, birthyear, social_id, social_type,
+            active_status, inactive_time, user_mileage, is_member, created_at, updated_at
+        ) VALUES (
+                     SEQ_USERS.NEXTVAL, #{name}, #{nickname}, #{gender}, #{birthday}, #{birthyear}, #{socialId}, #{socialType},
+                     #{activeStatus}, #{inactiveTime, jdbcType=TIMESTAMP}, #{userMileage}, #{isMember, jdbcType=VARCHAR},
+                     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+                 )
+    </insert>
+
+
+
+    <update id="updateUser" parameterType="com.avengers.musinsa.domain.user.entity.User">
+        UPDATE users SET
+                         user_name = #{name},
+                         nickname = #{nickname},
+                         gender = #{gender},
+                         birthday = #{birthday},
+                         birthyear = #{birthyear},
+                         social_id = #{socialId},
+                         social_type = #{socialType},
+                         active_status = #{activeStatus},
+                         inactive_time = #{inactiveTime, jdbcType=TIMESTAMP},
+                         user_mileage = #{userMileage},
+                         is_member = #{isMember, jdbcType=VARCHAR}
+        WHERE user_id = #{userId}
+    </update>
+    <select id="findByUsername" parameterType="string"
+            resultType="com.avengers.musinsa.domain.user.entity.User">
+        SELECT *
+        FROM users
+        WHERE user_name = #{username}
+    </select>
+</mapper>

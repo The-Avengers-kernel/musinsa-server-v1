@@ -1,12 +1,12 @@
-package com.avengers.musinsa.domain.auth.oauth2;
+package com.avengers.musinsa.domain.user.auth.oauth2;
 
+import com.avengers.musinsa.domain.enums.UserActiveStatus;
 import com.avengers.musinsa.domain.user.dto.UserDTO;
-import com.avengers.musinsa.domain.auth.oauth2.dto.CustomOAuth2User;
-import com.avengers.musinsa.domain.auth.oauth2.dto.NaverResponse;
-import com.avengers.musinsa.domain.auth.oauth2.dto.OAuth2Response;
-import com.avengers.musinsa.domain.auth.oauth2.repository.UserRepository;
+import com.avengers.musinsa.domain.user.auth.oauth2.dto.CustomOAuth2User;
+import com.avengers.musinsa.domain.user.auth.oauth2.dto.NaverResponse;
 
 import com.avengers.musinsa.domain.user.entity.User;
+import com.avengers.musinsa.domain.user.service.UserService;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -52,7 +52,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .ageGroup(naverResponse.getAgeGroup())
                     .socialId(naverResponse.getProviderId())
                     .socialType(naverResponse.getProvider())
+                    .isMember("Y")
                     .role("ROLE_USER")
+                    .nickname("유저")
+                    .userMileage(0)
+                    .activeStatus(UserActiveStatus.ACTIVE)
                     .build();
 
             userService.saveUser(newUser);

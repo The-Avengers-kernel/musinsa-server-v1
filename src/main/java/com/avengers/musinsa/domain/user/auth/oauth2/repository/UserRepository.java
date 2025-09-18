@@ -1,16 +1,13 @@
-package com.avengers.musinsa.domain.auth.oauth2;
-
+package com.avengers.musinsa.domain.user.auth.oauth2.repository;
 
 import com.avengers.musinsa.domain.user.entity.User;
 import com.avengers.musinsa.domain.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
-@Service
-@Transactional
+@Repository
 @RequiredArgsConstructor
-public class UserService {
+public class UserRepository {
 
     private final UserMapper userMapper;
 
@@ -21,6 +18,8 @@ public class UserService {
     public void saveUser(User user) {
         if (user.getUserId() == null) {
             userMapper.insertUser(user);
+            System.out.println(user.toString());
+
         } else {
             userMapper.updateUser(user);
         }
@@ -29,4 +28,5 @@ public class UserService {
     public User findByUserId(Integer userId) {
         return userMapper.findByUserId(userId);
     }
+
 }

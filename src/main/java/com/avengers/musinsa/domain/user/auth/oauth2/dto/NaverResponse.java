@@ -1,4 +1,4 @@
-package com.avengers.musinsa.domain.auth.oauth2.dto;
+package com.avengers.musinsa.domain.user.auth.oauth2.dto;
 
 import java.util.Map;
 public class NaverResponse implements OAuth2Response {
