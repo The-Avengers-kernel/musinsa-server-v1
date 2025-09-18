@@ -27,7 +27,7 @@ public class ProductController {
     @GetMapping("{productId}")
     // get은 임의로 정한 메서드 이름 나중에 바꾸면 된다.
     // @PathVariable은 Spring MVC에서 URL 경로의 일부 값을 메서드의 매개변수로 바인딩 해주는 애너테이션 없으면 오류가 난다.
-    public List<ProductResponseDto> get(@PathVariable Long productId){
+    public ProductResponseDto get(@PathVariable Long productId){
         // "해당 productId 상품 정보를 반환해준다.
         return productService.getProductById(productId);
     }

@@ -1,11 +1,14 @@
 package com.avengers.musinsa.domain.product.repository;
 
+import com.avengers.musinsa.domain.product.dto.ProductResponseDto;
 import com.avengers.musinsa.domain.product.entity.Product;
 
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
+import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.mapper.ProductMapper;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -25,11 +28,15 @@ public class ProductRepository {
     }
 
     // 상품 ID를 받아서 특정 상품 하나를 조회하는 메서드
-    public Product findProductById(Long productId) {
+    public ProductResponseDto findProductById(Long productId) {
         return this.productMapper.findProductById(productId);
     }
 
     public List<RecommendationResponse> getRecommendationProductList(Gender gender) {
         return productMapper.getRecommendationProductList(gender);
+    }
+
+    public List<ProductImage> findProductImageById(Long productId) {
+        return productMapper.findProductImageById(productId);
     }
 }

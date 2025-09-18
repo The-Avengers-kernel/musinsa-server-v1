@@ -2,38 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avengers.musinsa.mapper.ProductMapper">
-<resultMap id="productWithBrandMap" type="com.avengers.musinsa.domain.product.entity.Product">
-    <id property="productId" column="product_id"/>
-    <result property="productName" column="product_name"/>
-    <result property="productLikes" column="p_likes"/>
-    <result property="price" column="price"/>
-
-    <association property="brand" javaType="com.avengers.musinsa.domain.brand.entity.Brand">
-        <id property="brandId" column="brand_id"/>
-        <result property="nameKr" column="brand_name_kr"/>
-        <result property="brandLikes" column="b_likes"/>
-    </association>
-
-&lt;!&ndash;    <association property="product" javaType="com.avengers.musinsa.domain.product.entity.ProductImage">
-        <id property="brandId"></id>
-    </association>&ndash;&gt;
-</resultMap>
-    <select id="findProductById" resultMap="productWithBrandMap">
+    <select id="findProductById"
+            resultType="com.avengers.musinsa.domain.product.dto.ProductResponseDto">
         SELECT
-            p.product_id,
-            p.product_name,
-            p.product_likes AS p_likes,
+            p.product_id AS productId,
+            p.product_name AS productName,
+
+            p.product_likes AS productLikeCnt,
             p.price,
-            p.created_at,
-            b.brand_id,
-            b.brand_name_kr,
-            b.brand_likes   AS b_likes
+            b.brand_id AS brandId,
+            b.brand_name_kr  AS brandName,
+            b.brand_likes   AS brandLikeCnt,
+            b.BRAND_DISCOUNT AS brandDiscount,
+            ((100-b.BRAND_DISCOUNT)/100) * p.price AS finalprice
         FROM
             products p
         JOIN
             brands b ON p.brand_id = b.brand_id
         WHERE
             p.product_id=#{productId}
+    </select>
+    <select id="findProductImageById"
+            resultType="com.avengers.musinsa.domain.product.entity.ProductImage">
+        SELECT
+            PRODUCT_IMAGE_ID AS productImageId,
+            IMAGE_URL AS imageUrl,
+            IMAGE_TYPE AS imageType
+        FROM
+            PRODUCT_IMAGES
+        WHERE
+            PRODUCT_ID = #{productId}
 
     </select>
 

@@ -1,6 +1,8 @@
 package com.avengers.musinsa.mapper;
 
+import com.avengers.musinsa.domain.product.dto.ProductResponseDto;
 import com.avengers.musinsa.domain.product.entity.Product;
+import com.avengers.musinsa.domain.product.entity.ProductImage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -14,9 +16,10 @@ import org.apache.ibatis.annotations.Param;
 public interface ProductMapper {
     List<Product> findAllProducts();
 
-    Product findProductById( Long productID);
-
-    void insertProduct(Product product);
+    ProductResponseDto findProductById(Long productID);
 
     List<RecommendationResponse> getRecommendationProductList(@Param("gender") Gender gender);
+
+
+    List<ProductImage> findProductImageById(Long productId);
 }

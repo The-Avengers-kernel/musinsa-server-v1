@@ -1,21 +1,27 @@
 package com.avengers.musinsa.domain.product.dto;
 
+import com.avengers.musinsa.domain.product.entity.ProductImage;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Builder
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
+@NoArgsConstructor
 public class ProductResponseDto {
-    private final Long productId;
-    private final String productName;
-    private final int productLikeCnt;
-    private final int price;
+    private  Long productId;
+    private  String productName;
+    private  int productLikeCnt;
+    private  int price;
+    private int brandDiscount;
+    private int finalprice;
 
-    private final Long brandId;
-    private final String brandName;
-    private final int brandLikeCnt;
+    private  Long brandId;
+    private  String brandName;
+    private  int brandLikeCnt;
 
-    //private final Long productImageId;
-    //private final String productImageUrl;
+    private List<ProductImage> productImageList = new ArrayList<>();
 
 }

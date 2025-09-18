@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -21,10 +23,26 @@ public class Product {
     private ProductCategory productCategory;
     private Long productCategoryId;
 
+    private List<ProductImage> productImageList;
+    private Long productImageId;
+
     private String productName;
     private String detailImageUrl;
     private Integer price;
     private Gender gender;
     private Integer productLikes;
     private Timestamp createdAt;
+
+    public void addProductImage(ProductImage productImage){
+        if(this.productImageList == null){
+            this.productImageList = new ArrayList<>();
+        }
+    }
+    public void removeProductImage(ProductImage productImage){
+        if(this.productImageList != null){
+            this.productImageList.remove(productImage);
+            productImage.setProduct(null); // 관계 제거
+        }
+    }
+
 }

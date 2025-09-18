@@ -2,6 +2,7 @@ package com.avengers.musinsa.domain.product.service;
 
 import com.avengers.musinsa.domain.product.dto.ProductResponseDto;
 import com.avengers.musinsa.domain.product.entity.Product;
+import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.mapper.ProductMapper;
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
@@ -20,21 +21,11 @@ public class ProductService {
     // 의존성 주입
     private final ProductRepository productRepository;
 
-    public List<ProductResponseDto> getProductById(Long ProductId) {
-        List<Product> productList = Collections.singletonList(productRepository.findProductById(ProductId));
-
-        return productList.stream()
-                .map(product -> ProductResponseDto.builder()
-                        .productId(product.getProductId())
-
-                        .productName(product.getProductName())
-                        .price(product.getPrice())
-                        .productLikeCnt(product.getProductLikes())
-                        .brandId(product.getBrand().getBrandId())
-                        .brandName(product.getBrand().getNameKr())
-                        .brandLikeCnt(product.getBrand().getBrandLikes())
-                        .build())
-                .collect(Collectors.toList());
+    public ProductResponseDto getProductById(Long productId) {
+        ProductResponseDto productInfo = productRepository.findProductById(productId);
+        List<ProductImage> productImage = productRepository.findProductImageById(productId);
+        productInfo.getProductImageList().addAll(productImage);
+        return productInfo;
     }
 
 

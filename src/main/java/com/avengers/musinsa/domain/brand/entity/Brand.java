@@ -8,7 +8,7 @@ public class Brand {
     private String nameKr;
     private String nameEn;
     private String brandImage;
-    private Integer brandLikes;
+    private int brandLikes;
     private String brandInfo;
     private String brandBorn;
     private String nameKrFirstInitial;
