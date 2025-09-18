@@ -22,4 +22,10 @@ public class MainController {
         }
         return "main/main";
     }
+    @GetMapping("/")
+    public String getProductDetail() {
+
+        return "product/productDetail";
+    }
+
 }
