@@ -27,5 +27,22 @@ public class MainController {
 
         return "product/productDetail";
     }
+    @GetMapping("/product/likeProducts")
+    public String getlikeProducts() {
+
+        return "product/likeProducts";
+    }
+    @GetMapping("/product/product")
+    public String getProduct() {
+
+        return "product/product";
+    }
+
+    @GetMapping("/user/cart")
+    public String getCart() {
+
+        return "user/cart";
+    }
+
 
 }

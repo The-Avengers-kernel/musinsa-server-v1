@@ -83,8 +83,8 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/login", "/main", "/product","/product/productDetail", "/testUser", "/testUserFail",
-                                "/oauth2/**", "/WEB-INF/views/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/**","/", "/login", "/main", "/product","/product/productDetail", "/testUser", "/testUserFail",
+                                "/oauth2/**", "/WEB-INF/views/**", "/css/**", "/js/**", "/images/**", "/product/productDetail").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
