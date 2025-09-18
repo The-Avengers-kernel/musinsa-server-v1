@@ -1,9 +1,9 @@
 package com.avengers.musinsa.config;
 
-import com.avengers.musinsa.domain.auth.jwt.JWTFilter;
-import com.avengers.musinsa.domain.auth.jwt.JWTUtil;
-import com.avengers.musinsa.domain.auth.oauth2.CustomOAuth2UserService;
-import com.avengers.musinsa.domain.auth.oauth2.CustomSuccessHandler;
+import com.avengers.musinsa.domain.user.auth.jwt.JWTFilter;
+import com.avengers.musinsa.domain.user.auth.jwt.JWTUtil;
+import com.avengers.musinsa.domain.user.auth.oauth2.CustomOAuth2UserService;
+import com.avengers.musinsa.domain.user.auth.oauth2.CustomSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

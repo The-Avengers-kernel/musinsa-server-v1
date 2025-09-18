@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import lombok.Getter;
 
 @Getter
-public class SearchLogs {
+public class SearchLog {
     private Long searchLogId;
 
     private User user;

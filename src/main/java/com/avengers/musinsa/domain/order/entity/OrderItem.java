@@ -5,7 +5,7 @@ import com.avengers.musinsa.domain.product.entity.Product;
 import lombok.Getter;
 
 @Getter
-public class OrderItems {
+public class OrderItem {
     private Long orderItemId;
 
     private Product product;

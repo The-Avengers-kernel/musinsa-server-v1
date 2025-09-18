@@ -3,7 +3,7 @@ package com.avengers.musinsa.domain.other.entity;
 import lombok.Getter;
 
 @Getter
-public class SearchKeywords {
+public class SearchKeyword {
     private Long searchKeywordId;
     private String keyword;
     private String keywordInitial;

@@ -8,7 +8,7 @@ import lombok.Getter;
 public class SalesRecord {
     private Long salesRecordId;
 
-    private OrderItems orderItem;
+    private OrderItem orderItem;
     private Long orderItemId;
 
     private User user;
