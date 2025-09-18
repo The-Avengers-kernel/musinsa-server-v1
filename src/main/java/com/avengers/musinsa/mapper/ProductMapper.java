@@ -1,12 +1,16 @@
 package com.avengers.musinsa.mapper;
 
+import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import java.util.List;
+
+import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface ProductMapper {
     List<RecommendationResponse> getRecommendationProductList(@Param("gender") Gender gender);
+    List<CategoryProductResponse> getCategoryProductList();
 }
