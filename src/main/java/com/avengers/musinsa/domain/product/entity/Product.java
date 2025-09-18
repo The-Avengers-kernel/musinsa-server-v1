@@ -1,11 +1,17 @@
 package com.avengers.musinsa.domain.product.entity;
 
 import com.avengers.musinsa.domain.brand.entity.Brand;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
+@Setter
 @Getter
+@Builder
+@RequiredArgsConstructor
 public class Product {
     private Integer productId;
 

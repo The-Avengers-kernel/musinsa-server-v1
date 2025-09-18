@@ -2,7 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avengers.musinsa.mapper.ProductMapper">
+<resultMap id="productWithBrandMap" type="com.avengers.musinsa.domain.product.entity.Products">
+    <id property="productId" column="product_id"/>
+    <result property="productName" column="product_name"/>
+    <result property="productLikes" column="p_likes"/>
+    <result property="price" column="price"/>
 
+    <association property="brand" javaType="com.avengers.musinsa.domain.brand.entity.Brands">
+        <id property="brandId" column="brand_id"/>
+        <result property="nameKr" column="brand_name_kr"/>
+        <result property="brandLikes" column="b_likes"/>
+    </association>
+
+    <association property="product" javaType="com.avengers.musinsa.domain.product.entity.ProductImages">
+        <id property="brand"
+    </association>
+</resultMap>
+
+    <select id="findProductById" resultMap="productWithBrandMap">
+        SELECT
+            p.product_id,
+            p.product_name,
+            p.product_likes AS p_likes,
+            p.price,
+            p.created_at,
+            b.brand_id,
+            b.brand_name_kr,
+            b.brand_likes   AS b_likes
+        FROM
+            products p
+        JOIN
+            brands b ON p.brand_id = b.brand_id
     <select id="getRecommendationProductList"
             resultType="com.avengers.musinsa.domain.product.dto.response.RecommendationResponse">
         SELECT p.product_id    AS productId,
@@ -21,5 +51,4 @@
         ORDER BY p.created_at DESC
             FETCH FIRST 20 ROWS ONLY
     </select>
-
 </mapper>
