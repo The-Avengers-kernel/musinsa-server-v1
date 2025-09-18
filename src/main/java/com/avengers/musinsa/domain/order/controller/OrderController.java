@@ -1,20 +1,12 @@
 package com.avengers.musinsa.domain.order.controller;
 
 
-import com.avengers.musinsa.domain.order.dto.OrderProductDTO;
 import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
-import com.avengers.musinsa.domain.order.entity.OrderItems;
 import com.avengers.musinsa.domain.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.springframework.http.ResponseEntity.*;
 
 @RestController
 @RequiredArgsConstructor
