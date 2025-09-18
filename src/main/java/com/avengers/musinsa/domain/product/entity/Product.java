@@ -18,6 +18,7 @@ public class Product {
     private String productName;
     private String detailImageUrl;
     private Integer price;
+    private Gender gender;
     private Integer productLikes;
     private Timestamp createdAt;
 }
