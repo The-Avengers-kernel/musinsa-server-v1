@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class Brand {
-    private Integer brandId;
+    private Long brandId;
     private String nameKr;
     private String nameEn;
     private String brandImage;

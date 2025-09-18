@@ -1,6 +1,6 @@
 package com.avengers.musinsa.mapper;
 
-import com.avengers.musinsa.domain.product.entity.Products;
+import com.avengers.musinsa.domain.product.entity.Product;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -12,11 +12,11 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface ProductMapper {
-    List<Products> findAllProducts();
+    List<Product> findAllProducts();
 
-    Products findProductById(Long productID);
+    Product findProductById(Long productID);
 
-    void insertProduct(Products product);
+    void insertProduct(Product product);
 
     List<RecommendationResponse> getRecommendationProductList(@Param("gender") Gender gender);
 }

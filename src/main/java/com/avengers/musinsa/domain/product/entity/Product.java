@@ -10,10 +10,10 @@ import java.sql.Timestamp;
 
 @Setter
 @Getter
-@Builder
+//@Builder
 @RequiredArgsConstructor
 public class Product {
-    private Integer productId;
+    private Long productId;
 
     private Brand brand;
     private Long brandId;

@@ -29,10 +29,11 @@ public class ProductController {
     // @PathVariable은 Spring MVC에서 URL 경로의 일부 값을 메서드의 매개변수로 바인딩 해주는 애너테이션 없으면 오류가 난다.
     public List<ProductResponseDto> get(@PathVariable Long productId){
         // "해당 productId 상품 정보를 반환해준다.
-        return productService.getProductById(productId);}
+        return productService.getProductById(productId);
+    }
 
     @GetMapping("/main/recommendations/{gender}")
-    public List<RecommendationResponse> recommendationProducts(@PathVariable String gender, Model model) {
+    public List<RecommendationResponse> recommendationProducts(@PathVariable String gender ) {
         Gender g = Gender.valueOf(gender.toUpperCase());
         return productService.getRecommendationProductList(g);
     }
