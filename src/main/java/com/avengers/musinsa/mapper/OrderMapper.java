@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface OrderMapper {
     //주문자 기본정보 조회
-    @Select("SELECT u.user_id as userId, u.user_name as userName, ua.phone_number as phoneNumber, ua.address_line1 || ' ' || ua.address_line2 AS location FROM USERS u JOIN user_addresses ua ON u.user_id = ua.user_id WHERE u.user_id = #{userId} AND ua.is_default = 1")
     UserInfoDTO getUserInfo(@Param("userId") Long userId);
 
     //배송지 목록 조회
