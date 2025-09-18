@@ -5,13 +5,16 @@
     <!--주문자 기본정보 조회 -->
     <select id="getUserInfo" resultType="com.avengers.musinsa.domain.order.dto.UserInfoDTO" parameterType="Long">
         SELECT
-            user_id as userId,
-            user_name as userName,
-            phone_number as phoneNumber,
-            address as location
-        FROM user
-        WHERE user_id = #{userId}
+            u.user_id as userId,
+            u.user_name as userName,
+            ua.phone_number as phoneNumber,
+            ua.address_line1 || ' ' || ua.address_line2     AS location
+        FROM USERS u
+            join  user_addresses ua ON u.user_id = ua.user_id
+        WHERE u.user_id  = #{userId}
+          AND ua.is_default = 1
     </select>
+
 
     <!-- 배송지 목록 조회 -->
 

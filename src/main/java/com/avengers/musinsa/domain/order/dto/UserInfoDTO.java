@@ -7,6 +7,8 @@ import lombok.Setter;
 
 @Data
 @AllArgsConstructor
+@Getter
+@Setter
 public class UserInfoDTO {
     private Long userId;
     private String userName;
