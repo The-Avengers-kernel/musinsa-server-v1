@@ -10,7 +10,7 @@
             phone_number as phoneNumber,
             location
         FROM user
-        WHERE userid = #{userId}
+        WHERE user_id = #{userId}
     </select>
 
     <!-- 배송지 목록 조회 -->

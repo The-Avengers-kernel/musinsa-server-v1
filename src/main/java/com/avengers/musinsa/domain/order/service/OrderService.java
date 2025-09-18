@@ -3,14 +3,12 @@ package com.avengers.musinsa.domain.order.service;
 import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
 import com.avengers.musinsa.domain.order.reposlitory.OrderRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
 
-    @Autowired
     private OrderRepository orderRepository;
 
     //주문자 기본정보 조회

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 public class OrderController {
 
-    @Autowired
     private final OrderService orderService;
 
     //주문화면 접속??
