@@ -1,7 +1,7 @@
 package com.avengers.musinsa.domain.order.service;
 
 import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
-import com.avengers.musinsa.domain.order.reposlitory.OrderRepository;
+import com.avengers.musinsa.domain.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     //주문자 기본정보 조회
     public UserInfoDTO getUserInfo(Long userId) {

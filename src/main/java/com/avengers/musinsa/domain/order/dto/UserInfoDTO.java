@@ -8,14 +8,14 @@ import lombok.Setter;
 @Data
 @AllArgsConstructor
 public class UserInfoDTO {
-    private Integer userId;
+    private Long userId;
     private String userName;
     private String phoneNumber;
     private String location;
 
 //    public UserInfoDTO(){}
 //
-//   public UserInfoDTO(Integer userId, Long username, Long phoneNumber, Long location){
+//   public UserInfoDTO(Long userId, Long username, Long phoneNumber, Long location){
 //        this.userId = userId;
 //        this.username = username.toString();
 //        this.phoneNumber = phoneNumber.toString();

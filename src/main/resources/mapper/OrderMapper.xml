@@ -8,7 +8,7 @@
             user_id as userId,
             user_name as userName,
             phone_number as phoneNumber,
-            location
+            address as location
         FROM user
         WHERE user_id = #{userId}
     </select>

@@ -1,4 +1,4 @@
-package com.avengers.musinsa.domain.order.reposlitory;
+package com.avengers.musinsa.domain.order.repository;
 
 import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
 import com.avengers.musinsa.mapper.OrderMapper;
