@@ -16,9 +16,10 @@ public class UserRepository {
     }
 
     public void saveUser(User user) {
+        System.out.println("유저 저장");
+        System.out.println(user.toString());
         if (user.getUserId() == null) {
             userMapper.insertUser(user);
-            System.out.println(user.toString());
 
         } else {
             userMapper.updateUser(user);

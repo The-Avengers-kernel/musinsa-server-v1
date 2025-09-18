@@ -43,11 +43,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (existData == null) {
             // 새 사용자 생성 - 추가 정보 포함
             User newUser = User.builder()
+                    .username(username)
                     .name(naverResponse.getName())
                     .email(naverResponse.getEmail())
                     .gender(naverResponse.getGender())
                     .mobile(naverResponse.getMobile())
-                    .birthyear(Integer.parseInt(naverResponse.getBirthyear()))
+                    .birthyear(naverResponse.getBirthyear())
                     .birthday(naverResponse.getBirthday())
                     .ageGroup(naverResponse.getAgeGroup())
                     .socialId(naverResponse.getProviderId())
@@ -56,9 +57,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .role("ROLE_USER")
                     .nickname("유저")
                     .userMileage(0)
-                    .activeStatus(UserActiveStatus.ACTIVE)
+                    .activeStatus("ACTIVE")
                     .build();
-
+            System.out.println(newUser.toString());
             userService.saveUser(newUser);
 
             UserDTO userDTO = UserDTO.builder()
@@ -74,13 +75,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .userId(existData.getUserId())
                     .name(naverResponse.getName())
                     .email(naverResponse.getEmail())
-                    .gender(naverResponse.getGender())
                     .mobile(naverResponse.getMobile())
-                    .birthyear(Integer.parseInt(naverResponse.getBirthyear()))
-                    .birthday(naverResponse.getBirthday())
                     .ageGroup(naverResponse.getAgeGroup())
 
-                    .role("ROLE_USER")
                     .build();
 
             userService.saveUser(updatedUser);

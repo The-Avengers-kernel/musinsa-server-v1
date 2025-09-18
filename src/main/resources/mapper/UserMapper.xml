@@ -1,43 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avengers.musinsa.domain.user.mapper.UserMapper">
 
+    <!-- 완전한 ResultMap 정의 -->
+    <resultMap id="userResultMap" type="com.avengers.musinsa.domain.user.entity.User">
+        <id property="userId" column="user_id"/>
+        <result property="name" column="name"/>
+        <result property="username" column="username"/>
+        <result property="nickname" column="nickname"/>
+        <result property="gender" column="gender"/>
+        <result property="birthday" column="birthday"/>
+        <result property="birthyear" column="birthyear"/>
+        <result property="socialId" column="social_id"/>
+        <result property="socialType" column="social_type"/>
+        <result property="activeStatus" column="active_status"/>
+        <result property="inactiveTime" column="inactive_time"/>
+        <result property="userMileage" column="user_mileage" javaType="Integer" jdbcType="NUMERIC"/>
+        <result property="isMember" column="is_member"/>
+        <result property="email" column="email"/>
+        <result property="mobile" column="mobile"/>
+        <result property="ageGroup" column="age_group"/>
+        <result property="role" column="role"/>
+    </resultMap>
 
     <insert id="insertUser" parameterType="com.avengers.musinsa.domain.user.entity.User"
             keyProperty="userId" keyColumn="user_id">
         INSERT INTO users (
-            user_id, user_name, nickname, gender, birthday, birthyear, social_id, social_type,
-            active_status, inactive_time, user_mileage, is_member, created_at, updated_at
+            user_id, name, username, nickname, gender, birthday, birthyear,
+            social_id, social_type, active_status, inactive_time,
+            user_mileage, is_member, email, mobile, age_group, role,
+            created_at, updated_at
         ) VALUES (
-                     SEQ_USERS.NEXTVAL, #{name}, #{nickname}, #{gender}, #{birthday}, #{birthyear}, #{socialId}, #{socialType},
-                     #{activeStatus}, #{inactiveTime, jdbcType=TIMESTAMP}, #{userMileage}, #{isMember, jdbcType=VARCHAR},
-                     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+                     SEQ_USERS.NEXTVAL, #{name}, #{username}, #{nickname}, #{gender}, #{birthday}, #{birthyear},
+                     #{socialId}, #{socialType}, #{activeStatus}, #{inactiveTime, jdbcType=TIMESTAMP},
+                     #{userMileage}, #{isMember, jdbcType=VARCHAR}, #{email}, #{mobile},
+                     #{ageGroup}, #{role}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
                  )
     </insert>
 
-
-
     <update id="updateUser" parameterType="com.avengers.musinsa.domain.user.entity.User">
         UPDATE users SET
-                         user_name = #{name},
-                         nickname = #{nickname},
-                         gender = #{gender},
-                         birthday = #{birthday},
-                         birthyear = #{birthyear},
-                         social_id = #{socialId},
-                         social_type = #{socialType},
-                         active_status = #{activeStatus},
-                         inactive_time = #{inactiveTime, jdbcType=TIMESTAMP},
-                         user_mileage = #{userMileage},
-                         is_member = #{isMember, jdbcType=VARCHAR}
-        WHERE user_id = #{userId}
+                         name = #{name, jdbcType=VARCHAR},
+                         email = #{email, jdbcType=VARCHAR},
+                         mobile = #{mobile, jdbcType=VARCHAR},
+                         age_group = #{ageGroup, jdbcType=VARCHAR},
+                         updated_at = CURRENT_TIMESTAMP
+        WHERE user_id = #{userId, jdbcType=NUMERIC}
     </update>
-    <select id="findByUsername" parameterType="string"
-            resultType="com.avengers.musinsa.domain.user.entity.User">
-        SELECT *
-        FROM users
-        WHERE user_name = #{username}
+
+    <!-- resultMap 사용으로 변경 -->
+    <select id="findByUsername" parameterType="string" resultMap="userResultMap">
+        SELECT * FROM users WHERE username = #{username}
     </select>
+
+    <!-- socialId로 사용자 검색 -->
+    <select id="findBySocialId" parameterType="string" resultMap="userResultMap">
+        SELECT * FROM users WHERE social_id = #{socialId}
+    </select>
+
 </mapper>
