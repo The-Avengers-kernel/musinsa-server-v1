@@ -7,7 +7,7 @@ import lombok.Getter;
 public class OrderCancellationReturnExchange {
     private Long orderCancellationReturnExchangesId;
 
-    private OrderItems orderItem;
+    private OrderItem orderItem;
     private Long orderItemId;
 
     private String cancellationReturnExchangeReason;

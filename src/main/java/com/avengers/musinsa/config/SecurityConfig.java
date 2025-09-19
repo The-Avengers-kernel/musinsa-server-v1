@@ -1,9 +1,9 @@
 package com.avengers.musinsa.config;
 
-import com.avengers.musinsa.domain.auth.jwt.JWTFilter;
-import com.avengers.musinsa.domain.auth.jwt.JWTUtil;
-import com.avengers.musinsa.domain.auth.oauth2.CustomOAuth2UserService;
-import com.avengers.musinsa.domain.auth.oauth2.CustomSuccessHandler;
+import com.avengers.musinsa.domain.user.auth.jwt.JWTFilter;
+import com.avengers.musinsa.domain.user.auth.jwt.JWTUtil;
+import com.avengers.musinsa.domain.user.auth.oauth2.CustomOAuth2UserService;
+import com.avengers.musinsa.domain.user.auth.oauth2.CustomSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -83,8 +83,8 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/login", "/main", "/product", "/testUser", "/testUserFail",
-                                "/oauth2/**", "/WEB-INF/views/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/**","/", "/login", "/main", "/product","/product/productDetail", "/testUser", "/testUserFail",
+                                "/oauth2/**", "/WEB-INF/views/**", "/css/**", "/js/**", "/images/**", "/product/productDetail").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS

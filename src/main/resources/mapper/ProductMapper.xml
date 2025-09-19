@@ -2,6 +2,65 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avengers.musinsa.mapper.ProductMapper">
+    <select id="findProductById"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse">
+        SELECT p.product_id                               AS productId,
+               p.product_name                             AS productName,
+
+               p.product_likes                            AS productLikeCnt,
+               p.price,
+               b.brand_id                                 AS brandId,
+               b.brand_name_kr                            AS brandName,
+               b.brand_likes                              AS brandLikeCnt,
+               b.BRAND_DISCOUNT                           AS brandDiscount,
+               ((100 - b.BRAND_DISCOUNT) / 100) * p.price AS finalprice
+        FROM products p
+                 JOIN
+             brands b ON p.brand_id = b.brand_id
+        WHERE p.product_id = #{productId}
+    </select>
+
+    <select id="findProductImageById"
+            resultType="com.avengers.musinsa.domain.product.entity.ProductImage">
+        SELECT PRODUCT_IMAGE_ID AS productImageId,
+               IMAGE_URL        AS imageUrl,
+               IMAGE_TYPE       AS imageType
+        FROM PRODUCT_IMAGES
+        WHERE PRODUCT_ID = #{productId}
+
+    </select>
+
+    <select id="findProductOptionColors" resultType="java.lang.String">
+        SELECT DISTINCT COLOR_VALUE
+        FROM PRODUCT_VARIANTS
+        WHERE PRODUCT_ID = #{productId}
+          AND COLOR_VALUE IS NOT NULL
+    </select>
+
+    <select id="findProductOptionMaterials" resultType="java.lang.String">
+
+        SELECT DISTINCT MATERIAL_VALUE
+        FROM PRODUCT_VARIANTS
+        WHERE product_id = #{productId}
+          AND MATERIAL_VALUE IS NOT NULL
+    </select>
+
+    <select id="findProductOptionSizes" resultType="java.lang.String">
+        SELECT DISTINCT SIZE_VALUE
+        FROM PRODUCT_VARIANTS
+        WHERE product_id = #{productId}
+          AND SIZE_VALUE IS NOT NULL
+        ORDER BY CASE SIZE_VALUE
+                     WHEN 'XS' THEN 1
+                     WHEN 'S' THEN 2
+                     WHEN 'M' THEN 3
+                     WHEN 'L' THEN 4
+                     WHEN 'XL' THEN 5
+                     WHEN 'XXL' THEN 6
+                     WHEN 'FREE' THEN 7
+                     ELSE 8
+                     END
+    </select>
 
     <select id="getRecommendationProductList"
             resultType="com.avengers.musinsa.domain.product.dto.response.RecommendationResponse">
@@ -40,4 +99,60 @@
             #{productId}
         </foreach>
     </select>
+
+    <select id="getProductsByCategory" parameterType="long"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
+        SELECT ranked_products.product_id    as productId,
+               ranked_products.product_name  as productName,
+               pimg.image_url                as productImage,
+               b.brand_name_kr               as brandName,
+               ranked_products.price         as price,
+               ranked_products.product_likes as productLikes
+
+        FROM (SELECT p.product_id,
+                     p.product_name,
+                     p.brand_id,
+                     p.price,
+                     p.product_likes,
+                     -- 가중치 계산
+                     (
+                         NVL(order_stats.total_orders, 0) * 10.0 +
+                         NVL(prs.rating_avg, 3.0) * 5.0 +
+                         NVL(p.product_likes, 0) * 0.01
+                         ) AS recommendation_score
+              FROM products p
+
+                       -- 주문 통계 (상품별 총 주문 수)
+                       LEFT JOIN (SELECT oi.product_id, COUNT(oi.order_item_id) AS total_orders
+                                  FROM order_items oi
+                                           JOIN orders o ON o.order_id = oi.order_id
+                                  WHERE o.order_status NOT IN ('취소', '반품완료')
+                                  GROUP BY oi.product_id) order_stats ON order_stats.product_id = p.product_id
+
+                  -- 리뷰 평점 통계
+                       LEFT JOIN (SELECT prs.product_id,
+                                         prs.rating_avg
+                                  FROM product_review_stats prs) prs ON p.product_id = prs.product_id
+
+              WHERE p.product_category_id = #{categoryId}) ranked_products
+
+                 JOIN brands b ON b.brand_id = ranked_products.brand_id
+                 JOIN product_images pimg ON pimg.product_id = ranked_products.product_id
+
+        WHERE pimg.image_type = 'MAIN'
+        ORDER BY ranked_products.recommendation_score DESC
+            FETCH FIRST 50 ROWS ONLY
+    </select>
+
+    <select id="getCategoryProductList"
+            resultType="com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse">
+        SELECT pc.product_category_id        AS productCategoryId,
+               pc.parent_product_category_id AS parentProductCategoryId,
+               pc.category_name              AS categoryName,
+               pc.category_image             AS categoryImage,
+               pc.category_level             AS categoryLevel
+        FROM product_categories pc
+        ORDER BY product_category_id
+    </select>
+
 </mapper>
