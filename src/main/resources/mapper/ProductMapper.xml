@@ -34,48 +34,18 @@
 
     </select>-->
     <select id="findProductOptionColors" resultType="java.lang.String">
-        SELECT COLOR_VALUE
-        FROM (
-                 SELECT DISTINCT SIZE_VALUE, COLOR_VALUE
-                 FROM PRODUCT_VARIANTS
-                 WHERE product_id = #{productId}
-                   AND SIZE_VALUE IS NOT NULL
+        SELECT DISTINCT COLOR_VALUE
+        FROM PRODUCT_VARIANTS
+            WHERE PRODUCT_ID =#{productId}
                    AND COLOR_VALUE IS NOT NULL
-             ) pv
-        ORDER BY CASE SIZE_VALUE
-                     WHEN 'XS'   THEN 1
-                     WHEN 'S'    THEN 2
-                     WHEN 'M'    THEN 3
-                     WHEN 'L'    THEN 4
-                     WHEN 'XL'   THEN 5
-                     WHEN 'XXL'  THEN 6
-                     WHEN 'FREE' THEN 7
-                     ELSE 8
-                     END,
-                 COLOR_VALUE
     </select>
 
      <select id="findProductOptionMaterials" resultType="java.lang.String">
 
-         SELECT MATERIAL_VALUE
-         FROM (
-                  SELECT DISTINCT SIZE_VALUE, MATERIAL_VALUE
-                  FROM PRODUCT_VARIANTS
+         SELECT DISTINCT MATERIAL_VALUE
+         FROM PRODUCT_VARIANTS
                   WHERE product_id = #{productId}
-                    AND SIZE_VALUE IS NOT NULL
                     AND MATERIAL_VALUE IS NOT NULL
-              ) pv
-         ORDER BY CASE SIZE_VALUE
-                      WHEN 'XS'   THEN 1
-                      WHEN 'S'    THEN 2
-                      WHEN 'M'    THEN 3
-                      WHEN 'L'    THEN 4
-                      WHEN 'XL'   THEN 5
-                      WHEN 'XXL'  THEN 6
-                      WHEN 'FREE' THEN 7
-                      ELSE 8
-                      END,
-                  MATERIAL_VALUE
      </select>
 
      <select id="findProductOptionSizes" resultType="java.lang.String">
