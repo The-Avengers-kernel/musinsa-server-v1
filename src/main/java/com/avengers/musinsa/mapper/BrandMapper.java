@@ -11,4 +11,6 @@ public interface BrandMapper {
     List<BrandDto> selectRecentVisitedBrands(Long userId);
 
     List<BrandResponse> getBrandList();
+
+    List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
 }
