@@ -1,6 +1,7 @@
 package com.avengers.musinsa.mapper;
 
 import com.avengers.musinsa.domain.brand.dto.BrandDto;
+import com.avengers.musinsa.domain.brand.dto.response.BrandListResponse;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -9,4 +10,5 @@ import java.util.List;
 public interface BrandMapper {
     List<BrandDto> selectRecentVisitedBrands(Long userId);
 
+    List<BrandListResponse> getBrandList();
 }
