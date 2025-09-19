@@ -53,4 +53,15 @@
         ORDER BY p.created_at DESC
             FETCH FIRST 20 ROWS ONLY
     </select>
+
+    <select id="getCategoryProductList"
+            resultType="com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse">
+        SELECT pc.product_category_id         AS productCategoryId,
+               pc.parent_product_category_id  AS parentProductCategoryId,
+               pc.category_name               AS categoryName,
+               pc.category_image              AS categoryImage,
+               pc.category_level              AS categoryLevel
+        FROM product_categories pc
+        ORDER BY product_category_id
+    </select>
 </mapper>

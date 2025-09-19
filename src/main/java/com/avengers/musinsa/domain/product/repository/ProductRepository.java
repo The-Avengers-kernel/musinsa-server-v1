@@ -3,17 +3,16 @@ package com.avengers.musinsa.domain.product.repository;
 import com.avengers.musinsa.domain.product.dto.ProductResponseDto;
 import com.avengers.musinsa.domain.product.entity.Product;
 
+import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
+import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.mapper.ProductMapper;
-
 import java.util.Collections;
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository // 이 클래스는 데이터 접근 계층
@@ -38,5 +37,8 @@ public class ProductRepository {
 
     public List<ProductImage> findProductImageById(Long productId) {
         return productMapper.findProductImageById(productId);
+      
+    public List<CategoryProductResponse> getCategoryProductList() {
+        return productMapper.getCategoryProductList();
     }
 }

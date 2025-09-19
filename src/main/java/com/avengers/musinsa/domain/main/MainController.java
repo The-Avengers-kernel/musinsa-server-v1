@@ -13,6 +13,7 @@ public class MainController {
     private final TokenProviderService tokenProviderService;
     @GetMapping("/")
     public String getMainHompage(@CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+
         if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
             Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
             System.out.println("userId = " + userId);
@@ -21,4 +22,27 @@ public class MainController {
         }
         return "main/main";
     }
+    @GetMapping("/product/productDetail")
+    public String getProductDetail() {
+
+        return "product/productDetail";
+    }
+    @GetMapping("/product/likeProducts")
+    public String getlikeProducts() {
+
+        return "product/likeProducts";
+    }
+    @GetMapping("/product/product")
+    public String getProduct() {
+
+        return "product/product";
+    }
+
+    @GetMapping("/user/cart")
+    public String getCart() {
+
+        return "user/cart";
+    }
+
+
 }

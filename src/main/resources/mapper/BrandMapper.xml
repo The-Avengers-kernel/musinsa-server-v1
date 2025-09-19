@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avengers.musinsa.mapper.BrandMapper">
+    <select id="selectRecentVisitedBrands" parameterType="long" resultType="com.avengers.musinsa.domain.brand.dto.BrandDto">
+        SELECT
+            brandId,
+            brandName,
+            brandEngName,
+            brandImageUrl
+        FROM (
+                 SELECT DISTINCT
+                     b.BRAND_ID AS brandId,
+                     b.BRAND_NAME_KR AS brandName,
+                     b.BRAND_NAME_ENG AS brandEngName,
+                     b.BRAND_IMAGE AS brandImageUrl,
+                     MAX(rvb.BRAND_VIEW_TIME) AS maxViewTime
+                 FROM recent_visited_brands rvb
+                          JOIN brands b ON rvb.BRAND_ID = b.BRAND_ID
+                 WHERE rvb.USER_ID = #{userId}
+                 GROUP BY b.BRAND_ID, b.BRAND_NAME_KR, b.BRAND_NAME_ENG, b.BRAND_IMAGE
+                 ORDER BY maxViewTime DESC
+             )
+    </select>
+</mapper>
+
+
+
+
+        <!--최근 검색 브랜드는 검색 로그만 사용--> <!--상품 조회 기록과는 별개-->
+<!--데이터 소스 연결 필수-->
+
+
+
+
+
