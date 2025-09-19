@@ -1,6 +1,6 @@
 package com.avengers.musinsa.domain.brand.repository;
 
-import com.avengers.musinsa.domain.brand.dto.response.BrandListResponse;
+import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
 import com.avengers.musinsa.domain.brand.dto.BrandDto;
 import com.avengers.musinsa.mapper.BrandMapper;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 public class BrandRepository {
     private final BrandMapper brandMapper;
 
-    public List<BrandListResponse> getBrandList() {
+    public List<BrandResponse> getBrandList() {
         return brandMapper.getBrandList();
     }
 

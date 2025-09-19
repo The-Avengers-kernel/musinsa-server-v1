@@ -24,7 +24,7 @@
     </select>
 
     <select id="getBrandList"
-            resultType="com.avengers.musinsa.domain.brand.dto.response.BrandListResponse">
+            resultType="com.avengers.musinsa.domain.brand.dto.response.BrandResponse">
         SELECT brand_id as brandId,
                brand_name_kr as brandNameKr,
                brand_name_eng as brandNameEn,

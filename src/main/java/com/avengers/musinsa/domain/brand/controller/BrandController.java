@@ -1,6 +1,6 @@
 package com.avengers.musinsa.domain.brand.controller;
 
-import com.avengers.musinsa.domain.brand.dto.response.BrandListResponse;
+import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
 import com.avengers.musinsa.domain.brand.service.BrandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ public class BrandController {
     private final BrandService brandService;
 
     @GetMapping("/categories/brands")
-    public List<BrandListResponse> categoryBrands() {
+    public List<BrandResponse> categoryBrands() {
         return brandService.getBrandList();
     }
 }

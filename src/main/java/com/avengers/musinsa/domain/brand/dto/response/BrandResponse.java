@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class BrandListResponse {
+public class BrandResponse {
     private Long brandId;
     private String brandNameKr;
     private String brandNameEn;
