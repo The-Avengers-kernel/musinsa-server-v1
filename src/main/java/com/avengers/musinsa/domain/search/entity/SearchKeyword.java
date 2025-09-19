@@ -1,4 +1,4 @@
-package com.avengers.musinsa.domain.search;
+package com.avengers.musinsa.domain.search.entity;
 
 import lombok.Getter;
 

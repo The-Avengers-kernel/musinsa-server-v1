@@ -2,17 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.avengers.musinsa.mapper.RecentSearchesMapper">
-<select id="RecentSearches" resultType="map" parameterType="com.avengers.musinsa.domain.search">
+<mapper namespace="com.avengers.musinsa.mapper.getRecentSearchesMapper">
+<select id="getRecentSearches" resultType="com.avengers.musinsa.domain.search.Response.RecentItemDto" parameterType="Long">
     <!--현재 조인해야 하는 테이블 : user, brand, product, recent_visit_brand?, search_keyword-->
 <!--최근 검색어 + 브랜드/상품 조인-->
-select sl.keyword,MAX(search_datetime)
-from (
-    select key
-    )
-
-
-
+select
+    SEARCH_TEXT AS name,
+    MAX(SEARCH_DATETIME) AS lastVisitedAt
+--    count(*) AS search_count
+from SEARCH_LOGS
+where USER_ID = #{user_id}
+    AND SEARCH_TEXT IS NOT NULL
+    AND TRIM(SEARCH_TEXT) != ''
+group by SEARCH_TEXT
+order by lastVisitedAt DESC
+FETCH FIRST 10 ROWS ONLY
 </select>
 
 <!--RecentSearch 키워드 파일 위치 설정 고민 => other.entity에 search.keyword,searchLog있어서
