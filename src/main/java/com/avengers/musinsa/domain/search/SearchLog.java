@@ -1,4 +1,4 @@
-package com.avengers.musinsa.domain.other.entity;
+package com.avengers.musinsa.domain.search;
 
 import com.avengers.musinsa.domain.user.entity.User;
 import java.sql.Timestamp;

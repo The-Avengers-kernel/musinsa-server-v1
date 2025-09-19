@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avengers.musinsa.mapper.RecentSearchesMapper">
+<select id="RecentSearches" resultType="map" parameterType="com.avengers.musinsa.domain.search">
+    <!--현재 조인해야 하는 테이블 : user, brand, product, recent_visit_brand?, search_keyword-->
+<!--최근 검색어 + 브랜드/상품 조인-->
+select sl.keyword,MAX(search_datetime)
+from (
+    select key
+    )
+
+
+
+</select>
+
+<!--RecentSearch 키워드 파일 위치 설정 고민 => other.entity에 search.keyword,searchLog있어서
+따로 만들지 않으려고 합니다-->
+</mapper>
