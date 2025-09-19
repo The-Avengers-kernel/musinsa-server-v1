@@ -1,9 +1,15 @@
 package com.avengers.musinsa.domain.order.service;
 
+import com.avengers.musinsa.domain.order.dto.OrderProductDTO;
 import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
 import com.avengers.musinsa.domain.order.repository.OrderRepository;
+import com.avengers.musinsa.domain.product.entity.Product;
+import com.avengers.musinsa.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +28,12 @@ public class OrderService {
 
 
     //주문상품 리스트
+
+
+    public List<OrderProductDTO> getOrderProducts(Long productId){
+        return orderRepository.getOrderProducts(productId);
+    }
+
 
 
 

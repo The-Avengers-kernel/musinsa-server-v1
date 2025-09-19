@@ -1,12 +1,16 @@
 package com.avengers.musinsa.domain.order.controller;
 
 
+import com.avengers.musinsa.domain.order.dto.OrderProductDTO;
 import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
 import com.avengers.musinsa.domain.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +40,15 @@ public class OrderController {
 
 
 
-    //주문상품 리스트
+    //주문 상품 리스트(상품이미지, 사이즈, 개수, 금액)
+
+    @GetMapping("/orders/product/{productId}")
+    public ResponseEntity<List<OrderProductDTO>> getOrderProduct(@PathVariable Long productId, Model model){
+
+        List<OrderProductDTO> orderProducts = orderService.getOrderProducts(productId);
+        return ResponseEntity.ok(orderProducts);
+    }
+
 
 
 

@@ -1,9 +1,12 @@
 package com.avengers.musinsa.domain.order.repository;
 
+import com.avengers.musinsa.domain.order.dto.OrderProductDTO;
 import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
 import com.avengers.musinsa.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,6 +22,11 @@ public class OrderRepository {
 
 
     //주문상품 리스트
+
+
+    public List<OrderProductDTO> getOrderProducts(Long productId){
+        return orderMapper.getOrderProducts(productId);
+    }
 
 
 
