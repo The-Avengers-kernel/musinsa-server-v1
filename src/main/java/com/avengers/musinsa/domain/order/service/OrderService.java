@@ -30,8 +30,8 @@ public class OrderService {
     //주문상품 리스트
 
 
-    public List<OrderProductDTO> getOrderProducts(Long productId){
-        return orderRepository.getOrderProducts(productId);
+    public List<OrderProductDTO> getOrderProducts(Long productId, Integer quantity){
+        return orderRepository.getOrderProducts(productId, quantity);
     }
 
 

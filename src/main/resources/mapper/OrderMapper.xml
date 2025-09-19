@@ -22,7 +22,7 @@
 
     <!-- 주문 상품 리스트(상품이미지, 사이즈, 개수, 금액) -->
 
-    <select id="getOrderProducts" resultType="com.avengers.musinsa.domain.order.dto.OrderProductDTO" parameterType="Long">
+    <select id="getOrderProducts" resultType="com.avengers.musinsa.domain.order.dto.OrderProductDTO">
         SELECT
             p.product_id as productId,
             p.product_name as productName,
@@ -35,12 +35,13 @@
             #{quantity} as quantity,
             (pv.price * #{quantity}) as totalPrice
         FROM products p
-            JOIN brands b ON p.brand_id = b.brand_id
-            JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
-            LEFT JOIN product_variants pv ON p.product_id= pv.product_id AND pv.variant_id = #{variantId}
+        JOIN brands b ON p.brand_id = b.brand_id
+        JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
+        LEFT JOIN product_variants pv ON p.product_id= pv.product_id
 
         WHERE
             p.product_id = #{productId}
+
     </select>
 
 

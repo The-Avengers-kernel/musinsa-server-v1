@@ -24,8 +24,8 @@ public class OrderRepository {
     //주문상품 리스트
 
 
-    public List<OrderProductDTO> getOrderProducts(Long productId){
-        return orderMapper.getOrderProducts(productId);
+    public List<OrderProductDTO> getOrderProducts(Long productId, Integer quantity) {
+        return orderMapper.getOrderProducts(productId, quantity);
     }
 
 

@@ -16,7 +16,7 @@ public interface OrderMapper {
 
 
     //주문상품 리스트
-    List<OrderProductDTO> getOrderProducts(@Param("productId") Long productId);
+    List<OrderProductDTO> getOrderProducts(@Param("productId") Long productId, @Param("quantity") Integer quantity);
 
 
     //상품별 할인금액 계산

@@ -43,10 +43,10 @@ public class OrderController {
     //주문 상품 리스트(상품이미지, 사이즈, 개수, 금액)
 
     @GetMapping("/orders/product/{productId}")
-    public ResponseEntity<List<OrderProductDTO>> getOrderProduct(@PathVariable Long productId, Model model){
+    public ResponseEntity<List<OrderProductDTO>> getOrderProducts(@PathVariable Long productId, @RequestParam Integer quantity, Model model){
 
-        List<OrderProductDTO> orderProducts = orderService.getOrderProducts(productId);
-        return ResponseEntity.ok(orderProducts);
+        //List<OrderProductDTO> orderProducts = orderService.getOrderProducts(productId,);
+        return ResponseEntity.ok(orderService.getOrderProducts(productId, quantity));
     }
 
 
