@@ -6,12 +6,13 @@ import com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse;
 import com.avengers.musinsa.domain.product.dto.response.ProductVariantsResponse;
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
+import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
+import java.util.List;
 import com.avengers.musinsa.domain.product.entity.Product;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
 
 @Mapper
 public interface ProductMapper {
@@ -21,6 +22,8 @@ public interface ProductMapper {
 
     List<RecommendationResponse> getRecommendationProductList(@Param("gender") Gender gender);
 
+    List<ProductOptionRow> findOptionsByProductIds(@Param("productIds") List<Long> productIds);
+    
     List<ProductByCategoryResponse> getProductsByCategory(Long categoryId);
   
     List<ProductImage> findProductImageById(Long productId);
