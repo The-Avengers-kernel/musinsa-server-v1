@@ -22,4 +22,22 @@
             FETCH FIRST 20 ROWS ONLY
     </select>
 
+    <select id="findOptionsByProductIds"
+            resultType="com.avengers.musinsa.domain.product.dto.ProductOptionRow">
+        SELECT p.PRODUCT_ID AS productId,
+        ot.OPTION_TYPE AS optionType,
+        CASE
+        WHEN ot.OPTION_TYPE_ID = 1 THEN pv.COLOR_VALUE
+        WHEN ot.OPTION_TYPE_ID = 2 THEN pv.SIZE_VALUE
+        WHEN ot.OPTION_TYPE_ID = 3 THEN pv.MATERIAL_VALUE
+        END AS value
+        FROM PRODUCTS p
+        JOIN PRODUCT_OPTION_TYPES pot ON p.PRODUCT_ID = pot.PRODUCT_ID
+        LEFT JOIN OPTION_TYPES ot ON pot.OPTION_TYPE_ID = ot.OPTION_TYPE_ID
+        LEFT JOIN PRODUCT_VARIANTS pv ON p.PRODUCT_ID = pv.PRODUCT_ID
+        WHERE p.PRODUCT_ID IN
+        <foreach collection="productIds" item="productId" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </select>
 </mapper>
