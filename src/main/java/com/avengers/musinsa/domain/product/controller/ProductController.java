@@ -1,15 +1,14 @@
 package com.avengers.musinsa.domain.product.controller;
 
 import ch.qos.logback.core.model.Model;
+import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryDto;
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.service.ProductService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,4 +22,13 @@ public class ProductController {
         Gender g = Gender.valueOf(gender.toUpperCase());
         return productService.getRecommendationProductList(g);
     }
+
+    //카테고리 선택 시 상품 목록 조회되는 화면
+    @GetMapping("/products/category/{categoryId}")
+    public ResponseEntity<List<ProductByCategoryDto>> getProductsByCategory(@PathVariable Long categoryId){
+
+        List<ProductByCategoryDto> products = productService.getProductsByCategory(categoryId);
+        return ResponseEntity.ok(products);
+    }
+
 }
