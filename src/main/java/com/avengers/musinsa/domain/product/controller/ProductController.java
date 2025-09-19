@@ -1,5 +1,7 @@
 package com.avengers.musinsa.domain.product.controller;
 
+import ch.qos.logback.core.model.Model;
+import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
 import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
 import com.avengers.musinsa.domain.product.dto.response.ProductVariantsResponse;
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
@@ -8,10 +10,8 @@ import com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse;
 import com.avengers.musinsa.domain.product.service.ProductService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController // 이 클래스는 API용 컨트롤러라는 애너테이션
 @RequestMapping("/api/v1/products") // 이 컨트롤러의 모든 API는 /api/v1/products로 시작
@@ -42,6 +42,15 @@ public class ProductController {
         Gender g = Gender.valueOf(gender.toUpperCase());
         return productService.getRecommendationProductList(g);
     }
+
+    //카테고리 선택 시 상품 목록 조회되는 화면
+    @GetMapping("/products/category/{categoryId}")
+    public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(@PathVariable Long categoryId){
+        System.out.println("category_id = " + categoryId );
+        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId);
+        return ResponseEntity.ok(products);
+    }
+
     @GetMapping("/categories/products")
     public List<CategoryProductResponse> categoryProducts() {
         return productService.getCategoryProductList();

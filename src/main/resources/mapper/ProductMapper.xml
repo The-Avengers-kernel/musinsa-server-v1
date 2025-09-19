@@ -84,6 +84,55 @@
             FETCH FIRST 20 ROWS ONLY
     </select>
 
+    <select id="getProductsByCategory" parameterType="long" resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
+        SELECT ranked_products.product_id as productId,
+               ranked_products.product_name as productName,
+               pimg.image_url as productImage,
+               b.brand_name_kr as brandName,
+               ranked_products.price as price,
+               ranked_products.product_likes as productLikes
+
+        FROM (
+                 SELECT p.product_id,
+                        p.product_name,
+                        p.brand_id,
+                        p.price,
+                        p.product_likes,
+                        -- 가중치 계산
+                        (
+                            NVL(order_stats.total_orders, 0) * 10.0 +
+                            NVL(prs.rating_avg, 3.0) * 5.0 +
+                            NVL(p.product_likes, 0) * 0.01
+                            ) AS recommendation_score
+                 FROM products p
+
+                          -- 주문 통계 (상품별 총 주문 수)
+                  LEFT JOIN (
+                     SELECT oi.product_id, COUNT(oi.order_item_id) AS total_orders
+                     FROM order_items oi
+                              JOIN orders o ON o.order_id = oi.order_id
+                     WHERE o.order_status NOT IN ('취소', '반품완료')
+                     GROUP BY oi.product_id
+                 ) order_stats ON order_stats.product_id = p.product_id
+
+                     -- 리뷰 평점 통계
+                  LEFT JOIN (
+                     SELECT prs.product_id,
+                            prs.rating_avg
+                     FROM product_review_stats prs
+                 ) prs ON p.product_id = prs.product_id
+
+                 WHERE p.product_category_id = #{categoryId}
+             ) ranked_products
+
+                 JOIN brands b ON b.brand_id = ranked_products.brand_id
+                 JOIN product_images pimg ON pimg.product_id = ranked_products.product_id
+
+        WHERE pimg.image_type = 'MAIN'
+        ORDER BY ranked_products.recommendation_score DESC
+            FETCH FIRST 50 ROWS ONLY
+    </select>
+
     <select id="getCategoryProductList"
             resultType="com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse">
         SELECT pc.product_category_id        AS productCategoryId,

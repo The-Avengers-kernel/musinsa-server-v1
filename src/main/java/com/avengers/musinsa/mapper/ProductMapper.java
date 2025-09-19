@@ -1,5 +1,6 @@
 package com.avengers.musinsa.mapper;
 
+import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
 import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
 import com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse;
 import com.avengers.musinsa.domain.product.dto.response.ProductVariantsResponse;
@@ -20,16 +21,17 @@ public interface ProductMapper {
 
     List<RecommendationResponse> getRecommendationProductList(@Param("gender") Gender gender);
 
+    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId);
+  
     List<ProductImage> findProductImageById(Long productId);
 
     ProductVariantsResponse getProductOption(Long productId);
-    //Map<String, String> getProductOption(Long productId);
 
     List<String> findProductOptionColors(Long productId);
+  
     List<String> findProductOptionMaterials(Long productId);
+  
     List<String> findProductOptionSizes(Long productId);
 
-
     List<CategoryProductResponse> getCategoryProductList();
-
 }
