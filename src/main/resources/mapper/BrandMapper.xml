@@ -47,6 +47,7 @@
             JOIN brand_has_categories bhc ON b.BRAND_ID = bhc.BRAND_ID
             JOIN brand_categories bc ON bc.brand_category_id = bhc.brand_category_id
         WHERE bc.BRAND_CATEGORY_ID = #{categoryID}
+        ORDER BY BRAND_LIKES DESC, brand_name_kr ASC
     </select>
 </mapper>
 
