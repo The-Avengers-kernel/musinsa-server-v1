@@ -30,7 +30,7 @@
                brand_name_eng as brandNameEn,
                brand_image as brandImage
         FROM brands
-        ORDER BY BRAND_NAME_KR
+        ORDER BY BRAND_LIKES DESC, brand_name_kr ASC
     </select>
 </mapper>
 

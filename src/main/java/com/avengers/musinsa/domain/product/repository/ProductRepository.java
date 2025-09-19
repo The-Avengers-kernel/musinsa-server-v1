@@ -37,6 +37,7 @@ public class ProductRepository {
 
     public List<ProductImage> findProductImageById(Long productId) {
         return productMapper.findProductImageById(productId);
+    }
       
     public List<CategoryProductResponse> getCategoryProductList() {
         return productMapper.getCategoryProductList();
