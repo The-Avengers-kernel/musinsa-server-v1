@@ -1,7 +1,6 @@
-package com.avengers.musinsa.domain.product.dto;
+package com.avengers.musinsa.domain.product.dto.response;
 
 import com.avengers.musinsa.domain.product.entity.ProductImage;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +9,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class ProductResponseDto {
+public class ProductDetailResponse {
     private  Long productId;
     private  String productName;
     private  int productLikeCnt;

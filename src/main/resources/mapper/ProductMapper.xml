@@ -3,37 +3,97 @@
 
 <mapper namespace="com.avengers.musinsa.mapper.ProductMapper">
     <select id="findProductById"
-            resultType="com.avengers.musinsa.domain.product.dto.ProductResponseDto">
-        SELECT
-            p.product_id AS productId,
-            p.product_name AS productName,
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse">
+        SELECT p.product_id                               AS productId,
+               p.product_name                             AS productName,
 
-            p.product_likes AS productLikeCnt,
-            p.price,
-            b.brand_id AS brandId,
-            b.brand_name_kr  AS brandName,
-            b.brand_likes   AS brandLikeCnt,
-            b.BRAND_DISCOUNT AS brandDiscount,
-            ((100-b.BRAND_DISCOUNT)/100) * p.price AS finalprice
-        FROM
-            products p
-        JOIN
-            brands b ON p.brand_id = b.brand_id
-        WHERE
-            p.product_id=#{productId}
+               p.product_likes                            AS productLikeCnt,
+               p.price,
+               b.brand_id                                 AS brandId,
+               b.brand_name_kr                            AS brandName,
+               b.brand_likes                              AS brandLikeCnt,
+               b.BRAND_DISCOUNT                           AS brandDiscount,
+               ((100 - b.BRAND_DISCOUNT) / 100) * p.price AS finalprice
+        FROM products p
+                 JOIN
+             brands b ON p.brand_id = b.brand_id
+        WHERE p.product_id = #{productId}
     </select>
     <select id="findProductImageById"
             resultType="com.avengers.musinsa.domain.product.entity.ProductImage">
-        SELECT
-            PRODUCT_IMAGE_ID AS productImageId,
-            IMAGE_URL AS imageUrl,
-            IMAGE_TYPE AS imageType
-        FROM
-            PRODUCT_IMAGES
-        WHERE
-            PRODUCT_ID = #{productId}
+        SELECT PRODUCT_IMAGE_ID AS productImageId,
+               IMAGE_URL        AS imageUrl,
+               IMAGE_TYPE       AS imageType
+        FROM PRODUCT_IMAGES
+        WHERE PRODUCT_ID = #{productId}
 
     </select>
+
+    <!--<select id ="getProductOptionById"
+            resultType = "com.avengers.musinsa.domain.product.entity.ProductVariant">
+
+    </select>-->
+    <select id="findProductOptionColors" resultType="java.lang.String">
+        SELECT COLOR_VALUE
+        FROM (
+                 SELECT DISTINCT SIZE_VALUE, COLOR_VALUE
+                 FROM PRODUCT_VARIANTS
+                 WHERE product_id = #{productId}
+                   AND SIZE_VALUE IS NOT NULL
+                   AND COLOR_VALUE IS NOT NULL
+             ) pv
+        ORDER BY CASE SIZE_VALUE
+                     WHEN 'XS'   THEN 1
+                     WHEN 'S'    THEN 2
+                     WHEN 'M'    THEN 3
+                     WHEN 'L'    THEN 4
+                     WHEN 'XL'   THEN 5
+                     WHEN 'XXL'  THEN 6
+                     WHEN 'FREE' THEN 7
+                     ELSE 8
+                     END,
+                 COLOR_VALUE
+    </select>
+
+     <select id="findProductOptionMaterials" resultType="java.lang.String">
+
+         SELECT MATERIAL_VALUE
+         FROM (
+                  SELECT DISTINCT SIZE_VALUE, MATERIAL_VALUE
+                  FROM PRODUCT_VARIANTS
+                  WHERE product_id = #{productId}
+                    AND SIZE_VALUE IS NOT NULL
+                    AND MATERIAL_VALUE IS NOT NULL
+              ) pv
+         ORDER BY CASE SIZE_VALUE
+                      WHEN 'XS'   THEN 1
+                      WHEN 'S'    THEN 2
+                      WHEN 'M'    THEN 3
+                      WHEN 'L'    THEN 4
+                      WHEN 'XL'   THEN 5
+                      WHEN 'XXL'  THEN 6
+                      WHEN 'FREE' THEN 7
+                      ELSE 8
+                      END,
+                  MATERIAL_VALUE
+     </select>
+
+     <select id="findProductOptionSizes" resultType="java.lang.String">
+         SELECT DISTINCT SIZE_VALUE
+         FROM PRODUCT_VARIANTS
+         WHERE product_id = #{productId}
+           AND SIZE_VALUE IS NOT NULL
+         ORDER BY CASE SIZE_VALUE
+                      WHEN 'XS'   THEN 1
+                      WHEN 'S'    THEN 2
+                      WHEN 'M'    THEN 3
+                      WHEN 'L'    THEN 4
+                      WHEN 'XL'   THEN 5
+                      WHEN 'XXL'  THEN 6
+                      WHEN 'FREE' THEN 7
+                      ELSE 8
+                      END
+     </select>
 
     <select id="getRecommendationProductList"
             resultType="com.avengers.musinsa.domain.product.dto.response.RecommendationResponse">
@@ -56,11 +116,11 @@
 
     <select id="getCategoryProductList"
             resultType="com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse">
-        SELECT pc.product_category_id         AS productCategoryId,
-               pc.parent_product_category_id  AS parentProductCategoryId,
-               pc.category_name               AS categoryName,
-               pc.category_image              AS categoryImage,
-               pc.category_level              AS categoryLevel
+        SELECT pc.product_category_id        AS productCategoryId,
+               pc.parent_product_category_id AS parentProductCategoryId,
+               pc.category_name              AS categoryName,
+               pc.category_image             AS categoryImage,
+               pc.category_level             AS categoryLevel
         FROM product_categories pc
         ORDER BY product_category_id
     </select>
