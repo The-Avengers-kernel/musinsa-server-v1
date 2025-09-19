@@ -22,6 +22,16 @@
                  ORDER BY maxViewTime DESC
              )
     </select>
+
+    <select id="getBrandList"
+            resultType="com.avengers.musinsa.domain.brand.dto.response.BrandResponse">
+        SELECT brand_id as brandId,
+               brand_name_kr as brandNameKr,
+               brand_name_eng as brandNameEn,
+               brand_image as brandImage
+        FROM brands
+        ORDER BY BRAND_LIKES DESC, brand_name_kr ASC
+    </select>
 </mapper>
 
 
