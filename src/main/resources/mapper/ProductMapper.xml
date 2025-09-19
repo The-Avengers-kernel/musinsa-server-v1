@@ -22,7 +22,7 @@
             FETCH FIRST 20 ROWS ONLY
     </select>
 
-    <select id="getProductsByCategory" parameterType="integer" resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryDto">
+    <select id="getProductsByCategory" parameterType="integer" resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
         select p.product_name as productName,
                pimg.image_url as productImage,
                b.brand_name_kr as brandName,

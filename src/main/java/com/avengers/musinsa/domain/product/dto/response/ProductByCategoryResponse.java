@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ProductByCategoryDto {
+public class ProductByCategoryResponse {
     private String productName;
     private String productImage;
     private String brandName;

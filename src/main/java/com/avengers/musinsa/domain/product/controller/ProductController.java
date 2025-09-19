@@ -1,7 +1,7 @@
 package com.avengers.musinsa.domain.product.controller;
 
 import ch.qos.logback.core.model.Model;
-import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryDto;
+import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.service.ProductService;
@@ -25,9 +25,9 @@ public class ProductController {
 
     //카테고리 선택 시 상품 목록 조회되는 화면
     @GetMapping("/products/category/{categoryId}")
-    public ResponseEntity<List<ProductByCategoryDto>> getProductsByCategory(@PathVariable Long categoryId){
+    public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(@PathVariable Long categoryId){
 
-        List<ProductByCategoryDto> products = productService.getProductsByCategory(categoryId);
+        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId);
         return ResponseEntity.ok(products);
     }
 

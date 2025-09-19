@@ -1,7 +1,7 @@
 package com.avengers.musinsa.domain.product.repository;
 
 
-import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryDto;
+import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.mapper.ProductMapper;
@@ -19,7 +19,7 @@ public class ProductRepository {
         return productMapper.getRecommendationProductList(gender);
     }
 
-    public List<ProductByCategoryDto> getProductsByCategory(Long categoryId) {
+    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId) {
         return productMapper.getProductsByCategory(categoryId);
     }
 }
