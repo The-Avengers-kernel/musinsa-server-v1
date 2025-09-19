@@ -26,7 +26,7 @@ public class ProductController {
     //카테고리 선택 시 상품 목록 조회되는 화면
     @GetMapping("/products/category/{categoryId}")
     public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(@PathVariable Long categoryId){
-
+        System.out.println("category_id = " + categoryId );
         List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId);
         return ResponseEntity.ok(products);
     }

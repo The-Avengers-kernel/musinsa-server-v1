@@ -22,64 +22,53 @@
             FETCH FIRST 20 ROWS ONLY
     </select>
 
-    <select id="getProductsByCategory" parameterType="integer" resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
-        select p.product_name as productName,
+    <select id="getProductsByCategory" parameterType="long" resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
+        SELECT ranked_products.product_id as productId,
+               ranked_products.product_name as productName,
                pimg.image_url as productImage,
                b.brand_name_kr as brandName,
-               p.price as price,
-               ranked_products.product_likes as productLikes,
-               recommendation_score
-        from (
-                 select p.product_id,
+               ranked_products.price as price,
+               ranked_products.product_likes as productLikes
+
+        FROM (
+                 SELECT p.product_id,
                         p.product_name,
                         p.brand_id,
                         p.price,
                         p.product_likes,
                         -- 가중치 계산
                         (
-                        coalesce(order_stats.total_orders, 0) * 3.0 +
-                        coalesce(prs.rating_avg, 3.0) * 2.0 +
-                        coalesce(p.product_likes, 0) * 0.5
-                        ) as recommendation_score
-                 from products p
+                            NVL(order_stats.total_orders, 0) * 10.0 +
+                            NVL(prs.rating_avg, 3.0) * 5.0 +
+                            NVL(p.product_likes, 0) * 0.01
+                            ) AS recommendation_score
+                 FROM products p
 
                           -- 주문 통계 (상품별 총 주문 수)
-                 left join (
-                    select oi.product_id, count(oi.order_item_id) as total_orders
-                    from order_items oi
-                    join orders o
-                        on o.order_id = oi.order_id
-
-                    where o.order_status not in ('취소', '반품완료')
-                    group by oi.product_id
-                 ) order_stats on order_stats.product_id = p.product_id
+                  LEFT JOIN (
+                     SELECT oi.product_id, COUNT(oi.order_item_id) AS total_orders
+                     FROM order_items oi
+                              JOIN orders o ON o.order_id = oi.order_id
+                     WHERE o.order_status NOT IN ('취소', '반품완료')
+                     GROUP BY oi.product_id
+                 ) order_stats ON order_stats.product_id = p.product_id
 
                      -- 리뷰 평점 통계
-                 left join (
-                     select prs.product_id,
+                  LEFT JOIN (
+                     SELECT prs.product_id,
                             prs.rating_avg
-                     from product_review_stats prs
-                     group by prs.product_id
-                     ) prs on p.product_id = prs.product_id
+                     FROM product_review_stats prs
+                 ) prs ON p.product_id = prs.product_id
 
-                     where p.product_category_id = #{categoryId}
-                 ) ranked_products
+                 WHERE p.product_category_id = #{categoryId}
+             ) ranked_products
 
-        join brands b on b.brand_id = ranked_products.brand_id
-        join product_images pimg on pimg.product_id = ranked_products.product_id
+                 JOIN brands b ON b.brand_id = ranked_products.brand_id
+                 JOIN product_images pimg ON pimg.product_id = ranked_products.product_id
 
-        where pimg.image_type = 'MAIN'
-        order by recommendation_score desc
-        fetch first 50 rows only
+        WHERE pimg.image_type = 'MAIN'
+        ORDER BY ranked_products.recommendation_score DESC
+            FETCH FIRST 50 ROWS ONLY
     </select>
 
 </mapper>
-
-
-
-
-
-
-
-
-
