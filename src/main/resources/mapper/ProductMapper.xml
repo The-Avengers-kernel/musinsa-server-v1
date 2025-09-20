@@ -40,12 +40,12 @@
                         (
                             NVL(order_stats.total_orders, 0) * 10.0 +
                             NVL(prs.rating_avg, 3.0) * 5.0 +
-                            NVL(p.product_likes, 0) * 0.01
+                            NVL(p.product_likes, 0) * 2.0
                             ) AS recommendation_score
                  FROM products p
 
-                          -- 주문 통계 (상품별 총 주문 수)
-                  LEFT JOIN (
+                 -- 주문 통계 (상품별 총 주문 수)
+                 LEFT JOIN (
                      SELECT oi.product_id, COUNT(oi.order_item_id) AS total_orders
                      FROM order_items oi
                               JOIN orders o ON o.order_id = oi.order_id
@@ -53,8 +53,8 @@
                      GROUP BY oi.product_id
                  ) order_stats ON order_stats.product_id = p.product_id
 
-                     -- 리뷰 평점 통계
-                  LEFT JOIN (
+                 -- 리뷰 평점 통계
+                 LEFT JOIN (
                      SELECT prs.product_id,
                             prs.rating_avg
                      FROM product_review_stats prs
@@ -63,12 +63,12 @@
                  WHERE p.product_category_id = #{categoryId}
              ) ranked_products
 
-                 JOIN brands b ON b.brand_id = ranked_products.brand_id
-                 JOIN product_images pimg ON pimg.product_id = ranked_products.product_id
+        JOIN brands b ON b.brand_id = ranked_products.brand_id
+        JOIN product_images pimg ON pimg.product_id = ranked_products.product_id
 
         WHERE pimg.image_type = 'MAIN'
         ORDER BY ranked_products.recommendation_score DESC
-            FETCH FIRST 50 ROWS ONLY
+        FETCH FIRST 50 ROWS ONLY
     </select>
 
 </mapper>
