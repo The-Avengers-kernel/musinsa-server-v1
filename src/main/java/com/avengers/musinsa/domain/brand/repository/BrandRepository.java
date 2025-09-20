@@ -19,4 +19,8 @@ public class BrandRepository {
     public List<BrandDto> selectRecentVisitedBrands(Long userId){
         return this.brandMapper.selectRecentVisitedBrands(userId);
     }
+
+    public List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId) {
+        return this.brandMapper.getBrandsByCategoryId(brandCategoryId);
+    }
 }
