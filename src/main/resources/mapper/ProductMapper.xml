@@ -2,6 +2,65 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avengers.musinsa.mapper.ProductMapper">
+    <select id="findProductById"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse">
+        SELECT p.product_id                               AS productId,
+               p.product_name                             AS productName,
+
+               p.product_likes                            AS productLikeCnt,
+               p.price,
+               b.brand_id                                 AS brandId,
+               b.brand_name_kr                            AS brandName,
+               b.brand_likes                              AS brandLikeCnt,
+               b.BRAND_DISCOUNT                           AS brandDiscount,
+               ((100 - b.BRAND_DISCOUNT) / 100) * p.price AS finalprice
+        FROM products p
+                 JOIN
+             brands b ON p.brand_id = b.brand_id
+        WHERE p.product_id = #{productId}
+    </select>
+
+    <select id="findProductImageById"
+            resultType="com.avengers.musinsa.domain.product.entity.ProductImage">
+        SELECT PRODUCT_IMAGE_ID AS productImageId,
+               IMAGE_URL        AS imageUrl,
+               IMAGE_TYPE       AS imageType
+        FROM PRODUCT_IMAGES
+        WHERE PRODUCT_ID = #{productId}
+
+    </select>
+
+    <select id="findProductOptionColors" resultType="java.lang.String">
+        SELECT DISTINCT COLOR_VALUE
+        FROM PRODUCT_VARIANTS
+        WHERE PRODUCT_ID = #{productId}
+          AND COLOR_VALUE IS NOT NULL
+    </select>
+
+    <select id="findProductOptionMaterials" resultType="java.lang.String">
+
+        SELECT DISTINCT MATERIAL_VALUE
+        FROM PRODUCT_VARIANTS
+        WHERE product_id = #{productId}
+          AND MATERIAL_VALUE IS NOT NULL
+    </select>
+
+    <select id="findProductOptionSizes" resultType="java.lang.String">
+        SELECT DISTINCT SIZE_VALUE
+        FROM PRODUCT_VARIANTS
+        WHERE product_id = #{productId}
+          AND SIZE_VALUE IS NOT NULL
+        ORDER BY CASE SIZE_VALUE
+                     WHEN 'XS' THEN 1
+                     WHEN 'S' THEN 2
+                     WHEN 'M' THEN 3
+                     WHEN 'L' THEN 4
+                     WHEN 'XL' THEN 5
+                     WHEN 'XXL' THEN 6
+                     WHEN 'FREE' THEN 7
+                     ELSE 8
+                     END
+    </select>
 
     <select id="getRecommendationProductList"
             resultType="com.avengers.musinsa.domain.product.dto.response.RecommendationResponse">
@@ -22,12 +81,32 @@
             FETCH FIRST 20 ROWS ONLY
     </select>
 
-    <select id="getProductsByCategory" parameterType="long" resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
-        SELECT ranked_products.product_id as productId,
-               ranked_products.product_name as productName,
-               pimg.image_url as productImage,
-               b.brand_name_kr as brandName,
-               ranked_products.price as price,
+    <select id="findOptionsByProductIds"
+            resultType="com.avengers.musinsa.domain.product.dto.ProductOptionRow">
+        SELECT p.PRODUCT_ID AS productId,
+        ot.OPTION_TYPE AS optionType,
+        CASE
+        WHEN ot.OPTION_TYPE_ID = 1 THEN pv.COLOR_VALUE
+        WHEN ot.OPTION_TYPE_ID = 2 THEN pv.SIZE_VALUE
+        WHEN ot.OPTION_TYPE_ID = 3 THEN pv.MATERIAL_VALUE
+        END AS value
+        FROM PRODUCTS p
+        JOIN PRODUCT_OPTION_TYPES pot ON p.PRODUCT_ID = pot.PRODUCT_ID
+        LEFT JOIN OPTION_TYPES ot ON pot.OPTION_TYPE_ID = ot.OPTION_TYPE_ID
+        LEFT JOIN PRODUCT_VARIANTS pv ON p.PRODUCT_ID = pv.PRODUCT_ID
+        WHERE p.PRODUCT_ID IN
+        <foreach collection="productIds" item="productId" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </select>
+
+    <select id="getProductsByCategory" parameterType="long"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
+        SELECT ranked_products.product_id    as productId,
+               ranked_products.product_name  as productName,
+               pimg.image_url                as productImage,
+               b.brand_name_kr               as brandName,
+               ranked_products.price         as price,
                ranked_products.product_likes as productLikes
 
         FROM (
@@ -69,6 +148,17 @@
         WHERE pimg.image_type = 'MAIN'
         ORDER BY ranked_products.recommendation_score DESC
         FETCH FIRST 50 ROWS ONLY
+    </select>
+
+    <select id="getCategoryProductList"
+            resultType="com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse">
+        SELECT pc.product_category_id        AS productCategoryId,
+               pc.parent_product_category_id AS parentProductCategoryId,
+               pc.category_name              AS categoryName,
+               pc.category_image             AS categoryImage,
+               pc.category_level             AS categoryLevel
+        FROM product_categories pc
+        ORDER BY product_category_id
     </select>
 
 </mapper>
