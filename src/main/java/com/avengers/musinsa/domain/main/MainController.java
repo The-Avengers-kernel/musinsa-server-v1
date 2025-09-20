@@ -22,6 +22,8 @@ public class MainController {
         }
         return "main/main";
     }
+
+
     @GetMapping("/product/productDetail")
     public String getProductDetail() {
 
