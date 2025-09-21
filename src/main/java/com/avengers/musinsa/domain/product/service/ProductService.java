@@ -1,11 +1,7 @@
 package com.avengers.musinsa.domain.product.service;
 
-import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
-import com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse;
-import com.avengers.musinsa.domain.product.dto.response.ProductVariantsResponse;
+import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
-import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
-import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepository;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
@@ -97,6 +93,10 @@ public class ProductService {
             result.put(entry.getKey(), groups);
         }
         return result;
+    }
+    // 상품 상세 설명 조회 api
+    public ProductDetailDescriptionResponse getProductDetailDescription(Long productId) {
+     return productRepository.getProductDetailDescription(productId);
     }
 
     // 내부 전용 빌더: 중복 제거 + 입력 순서 보존
