@@ -57,4 +57,6 @@ public class ProductController {
     public List<ProductDetailSizeList> getProductDetailSizeList(@PathVariable Long productId){
         return productService.getProductDetailSizeList(productId);
     }
+
+
 }
