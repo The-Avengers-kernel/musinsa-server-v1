@@ -19,4 +19,12 @@ public class BrandRepository {
     public List<BrandDto> selectRecentVisitedBrands(Long userId){
         return this.brandMapper.selectRecentVisitedBrands(userId);
     }
+
+    public List<BrandResponse> findBrandsByEnglishFirstLetter(char brandFirstLetter) {
+        return this.brandMapper.findBrandsByEnglishFirstLetter(brandFirstLetter);
+    }
+
+    public List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter) {
+        return this.brandMapper.findBrandsByKoreanFirstLetter(brandFirstLetter);
+    }
 }

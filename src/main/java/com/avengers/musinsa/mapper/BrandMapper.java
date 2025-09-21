@@ -11,4 +11,7 @@ public interface BrandMapper {
     List<BrandDto> selectRecentVisitedBrands(Long userId);
 
     List<BrandResponse> getBrandList();
+
+    List<BrandResponse> findBrandsByEnglishFirstLetter(char brandFirstLetter);
+    List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter);
 }
