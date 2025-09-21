@@ -1,12 +1,8 @@
 package com.avengers.musinsa.domain.product.repository;
 
-import com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse;
-import com.avengers.musinsa.domain.product.dto.response.ProductVariantsResponse;
+import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.entity.Product;
 
-import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
-import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
-import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
@@ -70,5 +66,10 @@ public class ProductRepository {
 
     public List<CategoryProductResponse> getCategoryProductList() {
         return productMapper.getCategoryProductList();
+    }
+
+    // 상품 리뷰 목록 조회
+    public List<ProductReviewsResponse> getProductReviews(Long productId) {
+        return productMapper.getProductReviews(productId);
     }
 }
