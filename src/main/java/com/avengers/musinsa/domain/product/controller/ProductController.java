@@ -1,12 +1,8 @@
 package com.avengers.musinsa.domain.product.controller;
 
 import ch.qos.logback.core.model.Model;
-import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
-import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
-import com.avengers.musinsa.domain.product.dto.response.ProductVariantsResponse;
-import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
+import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.entity.Gender;
-import com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse;
 import com.avengers.musinsa.domain.product.service.ProductService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +50,11 @@ public class ProductController {
     @GetMapping("/categories/products")
     public List<CategoryProductResponse> categoryProducts() {
         return productService.getCategoryProductList();
+    }
+
+    // 상품 상세 사이즈 이미지
+    @GetMapping("/{productId}/detail-size-image")
+    public ProductDetailSizeImage getProductDetailSizeImage(@PathVariable Long productId){
+        return productService.getProductDetailSizeImage(productId);
     }
 }

@@ -161,4 +161,11 @@
         ORDER BY product_category_id
     </select>
 
+    <select id="getProductDetailSizeImage"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductDetailSizeImage">
+        SELECT DETAIL_SIZE_IMAGE AS detailSizeImage
+        FROM PRODUCTS
+        WHERE PRODUCT_ID = #{productId}
+    </select>
+
 </mapper>
