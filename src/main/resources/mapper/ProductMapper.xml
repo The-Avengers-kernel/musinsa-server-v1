@@ -155,4 +155,31 @@
         ORDER BY product_category_id
     </select>
 
+    <select id="getProductCategories"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductCategoryListResponse">
+        SELECT
+            PRODUCT_ID AS productId,
+            PRODUCT_NAME AS productName
+        FROM
+            PRODUCTS
+        WHERE
+            PRODUCT_ID = #{productId}
+    </select>
+
+    <select id="getProductCategoriesList"
+            resultType="com.avengers.musinsa.domain.product.entity.ProductCategory">
+        SELECT PRODUCT_CATEGORY_ID        AS productCategoryId,
+               PARENT_PRODUCT_CATEGORY_ID AS parentProductCategoryId,
+               CATEGORY_NAME              AS categoryName,
+               CATEGORY_IMAGE             AS categoryImage,
+               CATEGORY_LEVEL             AS categoryLevel
+        FROM PRODUCT_CATEGORIES
+        START WITH PRODUCT_CATEGORY_ID = (SELECT PRODUCT_CATEGORY_ID
+                                          FROM PRODUCTS
+                                          WHERE PRODUCT_ID = #{productId})
+        CONNECT BY PRIOR parent_product_category_id = product_category_id
+        ORDER BY CATEGORY_LEVEL
+    </select>
+
+
 </mapper>

@@ -1,11 +1,8 @@
 package com.avengers.musinsa.domain.product.service;
 
-import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
-import com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse;
-import com.avengers.musinsa.domain.product.dto.response.ProductVariantsResponse;
+import com.avengers.musinsa.domain.product.dto.response.*;
+import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
-import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
-import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepository;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
@@ -136,5 +133,13 @@ public class ProductService {
 
     public List<CategoryProductResponse> getCategoryProductList() {
         return productRepository.getCategoryProductList();
+    }
+
+    // 상품 상세 페이지 카테고리 조회
+    public ProductCategoryListResponse getProductCategories(Long productId){
+        ProductCategoryListResponse productCategoryListResponse = productRepository.getProductCategories(productId);
+        List<ProductCategory> productCategoryList = productRepository.getProductCategoriesList(productId);
+        productCategoryListResponse.getProductCategoryList().addAll(productCategoryList);
+        return productCategoryListResponse;
     }
 }

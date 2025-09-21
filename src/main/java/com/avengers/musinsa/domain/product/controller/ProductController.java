@@ -1,12 +1,8 @@
 package com.avengers.musinsa.domain.product.controller;
 
 import ch.qos.logback.core.model.Model;
-import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
-import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
-import com.avengers.musinsa.domain.product.dto.response.ProductVariantsResponse;
-import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
+import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.entity.Gender;
-import com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse;
 import com.avengers.musinsa.domain.product.service.ProductService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +32,12 @@ public class ProductController {
         return productService.getProductVariants(productId);
     }
 
+    // 상풍 상세 페이지 카테고리 조회
+    @GetMapping("/{productId}/categories")
+    public ProductCategoryListResponse getProductCategories(@PathVariable Long productId){
+        return productService.getProductCategories(productId);
+    }
+
 
     @GetMapping("/main/recommendations/{gender}")
     public List<RecommendationResponse> recommendationProducts(@PathVariable String gender ) {
@@ -55,4 +57,5 @@ public class ProductController {
     public List<CategoryProductResponse> categoryProducts() {
         return productService.getCategoryProductList();
     }
+
 }
