@@ -1,13 +1,16 @@
 package com.avengers.musinsa.domain.order.service;
 
-import com.avengers.musinsa.domain.order.dto.OrderProductDTO;
-import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
+import com.avengers.musinsa.domain.order.dto.OrderCompletionInfoDto;
+import com.avengers.musinsa.domain.order.dto.response.*;
+import com.avengers.musinsa.domain.order.entity.Order;
 import com.avengers.musinsa.domain.order.repository.OrderRepository;
-import com.avengers.musinsa.domain.product.dto.ProductListDTO;
+import com.avengers.musinsa.domain.user.dto.UserResponseDto;
+import com.avengers.musinsa.domain.user.entity.User;
+import com.avengers.musinsa.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.OrderComparator;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,23 +18,60 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-
+    private final UserRepository userRepository;
     //주문자 기본정보 조회
     public UserInfoDTO getUserInfo(Long userId) {
        return orderRepository.getUserInfo(userId);
     }
 
+    public OrderSummaryResponse.OrderSummaryDto getCompletionOrderSummary(Long orderId, Long userId) {
 
-    //배송지 목록 조회
-
-
-
-
-
-    //상품별 할인금액 계산
+        // order 정보 가져오기 - orderCode, orderDate, 가격정보(총 금액, 할인 금액, 배송비, 최종금액)
+        Order order = orderRepository.getOrder(orderId);
+        System.out.println("1");
+        System.out.println("userId = " + userId);
 
 
-    //주문하기
+        // 회원 정보 가져오기(이름, 이메일, 전화번호) - Buyer(이름, 이메일, 폰번호)
+        UserResponseDto.UserNameAndEmailAndMobileDto userNameAndEmailAndMobile = userRepository.findUserNameAndEmailAndMobileById(userId);
+        System.out.println("2");
+
+        //주문한 상품 목록 가져오기
+        List<OrderDto.OrderItemInfo> orderItems = orderRepository.findOrderItems(orderId);
+        System.out.println("3");
+
+        //수령인 가져오기
+        ShippingAddressDto.shippingAddressDto shippingAddressDto = ShippingAddressDto.shippingAddressDto.builder()
+                .recipientName(order.getRecipientName())
+                .phone(order.getRecipientPhone())
+                .postCode(order.getPostCode())
+                .address(order.getRecipientAddress())
+                .build();
+        System.out.println("4");
+
+        //가격 설정
+        PriceInfoDto.priceInfoDto priceInfoDto = PriceInfoDto.priceInfoDto.builder()
+                .finalPrice(order.getFinalPrice())
+                .orderDiscountAmount(order.getOrderDiscountAmount())
+                .shippingFee(order.getShippingFee())
+                .totalPrice(order.getTotalPrice())
+                .build();
+        System.out.println("5");
+
+        //반환 Dto 설정
+        OrderSummaryResponse.OrderSummaryDto completionOrderSummaryResponse = OrderSummaryResponse.OrderSummaryDto.builder()
+                .orderCode(order.getOrderCode())
+                .orderDateTime(order.getOrderDateTime())
+                .buyerDto(userNameAndEmailAndMobile)
+                .orderItemsDto(orderItems)
+                .shippingAddressDto(shippingAddressDto)
+                .priceInfoDto(priceInfoDto)
+                .build();
+        System.out.println("6");
+
+
+        return completionOrderSummaryResponse;
+    }
 
 
 

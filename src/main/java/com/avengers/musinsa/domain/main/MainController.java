@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public class MainController {
     private final TokenProviderService tokenProviderService;
     @GetMapping("/")
-    public String getMainHompage(@CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+    public String getMainHompage(
+            @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
 
         if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
             Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);

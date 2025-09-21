@@ -1,31 +1,16 @@
 package com.avengers.musinsa.domain.order.repository;
 
-import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
-import com.avengers.musinsa.mapper.OrderMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import com.avengers.musinsa.domain.order.dto.response.OrderDto;
+import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
+import com.avengers.musinsa.domain.order.entity.Order;
 
-@Repository
-@RequiredArgsConstructor
-public class OrderRepository {
-    private final OrderMapper orderMapper;
+import java.util.List;
 
-    //주문자 기본정보 조회
-    public UserInfoDTO getUserInfo(Long userId){
-        return this.orderMapper.getUserInfo(userId);}
-
-    //배송지 목록 조회
+public interface OrderRepository {
+    public UserInfoDTO getUserInfo(Long userId);
+    public Order getOrder(Long orderId);
+    public List<OrderDto.OrderItemInfo> findOrderItems(Long orderId);
 
 
 
-    //주문상품 리스트
-
-
-
-    //상품별 할인금액 계산
-
-
-    //주문하기
-
-
-}
+    }
