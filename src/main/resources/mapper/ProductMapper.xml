@@ -161,4 +161,19 @@
         ORDER BY product_category_id
     </select>
 
+    <select id="getProductDetailSizeList"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductDetailSizeList">
+        SELECT
+            TSD.TOP_SIZE_DETAIL_ID AS topSizeDetailId,
+            TO_CHAR(TSD.CM) AS cm,
+            TSD.LENGTH AS length,
+            TSD.SHOULDER_WIDTH AS shoulderWidth,
+            TSD.CHEST_WIDTH AS chestWidth,
+            TSD.SLEAVE_LENGTH AS sleaveLength
+        FROM
+            TOP_SIZE_DETAILS TSD
+        WHERE
+            TSD.PRODUCT_ID = #{productId}
+    </select>
+
 </mapper>
