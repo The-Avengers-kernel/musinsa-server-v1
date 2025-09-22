@@ -1,7 +1,6 @@
 package com.avengers.musinsa.domain.product.dto.response;
 
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
 import java.util.ArrayList;
