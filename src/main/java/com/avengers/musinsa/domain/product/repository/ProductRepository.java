@@ -82,16 +82,16 @@ public class ProductRepository {
         return productMapper.getBottomProductDetailSizeList(productId);
     }
     // 상품 상세 페이지 카테고리 조회
-    public ProductCategoryListResponse getProductCategories(Long productId){
-      return productMapper.getProductCategories(productId);
+    public ProductCategoryListResponse getProductCategories(Long productId) {
+        return productMapper.getProductCategories(productId);
     }
+
     // 상품 상세 페이지 카테고리 리스트 조회
     public List<ProductCategory> getProductCategoriesList(Long productId) {
         return productMapper.getProductCategoriesList(productId);
     }
     // 상품 상세 설명 조회 api
-    public ProductDetailDescriptionResponse getProductDetailDescription(Long productId) {
-    return productMapper.getProductDetailDescription(productId);
-
+    public ProductDetailDescriptionResponse getProductDetailDescription (Long productId){
+        return productMapper.getProductDetailDescription(productId);
     }
 }

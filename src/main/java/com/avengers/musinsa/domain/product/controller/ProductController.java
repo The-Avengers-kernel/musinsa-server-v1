@@ -53,8 +53,9 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    // 대중소 카테고리 가져오기
     @GetMapping("/categories/products")
-    public List<CategoryProductResponse> categoryProducts() {
+    public List<CategoryProductResponse> getProductCategories() {
         return productService.getCategoryProductList();
     }
 

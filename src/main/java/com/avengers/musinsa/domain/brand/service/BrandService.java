@@ -1,9 +1,11 @@
 package com.avengers.musinsa.domain.brand.service;
 
+import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
 import com.avengers.musinsa.domain.brand.dto.BrandDto;
 import com.avengers.musinsa.domain.brand.repository.BrandRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +31,16 @@ public class BrandService {
         if(userId == null) {
             throw new IllegalArgumentException("userId is null");
         }
+
         return brandRepository.selectRecentVisitedBrands(userId);
+    }
+
+    public BrandLikeResponse addBrandLikedByUser(Long userId, Long brandId) {
+        //user_brand_like 테이블에 레코드 추가
+        brandRepository.insertUserBrandLike(userId, brandId);
+        brandRepository.updateBrandLikeCnt(brandId);
+        //레코드 추가 후 회원과 브랜드의 현재 좋아요 상태를 반환
+        return brandRepository.findIsLikedBrand(userId, brandId);
     }
 
 }
