@@ -41,7 +41,7 @@
                brand_image as brandImage
         FROM brands
         WHERE brand_name_eng LIKE CONCAT(#{brandFirstLetter}, '%')
-        ORDER BY brand_name_kr, BRAND_LIKES DESC
+        ORDER BY brand_name_eng
     </select>
 
     <select id="findBrandsByKoreanFirstLetter"
@@ -52,7 +52,7 @@
                brand_image as brandImage
         FROM brands
         WHERE brand_first_letter_kr = #{brandFirstLetter}
-        ORDER BY brand_name_kr, BRAND_LIKES DESC
+        ORDER BY brand_name_kr
     </select>
 </mapper>
 
