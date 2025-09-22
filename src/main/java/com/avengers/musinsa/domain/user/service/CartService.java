@@ -1,12 +1,17 @@
 package com.avengers.musinsa.domain.user.service;
 
 import com.avengers.musinsa.domain.product.service.ProductService;
+import com.avengers.musinsa.domain.user.dto.ProductOptionInfo;
+import com.avengers.musinsa.domain.user.dto.ProductOptionUpdateRequest;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
 import com.avengers.musinsa.domain.user.repository.CartRepository;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -32,5 +37,34 @@ public class CartService {
         }
 
         return productsInCart;
+    }
+
+    public List<ProductsInCartInfoResponse> updateProductOption(Long userId, Long productId,
+                                                                ProductOptionUpdateRequest productOptionUpdateRequest) {
+        // 해당 상품의 변경되는 옵션과 값 담기
+        Map<Integer, String> productOptions = new HashMap<>();
+        for (int i = 0; i < productOptionUpdateRequest.getOptionGroups().size(); i++) {
+            productOptions.put(productOptionUpdateRequest.getOptionGroups().get(i).getOptionTypeId(),
+                    productOptionUpdateRequest.getOptionGroups().get(i).getOptionValue());
+        }
+
+        // 변경하려는 재고 값
+        Integer updateQuantity = productOptionUpdateRequest.getQuantity();
+
+        // 변경하고자 하는 상품 옵션 명과 해당 상품의 남은 재고 가져오기
+        ProductOptionInfo productOptionInfo = cartRepository.productOptionInfo(userId, productId, productOptions);
+
+        // 변경하려는 재고값이 남은 재고보다 클 경우 예외처리
+        Integer availableQuantity = productOptionInfo.getQuantity();
+        if (updateQuantity > availableQuantity) {
+            String message = "최대 " + availableQuantity + "개의 상품만 구매할 수 있습니다.";
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "QUANTITY_4091" + message);
+        }
+
+        // 외의 경우 장바구니의 해당 상품 옵션 변경
+        cartRepository.updateProductOption(userId, productId, productOptionInfo.getOptionName(), updateQuantity);
+
+        // 장바구니 상품 목록 반환
+        return getProductsInCart(userId);
     }
 }
