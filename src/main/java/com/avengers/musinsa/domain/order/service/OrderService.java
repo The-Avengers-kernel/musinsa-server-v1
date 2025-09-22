@@ -1,5 +1,6 @@
 package com.avengers.musinsa.domain.order.service;
 
+import com.avengers.musinsa.domain.order.dto.DiscountRateProductDTO;
 import com.avengers.musinsa.domain.order.dto.OrderProductDTO;
 import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
 import com.avengers.musinsa.domain.order.repository.OrderRepository;
@@ -29,6 +30,10 @@ public class OrderService {
 
 
     //상품별 할인금액 계산
+    public DiscountRateProductDTO getDiscountRateProduct(Long productId) {
+        return orderRepository.getDiscountRateProduct(productId);
+    }
+
 
 
     //주문하기

@@ -1,10 +1,10 @@
 package com.avengers.musinsa.domain.order.controller;
 
 
+import com.avengers.musinsa.domain.order.dto.DiscountRateProductDTO;
 import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
 import com.avengers.musinsa.domain.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +44,12 @@ public class OrderController {
 
 
     //상품별 할인금액 계산
+    @GetMapping("/orders/discount-rate-product/{productId}")
+    public ResponseEntity<DiscountRateProductDTO> getDiscountRateProduct(@PathVariable Long productId){
+        DiscountRateProductDTO discountRateProduct = orderService.getDiscountRateProduct(productId);
+
+        return ResponseEntity.ok(discountRateProduct);
+    }
 
 
 

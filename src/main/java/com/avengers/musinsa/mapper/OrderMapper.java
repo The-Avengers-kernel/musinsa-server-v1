@@ -1,5 +1,6 @@
 package com.avengers.musinsa.mapper;
 
+import com.avengers.musinsa.domain.order.dto.DiscountRateProductDTO;
 import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -20,6 +21,8 @@ public interface OrderMapper {
 
 
     //상품별 할인금액 계산
+
+    DiscountRateProductDTO getDiscountRateProduct(@Param("productId") Long productId);
 
 
     //주문하기
