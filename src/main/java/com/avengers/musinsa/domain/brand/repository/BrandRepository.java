@@ -33,14 +33,14 @@ public class BrandRepository {
         brandMapper.insertUserBrandLike(userId,brandId);
     }
 
-    public BrandLikeResponse findIsLikedBrand(Long userId, Long brandId) {
-        return brandMapper.findIsLikeBrand(userId, brandId);
+    public BrandLikeResponse getIsLikedBrand(Long userId, Long brandId) {
+        return brandMapper.getIsLikeBrand(userId, brandId);
     }
   
     public List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId) {
         return this.brandMapper.getBrandsByCategoryId(brandCategoryId);
     }
-    public void updateBrandLikeCnt(Long brandId) {
-        brandMapper.updateBrandLikeCnt(brandId);
+    public void plusBrandLikeCnt(Long brandId) {
+        brandMapper.plusBrandLikeCnt(brandId);
     }
 }
