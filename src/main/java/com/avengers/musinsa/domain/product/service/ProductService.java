@@ -95,6 +95,9 @@ public class ProductService {
         return result;
     }
 
+    // 상품 리뷰 목록 조회
+    public List<ProductReviewsResponse> getProductReviews(Long productId) {
+        return productRepository.getProductReviews(productId);
     // 상품상세 사이즈 리스트 조회
     public Object getProductDetailSizeList(Long productId) {
         // 상품 정보 가져오기

@@ -58,6 +58,11 @@ public class ProductController {
         return productService.getCategoryProductList();
     }
 
+    // 상품 리뷰 목록 조회
+    @GetMapping("{productId}/reviews")
+    public List<ProductReviewsResponse> getProductReviews(@PathVariable Long productId){
+        return productService.getProductReviews(productId);
+    }
     // 상품상세 사이즈 리스트 조회
     @GetMapping("{productId}/detail-size-list")
     public Object getProductDetailSizeList(@PathVariable Long productId){

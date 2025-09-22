@@ -166,7 +166,21 @@
         ORDER BY product_category_id
     </select>
 
-<!--상의 실측 사이즈 조회-->
+    <select id="getProductReviews"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductReviewsResponse">
+        SELECT
+            r.REVIEW_ID AS reviewId,
+            r.NICKNAME AS nickName,
+            r.CONTENT AS content,
+            r.PURCHASE_OPTIONS AS purchaseOptions,
+            r.HELP_COUNT AS helpCount
+        FROM
+            REVIEWS r
+        WHERE
+            r.PRODUCT_ID=#{productId}
+        ORDER BY r.HELP_COUNT DESC
+
+   <!--상의 실측 사이즈 조회-->
     <select id="getTopProductDetailSizeList"
             resultType="com.avengers.musinsa.domain.product.dto.response.TopProductDetailSizeListResponse">
         SELECT
