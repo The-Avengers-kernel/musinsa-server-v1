@@ -1,10 +1,6 @@
 package com.avengers.musinsa.mapper;
 
-import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
-import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
-import com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse;
-import com.avengers.musinsa.domain.product.dto.response.ProductVariantsResponse;
-import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
+import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import java.util.List;
@@ -37,4 +33,6 @@ public interface ProductMapper {
     List<String> findProductOptionSizes(Long productId);
 
     List<CategoryProductResponse> getCategoryProductList();
+
+    ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
 }
