@@ -39,6 +39,7 @@ public class ProductController {
     }
 
 
+    // 성별로 상품 조회
     @GetMapping("/main/recommendations/{gender}")
     public List<RecommendationResponse> recommendationProducts(@PathVariable String gender ) {
         Gender g = Gender.valueOf(gender.toUpperCase());
@@ -52,6 +53,7 @@ public class ProductController {
         List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId);
         return ResponseEntity.ok(products);
     }
+
 
     @GetMapping("/categories/products")
     public List<CategoryProductResponse> categoryProducts() {
