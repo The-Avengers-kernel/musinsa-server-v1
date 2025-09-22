@@ -2,6 +2,7 @@ package com.avengers.musinsa.domain.product.service;
 
 import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.entity.Product;
+import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepository;
@@ -93,6 +94,7 @@ public class ProductService {
         }
         return result;
     }
+
     // 상품상세 사이즈 리스트 조회
     public Object getProductDetailSizeList(Long productId) {
         // 상품 정보 가져오기
@@ -111,6 +113,10 @@ public class ProductService {
         else{
             return Collections.emptyList();
         }
+
+    // 상품 상세 설명 조회 api
+    public ProductDetailDescriptionResponse getProductDetailDescription(Long productId) {
+     return productRepository.getProductDetailDescription(productId);
     }
 
     // 내부 전용 빌더: 중복 제거 + 입력 순서 보존
@@ -150,5 +156,15 @@ public class ProductService {
 
     public List<CategoryProductResponse> getCategoryProductList() {
         return productRepository.getCategoryProductList();
+    }
+
+
+    // 상품 상세 페이지 카테고리 조회
+    public ProductCategoryListResponse getProductCategories(Long productId){
+        ProductCategoryListResponse productCategoryListResponse = productRepository.getProductCategories(productId);
+        List<ProductCategory> productCategoryList = productRepository.getProductCategoriesList(productId);
+
+        productCategoryListResponse.getProductCategoryList().addAll(productCategoryList);
+        return productCategoryListResponse;
     }
 }

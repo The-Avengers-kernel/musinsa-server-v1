@@ -5,6 +5,7 @@ import com.avengers.musinsa.domain.product.entity.Product;
 
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
+import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.mapper.ProductMapper;
 
@@ -68,6 +69,7 @@ public class ProductRepository {
         return productMapper.getCategoryProductList();
     }
 
+
     // 상의 실측 사이즈 조회
     public List<TopProductDetailSizeListResponse> getTopProductDetailSizeList(Long productId) {
         return productMapper.getTopProductDetailSizeList(productId);
@@ -75,5 +77,18 @@ public class ProductRepository {
     // 하의 실측 사이즈 조회
     public List<BottomProductDetailSizeListResponse> getBottomProductDetailSizeList(Long productId) {
         return productMapper.getBottomProductDetailSizeList(productId);
+
+    // 상품 상세 페이지 카테고리 조회
+    public ProductCategoryListResponse getProductCategories(Long productId){
+      return productMapper.getProductCategories(productId);
+    }
+    // 상품 상세 페이지 카테고리 리스트 조회
+    public List<ProductCategory> getProductCategoriesList(Long productId) {
+        return productMapper.getProductCategoriesList(productId);
+
+    // 상품 상세 설명 조회 api
+    public ProductDetailDescriptionResponse getProductDetailDescription(Long productId) {
+    return productMapper.getProductDetailDescription(productId);
+
     }
 }

@@ -14,7 +14,7 @@ public class OrderItem {
     private Coupon coupon;
     private Long couponId;
 
-    private Orders order;
+    private Order order;
     private Long orderId;
 
     private Integer quantity;
