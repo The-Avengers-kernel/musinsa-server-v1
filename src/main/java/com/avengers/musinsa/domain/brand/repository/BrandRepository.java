@@ -21,6 +21,14 @@ public class BrandRepository {
         return this.brandMapper.selectRecentVisitedBrands(userId);
     }
 
+    public List<BrandResponse> findBrandsByEnglishFirstLetter(char brandFirstLetter) {
+        return this.brandMapper.findBrandsByEnglishFirstLetter(brandFirstLetter);
+    }
+
+    public List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter) {
+        return this.brandMapper.findBrandsByKoreanFirstLetter(brandFirstLetter);
+    }
+
     public void insertUserBrandLike(Long userId, Long brandId) {
         brandMapper.insertUserBrandLike(userId,brandId);
     }

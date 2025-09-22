@@ -34,6 +34,29 @@
         ORDER BY BRAND_LIKES DESC, brand_name_kr ASC
     </select>
 
+    <select id="findBrandsByEnglishFirstLetter"
+            resultType="com.avengers.musinsa.domain.brand.dto.response.BrandResponse">
+        SELECT brand_id as brandId,
+               brand_name_kr as brandNameKr,
+               brand_name_eng as brandNameEn,
+               brand_image as brandImage
+        FROM brands
+        WHERE brand_name_eng LIKE CONCAT(#{brandFirstLetter}, '%')
+        ORDER BY brand_name_eng
+    </select>
+
+    <select id="findBrandsByKoreanFirstLetter"
+            resultType="com.avengers.musinsa.domain.brand.dto.response.BrandResponse">
+        SELECT brand_id as brandId,
+               brand_name_kr as brandNameKr,
+               brand_name_eng as brandNameEn,
+               brand_image as brandImage
+        FROM brands
+        WHERE brand_first_letter_kr = #{brandFirstLetter}
+        ORDER BY brand_name_kr
+    </select>
+
+
     <insert id="insertUserBrandLike">
         INSERT INTO user_brand_likes (user_brand_like_id, user_id, brand_id, liked) VALUES (user_brand_likes_seq.NEXTVAL,#{userId}, #{brandId}, 1)
     </insert>
@@ -70,7 +93,6 @@
         ORDER BY BRAND_LIKES DESC, brand_name_kr ASC
     </select>
 </mapper>
-
 
 
         <!--최근 검색 브랜드는 검색 로그만 사용--> <!--상품 조회 기록과는 별개-->

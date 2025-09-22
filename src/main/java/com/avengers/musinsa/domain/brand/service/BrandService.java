@@ -35,6 +35,17 @@ public class BrandService {
         return brandRepository.selectRecentVisitedBrands(userId);
     }
 
+    //카테고리 - 초성(ㄱ, A)로 브랜드 조회
+    public List<BrandResponse> getCategoryBrandsByFirstLetter(char brandFirstLetter){
+        //(A~Z): 영어 초성일 때
+        if((brandFirstLetter >= 'A' && brandFirstLetter <= 'Z') || (brandFirstLetter >= 'a' && brandFirstLetter <= 'z')) {
+            return brandRepository.findBrandsByEnglishFirstLetter(brandFirstLetter);
+        }
+        //(ㄱ~ㅎ): 한글 초성일 때
+        else{
+            return brandRepository.findBrandsByKoreanFirstLetter(brandFirstLetter);
+        }
+    }
     public BrandLikeResponse addBrandLikedByUser(Long userId, Long brandId) {
         //user_brand_like 테이블에 레코드 추가
         brandRepository.insertUserBrandLike(userId, brandId);

@@ -14,6 +14,10 @@ public interface BrandMapper {
 
     List<BrandResponse> getBrandList();
 
+    List<BrandResponse> findBrandsByEnglishFirstLetter(char brandFirstLetter);
+  
+    List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter);
+
     void insertUserBrandLike(@Param("userId") Long userId, @Param("brandId") Long brandId);
 
     BrandLikeResponse findIsLikeBrand(Long userId, Long brandId);
