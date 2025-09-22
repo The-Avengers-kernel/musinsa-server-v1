@@ -32,6 +32,12 @@ public class ProductController {
         return productService.getProductVariants(productId);
     }
 
+    // 상풍 상세 페이지 카테고리 조회
+    @GetMapping("/{productId}/categories")
+    public ProductCategoryListResponse getProductCategories(@PathVariable Long productId){
+        return productService.getProductCategories(productId);
+    }
+
 
     @GetMapping("/main/recommendations/{gender}")
     public List<RecommendationResponse> recommendationProducts(@PathVariable String gender ) {
@@ -58,4 +64,5 @@ public class ProductController {
         return productService.getProductDetailDescription(productId);
 
     }
+
 }
