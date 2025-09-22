@@ -1,6 +1,7 @@
 package com.avengers.musinsa.domain.product.dto.response;
 
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 public class ProductCategoryListResponse {
     private Long productId;
     private String productName;
+
 
     private List<ProductCategory> productCategoryList = new ArrayList<>();
 }

@@ -139,6 +139,7 @@ public class ProductService {
     public ProductCategoryListResponse getProductCategories(Long productId){
         ProductCategoryListResponse productCategoryListResponse = productRepository.getProductCategories(productId);
         List<ProductCategory> productCategoryList = productRepository.getProductCategoriesList(productId);
+
         productCategoryListResponse.getProductCategoryList().addAll(productCategoryList);
         return productCategoryListResponse;
     }
