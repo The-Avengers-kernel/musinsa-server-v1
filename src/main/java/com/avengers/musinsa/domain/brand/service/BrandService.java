@@ -1,9 +1,11 @@
 package com.avengers.musinsa.domain.brand.service;
 
+import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
 import com.avengers.musinsa.domain.brand.dto.BrandDto;
 import com.avengers.musinsa.domain.brand.repository.BrandRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,5 +27,14 @@ public class BrandService {
         }
 
         return brandRepository.selectRecentVisitedBrands(userId);
+    }
+
+    public BrandLikeResponse addBrandLikedByUser(Long userId, Long brandId) {
+        brandRepository.insertUserBrandLike(userId, brandId);
+        //유저아이디, 브랜드 아이디, liked=1
+
+
+
+        return brandRepository.findIsLikedBrand(userId, brandId);
     }
 }

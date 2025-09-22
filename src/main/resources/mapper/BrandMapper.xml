@@ -32,6 +32,20 @@
         FROM brands
         ORDER BY BRAND_LIKES DESC, brand_name_kr ASC
     </select>
+
+    <insert id="insertUserBrandLike">
+        INSERT INTO user_brand_likes (user_brand_like_id, user_id, brand_id, liked) VALUES (user_brand_likes_seq.NEXTVAL,#{userId}, #{brandId}, 1)
+    </insert>
+
+    <select id="findIsLikeBrand"
+            resultType="com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse">
+        SELECT brand_id as brandId,
+               user_id as userId,
+               liked as liked
+        FROM USER_BRAND_LIKES
+        WHERE BRAND_ID = #{brandId} and USER_ID = #{userId}
+    </select>
+
 </mapper>
 
 
