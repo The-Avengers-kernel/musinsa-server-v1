@@ -63,7 +63,7 @@ public class BrandService {
         //liked 컬럼을 0 ↔ 1
         brandRepository.switchBrandLike(userId,brandId);
         //브랜드 테이블의 좋아요 수를 동기화
-        brandRepository.updateBrandLikeCnt(brandId);
+        brandRepository.update1BrandLikeCnt(brandId);
         //좋아요상태 변경 후 현재 좋아요 상태를 반환
         return brandRepository.getIsLikedBrand(userId, brandId);
     }

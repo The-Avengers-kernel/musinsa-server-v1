@@ -24,5 +24,10 @@ public interface BrandMapper {
   
     List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
 
+    void updateBrandLikeCnt(Long brandId);
+
+    void switchBrandLike(Long userId, Long brandId);
+
+    void update1BrandLikeCnt(Long brandId);
     void plusBrandLikeCnt(Long brandId);
 }
