@@ -53,9 +53,21 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    // 대중소 카테고리 가져오기
     @GetMapping("/categories/products")
-    public List<CategoryProductResponse> categoryProducts() {
+    public List<CategoryProductResponse> getProductCategories() {
         return productService.getCategoryProductList();
+    }
+
+    // 상품 리뷰 목록 조회
+    @GetMapping("{productId}/reviews")
+    public List<ProductReviewsResponse> getProductReviews(@PathVariable Long productId){
+        return productService.getProductReviews(productId);
+    }
+    // 상품상세 사이즈 리스트 조회
+    @GetMapping("{productId}/detail-size-list")
+    public Object getProductDetailSizeList(@PathVariable Long productId){
+        return productService.getProductDetailSizeList(productId);
     }
 
     // 상품 상세 설명 조회 api

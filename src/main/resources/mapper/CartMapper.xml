@@ -23,4 +23,37 @@
         WHERE uc.USER_ID = #{userId}
         ORDER BY uc.CREATED_AT DESC
     </select>
+
+    <!--    해당 상품의 옵션 명과 재고 가져오기    -->
+    <select id="productOptionInfo" resultType="com.avengers.musinsa.domain.user.dto.ProductOptionInfo">
+        SELECT pv.VARIANT_NAME AS optionName,
+        pv.STOCK_QUANTITY AS quantity
+        FROM PRODUCT_VARIANTS pv
+        WHERE pv.PRODUCT_ID = #{productId}
+        <if test="productOptions != null and !productOptions.isEmpty()">
+            <foreach collection="productOptions" item="optionValue" index="optionTypeId">
+                <choose>
+                    <when test="optionTypeId == 1">
+                        AND pv.COLOR_VALUE = #{optionValue}
+                    </when>
+                    <when test="optionTypeId == 2">
+                        AND pv.SIZE_VALUE = #{optionValue}
+                    </when>
+                    <when test="optionTypeId == 3">
+                        AND pv.MATERIAL_VALUE = #{optionValue}
+                    </when>
+                </choose>
+            </foreach>
+        </if>
+        FETCH FIRST 1 ROW ONLY
+    </select>
+
+    <!--    장바구니의 해당 상품 업데이트    -->
+    <update id="updateProductOption">
+        UPDATE USER_CARTS
+        SET CART_OPTION=#{productOptionName},
+            CART_QUANTITY=#{quantity}
+        WHERE USER_ID = #{userId}
+          AND PRODUCT_ID = #{productId}
+    </update>
 </mapper>
