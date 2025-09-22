@@ -48,7 +48,7 @@ public class BrandRepository {
         brandMapper.switchBrandLike(userId, brandId);
     }
 
-    public void update1BrandLikeCnt(Long brandId) {
-        brandMapper.update1BrandLikeCnt(brandId);
+    public void updateBrandLikeCnt(Long brandId) {
+        brandMapper.updateBrandLikeCnt(brandId);
     }
 }

@@ -76,6 +76,28 @@
         WHERE BRAND_ID = #{brandId} and USER_ID = #{userId}
     </select>
 
+    <!--회원브랜드좋아요 테이블 liked 0 ↔ 1-->
+    <update id="switchBrandLike">
+        UPDATE USER_BRAND_LIKES
+        SET liked = CASE liked
+                        WHEN 0 THEN 1
+                        WHEN 1 THEN 0
+            END
+        WHERE user_id = #{userId} AND brand_id = #{brandId}
+    </update>
+
+    <!--브랜드 테이블 좋아요 수 업데이트-->
+    <update id="updateBrandLikeCnt">
+        UPDATE BRANDS
+        SET BRAND_LIKES = BRAND_LIKES +
+                          CASE
+                              WHEN (SELECT liked FROM USER_BRAND_LIKES
+                                    WHERE user_id = #{userId} AND brand_id = #{brandId}) = 1 THEN 1
+                              ELSE -1
+                              END
+        WHERE BRAND_ID = #{brandId}
+    </update>
+
 
     <!--카테고리 - 카테고리 별로 브랜드 목록 조회-->
     <select id="getBrandsByCategoryId"

@@ -28,6 +28,5 @@ public interface BrandMapper {
 
     void switchBrandLike(Long userId, Long brandId);
 
-    void update1BrandLikeCnt(Long brandId);
     void plusBrandLikeCnt(Long brandId);
 }
