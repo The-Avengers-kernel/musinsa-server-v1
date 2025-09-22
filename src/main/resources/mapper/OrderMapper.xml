@@ -59,4 +59,33 @@
     </select>
 
 
+
+
+
+
+
+
+
+
+
+    <!-- 상품별 할인 금액 계산 (브랜드 자체 할인) -->
+    <select id="getDiscountRateProduct" resultType="com.avengers.musinsa.domain.order.dto.DiscountRateProductDTO"
+            parameterType="Long">
+        SELECT
+            p.product_id,
+            p.brand_id,
+            b.brand_name,
+            p.product_name,
+            p.price,
+            p.discount_rate,
+            (p.price * (1 - p.discount_rate / 100)) AS discounted_price
+        FROM products p
+                 JOIN brands b ON p.brand_id = b.brand_id
+        WHERE p.product_id = #{productId}
+
+
+    </select>
+
+
+
 </mapper>

@@ -63,4 +63,13 @@ public class OrderService {
     }
 
 
+
+
+
+
+
+
+    public DiscountRateProductDTO getDiscountRateProduct(Long productId) {
+        return orderRepository.getDiscountRateProduct(productId);
+    }
 }

@@ -1,6 +1,7 @@
 package com.avengers.musinsa.mapper;
 
 import com.avengers.musinsa.domain.order.dto.OrderCompletionInfoDto;
+import com.avengers.musinsa.domain.order.dto.response.DiscountRateProductDTO;
 import com.avengers.musinsa.domain.order.dto.response.OrderDto;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import com.avengers.musinsa.domain.order.entity.Order;
@@ -33,6 +34,8 @@ public interface OrderMapper {
 
 
     //상품별 할인금액 계산
+    DiscountRateProductDTO getDiscountRateProduct(@Param("productId") Long productId);
+
 
 
     //주문하기

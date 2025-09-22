@@ -1,5 +1,6 @@
 package com.avengers.musinsa.domain.order.repository;
 
+import com.avengers.musinsa.domain.order.dto.response.DiscountRateProductDTO;
 import com.avengers.musinsa.domain.order.dto.response.OrderDto;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import com.avengers.musinsa.domain.order.entity.Order;
@@ -33,5 +34,18 @@ public class OrderRepositoryImpl implements OrderRepository{
         return orderItemInfoList;
     }
 
+
+
+
+
+
+
+
+
+
+    //상품별 할인금액 계산
+    public DiscountRateProductDTO getDiscountRateProduct(Long productId){
+        return this.orderMapper.getDiscountRateProduct(productId);
+    }
 
 }
