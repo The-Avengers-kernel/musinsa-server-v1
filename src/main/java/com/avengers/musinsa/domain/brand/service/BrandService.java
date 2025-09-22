@@ -15,8 +15,14 @@ import java.util.List;
 public class BrandService {
     private final BrandRepository brandRepository;
 
+    //카테고리 - 브랜드 목록 전체 조회
     public List<BrandResponse> getBrandList() {
         return brandRepository.getBrandList();
+    }
+
+    //카테고리 - 카테고리 별로 브랜드 목록 조회
+    public List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId) {
+        return brandRepository.getBrandsByCategoryId(brandCategoryId);
     }
 
     //최근 방문한 브랜드 조회
@@ -25,16 +31,12 @@ public class BrandService {
         if(userId == null) {
             throw new IllegalArgumentException("userId is null");
         }
-
         return brandRepository.selectRecentVisitedBrands(userId);
     }
 
     public BrandLikeResponse addBrandLikedByUser(Long userId, Long brandId) {
         brandRepository.insertUserBrandLike(userId, brandId);
-        //유저아이디, 브랜드 아이디, liked=1
-
-
-
         return brandRepository.findIsLikedBrand(userId, brandId);
     }
+
 }

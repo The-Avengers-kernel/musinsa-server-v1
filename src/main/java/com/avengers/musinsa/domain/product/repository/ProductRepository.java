@@ -1,14 +1,11 @@
 package com.avengers.musinsa.domain.product.repository;
 
-import com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse;
-import com.avengers.musinsa.domain.product.dto.response.ProductVariantsResponse;
+import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.entity.Product;
 
-import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
-import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
-import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
+import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.mapper.ProductMapper;
 
@@ -70,5 +67,19 @@ public class ProductRepository {
 
     public List<CategoryProductResponse> getCategoryProductList() {
         return productMapper.getCategoryProductList();
+    }
+
+    // 상품 상세 페이지 카테고리 조회
+    public ProductCategoryListResponse getProductCategories(Long productId){
+      return productMapper.getProductCategories(productId);
+    }
+    // 상품 상세 페이지 카테고리 리스트 조회
+    public List<ProductCategory> getProductCategoriesList(Long productId) {
+        return productMapper.getProductCategoriesList(productId);
+
+    // 상품 상세 설명 조회 api
+    public ProductDetailDescriptionResponse getProductDetailDescription(Long productId) {
+    return productMapper.getProductDetailDescription(productId);
+
     }
 }

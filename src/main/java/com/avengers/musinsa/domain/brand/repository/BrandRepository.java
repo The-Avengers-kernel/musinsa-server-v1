@@ -28,4 +28,8 @@ public class BrandRepository {
     public BrandLikeResponse findIsLikedBrand(Long userId, Long brandId) {
         return brandMapper.findIsLikeBrand(userId, brandId);
     }
+  
+    public List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId) {
+        return this.brandMapper.getBrandsByCategoryId(brandCategoryId);
+    }
 }

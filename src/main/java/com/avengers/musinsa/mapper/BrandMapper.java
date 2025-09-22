@@ -17,4 +17,6 @@ public interface BrandMapper {
     void insertUserBrandLike(@Param("userId") Long userId, @Param("brandId") Long brandId);
 
     BrandLikeResponse findIsLikeBrand(Long userId, Long brandId);
+  
+    List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
 }

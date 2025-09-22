@@ -5,6 +5,9 @@ import com.avengers.musinsa.domain.brand.service.BrandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -14,9 +17,15 @@ import java.util.List;
 public class BrandController {
     private final BrandService brandService;
 
+    //카테고리 - 브랜드 목록 전체 조회
     @GetMapping("/categories/brands")
     public List<BrandResponse> categoryBrands() {
         return brandService.getBrandList();
+    }
+    //카테고리 - 카테고리 별로 브랜드 목록 조회
+    @GetMapping("/categories/{brandCategoryId}/brands")
+    public List<BrandResponse> getBrandsByCategory(@PathVariable Long brandCategoryId) {
+        return brandService.getBrandsByCategoryId(brandCategoryId);
     }
 }
 
