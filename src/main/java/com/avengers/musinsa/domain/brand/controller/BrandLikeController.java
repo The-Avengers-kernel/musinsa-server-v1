@@ -27,7 +27,7 @@ public class BrandLikeController {
         }
     }
     //이미 좋아요한 브랜드 좋아요 하기/취소하기 (patch)
-    /*@PatchMapping("/brands/{brandId}/liked")
+    @PatchMapping("/brands/{brandId}/liked")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public BrandLikeResponse updateBrandLikedByUser(@PathVariable Long brandId, @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         if (authorizationHeader == null || authorizationHeader.isEmpty()) {
@@ -37,11 +37,6 @@ public class BrandLikeController {
             System.out.println("userId = " + userId);
             return brandService.switchBrandLike(userId, brandId);
         }
-    }*/
-
-    @PatchMapping("{user_id}/brands/{brandId}/liked")
-    public BrandLikeResponse updateBrandLikedByUser(@PathVariable Long brandId, @PathVariable("user_id")Long userId) {
-        return brandService.switchBrandLike(userId, brandId);
     }
 }
 
