@@ -173,6 +173,7 @@
             REVIEWS r
         WHERE
             r.PRODUCT_ID=#{productId}
+        ORDER BY r.HELP_COUNT DESC
     </select>
 
 </mapper>
