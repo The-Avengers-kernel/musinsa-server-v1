@@ -49,9 +49,9 @@ public class BrandService {
     public BrandLikeResponse addBrandLikedByUser(Long userId, Long brandId) {
         //user_brand_like 테이블에 레코드 추가
         brandRepository.insertUserBrandLike(userId, brandId);
-        brandRepository.updateBrandLikeCnt(brandId);
+        brandRepository.plusBrandLikeCnt(brandId);
         //레코드 추가 후 회원과 브랜드의 현재 좋아요 상태를 반환
-        return brandRepository.findIsLikedBrand(userId, brandId);
+        return brandRepository.getIsLikedBrand(userId, brandId);
     }
 
 }
