@@ -57,8 +57,18 @@
 
 
     <!-- socialId로 사용자 검색 -->
-    <select id="findBySocialId" parameterType="string" resultMap="userResultMap">
-        SELECT * FROM users WHERE social_id = #{socialId}
+<!--    <select id="findBySocialId" parameterType="string" resultMap="userResultMap">-->
+<!--        SELECT * FROM users WHERE social_id = #{socialId}-->
+<!--    </select>-->
+
+    
+    <select id="findUserNameAndEmailAndMobileById" resultType="com.avengers.musinsa.domain.user.dto.UserResponseDto$UserNameAndEmailAndMobileDto" parameterType="Long">
+        select u.name as name,
+               u.email as email,
+               u.mobile as mobile
+
+        from users u
+        where u.user_id = #{userId}
     </select>
 
 </mapper>
