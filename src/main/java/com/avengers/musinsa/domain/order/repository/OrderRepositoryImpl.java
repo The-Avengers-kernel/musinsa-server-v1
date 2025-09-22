@@ -3,6 +3,7 @@ package com.avengers.musinsa.domain.order.repository;
 import com.avengers.musinsa.domain.order.dto.response.OrderDto;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import com.avengers.musinsa.domain.order.entity.Order;
+import com.avengers.musinsa.domain.shipments.dto.ShippingAddressDTO;
 import com.avengers.musinsa.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -32,6 +33,11 @@ public class OrderRepositoryImpl implements OrderRepository{
         System.out.println("첫번째값 호출");
         return orderItemInfoList;
     }
+
+    //배송지 목록 조회
+    public List<ShippingAddressDTO> getShippingAddresses(Long userId){
+        return this.orderMapper.getShippingAddresses(userId);}
+
 
 
 }

@@ -5,11 +5,16 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-Data
+@Data
+@AllArgsConstructor
 @Getter
 @Setter
-@lombok.AllArgsConstructor
 public class ShippingAddressDTO {
 
-    private Integer shippingAddressId;
+    private Integer shippingId;
+    private String recipientName;
+    private String recipientPhone;
+    private String recipientAddress;
+    private Integer postalCode;
+    private String detailedAddress;
 }
