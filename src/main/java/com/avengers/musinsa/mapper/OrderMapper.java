@@ -19,7 +19,9 @@ public interface OrderMapper {
     Order getOrder(@Param("orderId") Long orderId);
 
     // 주문 상품 리스트 조회
-    List<OrderDto.OrderItemInfo> findOrderItems(Long orderId);
+    List<OrderDto.OrderItemInfo> findOrderItems(@Param("orderId") Long orderId);
+
+    List<OrderDto.OrderItemInfoTest> getOrderItemInfoTest(@Param("orderId") Long orderId);
 
     //배송지 목록 조회
 

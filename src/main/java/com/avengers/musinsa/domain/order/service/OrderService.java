@@ -1,14 +1,11 @@
 package com.avengers.musinsa.domain.order.service;
 
-import com.avengers.musinsa.domain.order.dto.OrderCompletionInfoDto;
 import com.avengers.musinsa.domain.order.dto.response.*;
 import com.avengers.musinsa.domain.order.entity.Order;
 import com.avengers.musinsa.domain.order.repository.OrderRepository;
 import com.avengers.musinsa.domain.user.dto.UserResponseDto;
-import com.avengers.musinsa.domain.user.entity.User;
 import com.avengers.musinsa.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.OrderComparator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,17 +25,13 @@ public class OrderService {
 
         // order 정보 가져오기 - orderCode, orderDate, 가격정보(총 금액, 할인 금액, 배송비, 최종금액)
         Order order = orderRepository.getOrder(orderId);
-        System.out.println("1");
-        System.out.println("userId = " + userId);
-
 
         // 회원 정보 가져오기(이름, 이메일, 전화번호) - Buyer(이름, 이메일, 폰번호)
         UserResponseDto.UserNameAndEmailAndMobileDto userNameAndEmailAndMobile = userRepository.findUserNameAndEmailAndMobileById(userId);
-        System.out.println("2");
+
 
         //주문한 상품 목록 가져오기
         List<OrderDto.OrderItemInfo> orderItems = orderRepository.findOrderItems(orderId);
-        System.out.println("3");
 
         //수령인 가져오기
         ShippingAddressDto.shippingAddressDto shippingAddressDto = ShippingAddressDto.shippingAddressDto.builder()
@@ -47,7 +40,6 @@ public class OrderService {
                 .postCode(order.getPostCode())
                 .address(order.getRecipientAddress())
                 .build();
-        System.out.println("4");
 
         //가격 설정
         PriceInfoDto.priceInfoDto priceInfoDto = PriceInfoDto.priceInfoDto.builder()
@@ -56,7 +48,6 @@ public class OrderService {
                 .shippingFee(order.getShippingFee())
                 .totalPrice(order.getTotalPrice())
                 .build();
-        System.out.println("5");
 
         //반환 Dto 설정
         OrderSummaryResponse.OrderSummaryDto completionOrderSummaryResponse = OrderSummaryResponse.OrderSummaryDto.builder()
@@ -67,13 +58,9 @@ public class OrderService {
                 .shippingAddressDto(shippingAddressDto)
                 .priceInfoDto(priceInfoDto)
                 .build();
-        System.out.println("6");
-
 
         return completionOrderSummaryResponse;
     }
-
-
 
 
 }

@@ -29,7 +29,7 @@ public class OrderDto {
     public static class Buyer {
         private String name;
         private String email;
-        priv ate String phone;
+        private String phone;
     }
 
     // 개별 주문 상품 DTO
@@ -47,10 +47,9 @@ public class OrderDto {
         private Long productId;
         private String productName;
         private Integer price;
-        private Long imageUrl;
+        private String imageUrl;
 
         // 주문 항목 정보
-        private String orderId;
         private Integer quantity;
         private Integer unitPrice;
         private Integer discountRate;
@@ -144,5 +143,27 @@ public class OrderDto {
         private Integer unitPrice;
         private String productImage;
         private String options; // JSON 문자열로 저장
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OrderItemInfoTest {
+        // 브랜드 정보
+//        private Long brandId;
+//        private String brandNameKr;
+//        private String brandNameEng;
+//        private String brandImage;
+
+        // 상품 정보
+        private Long productId;
+        private Long couponId;
+        private Long orderId;
+        private Integer quantity;
+        private Integer unitPrice;
+        private Integer totalPrice;
+        private Integer discountRate;
+
+        // 주문 항목 정보
     }
 }

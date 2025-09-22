@@ -1,16 +1,10 @@
 package com.avengers.musinsa.domain.order.repository;
 
-import com.avengers.musinsa.domain.order.dto.OrderCompletionInfoDto;
 import com.avengers.musinsa.domain.order.dto.response.OrderDto;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import com.avengers.musinsa.domain.order.entity.Order;
-import com.avengers.musinsa.domain.user.dto.UserResponseDto;
 import com.avengers.musinsa.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
-import org.eclipse.tags.shaded.org.apache.bcel.generic.ARETURN;
-import org.eclipse.tags.shaded.org.apache.bcel.generic.DRETURN;
-import org.eclipse.tags.shaded.org.apache.bcel.generic.FRETURN;
-import org.eclipse.tags.shaded.org.apache.bcel.generic.IRETURN;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,7 +27,10 @@ public class OrderRepositoryImpl implements OrderRepository{
 
     @Override
     public List<OrderDto.OrderItemInfo> findOrderItems(Long orderId) {
-        return this.orderMapper.findOrderItems(orderId);
+        List<OrderDto.OrderItemInfo> orderItemInfoList = this.orderMapper.findOrderItems(orderId);
+        System.out.println(orderItemInfoList.getFirst().toString());
+        System.out.println("첫번째값 호출");
+        return orderItemInfoList;
     }
 
 

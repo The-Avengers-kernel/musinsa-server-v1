@@ -37,25 +37,26 @@
         where o.order_id = #{orderId}
     </select>
 
-    <select id="findOrderItems" resultType="com.avengers.musinsa.domain.order.entity.Order" parameterType="Long">
+    <select id="findOrderItems" resultType="com.avengers.musinsa.domain.order.dto.response.OrderDto$OrderItemInfo" parameterType="Long">
         SELECT
-            b.brand_id,
-            b.brand_name_kr,
-            b.brand_name_eng,
-            b.brand_image,
-            p.product_id,
-            p.product_name,
-            p.price,
-            oi.order_id,
-            oi.quantity,
-            oi.unit_price,
-            oi.discount_rate,
-            oi.total_price
+            b.brand_id as brandId,
+            b.brand_name_kr as brandNameKr,
+            b.brand_name_eng as brandNameEng,
+            b.brand_image as brandImage,
+            p.product_id as productId,
+            p.product_name as productName,
+            p.price as price,
+            pi.image_url as imageUrl,
+            oi.quantity as quantity,
+            oi.unit_price as unitPrice,
+            oi.discount_rate as discountRate,
+            oi.total_price as totalPrice
         FROM order_items oi
                  JOIN products p ON oi.product_id = p.product_id
                  JOIN brands b ON p.brand_id = b.brand_id
                  LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
         WHERE oi.order_id = #{orderId}
     </select>
+
 
 </mapper>

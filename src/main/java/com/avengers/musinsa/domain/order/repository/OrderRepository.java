@@ -11,6 +11,4 @@ public interface OrderRepository {
     public Order getOrder(Long orderId);
     public List<OrderDto.OrderItemInfo> findOrderItems(Long orderId);
 
-
-
-    }
+}
