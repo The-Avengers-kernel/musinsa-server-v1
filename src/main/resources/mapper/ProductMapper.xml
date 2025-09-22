@@ -13,10 +13,15 @@
                b.brand_name_kr                            AS brandName,
                b.brand_likes                              AS brandLikeCnt,
                b.BRAND_DISCOUNT                           AS brandDiscount,
-               ((100 - b.BRAND_DISCOUNT) / 100) * p.price AS finalprice
+               ((100 - b.BRAND_DISCOUNT) / 100) * p.price AS finalprice,
+
+               p.SIZE_DETAIL_IMAGE_ID AS sizeDetailImageId,
+               SDI.IMAGE                                  AS productSizeDetailImageURL
         FROM products p
                  JOIN
              brands b ON p.brand_id = b.brand_id
+                 JOIN
+             SIZE_DETAIL_IMAGES SDI ON p.SIZE_DETAIL_IMAGE_ID = SDI.SIZE_DETAIL_IMAGE_ID
         WHERE p.product_id = #{productId}
     </select>
 
@@ -161,7 +166,61 @@
         ORDER BY product_category_id
     </select>
 
-    <select id="getProductCategories"
+<!--상의 실측 사이즈 조회-->
+    <select id="getTopProductDetailSizeList"
+            resultType="com.avengers.musinsa.domain.product.dto.response.TopProductDetailSizeListResponse">
+        SELECT
+            TSD.TOP_SIZE_DETAIL_ID AS topSizeDetailId,
+            TO_CHAR(TSD.CM) AS cm,
+            TSD.LENGTH AS length,
+            TSD.SHOULDER_WIDTH AS shoulderWidth,
+            TSD.CHEST_WIDTH AS chestWidth,
+            TSD.SLEAVE_LENGTH AS sleaveLength
+        FROM
+            TOP_SIZE_DETAILS TSD
+        WHERE
+            TSD.PRODUCT_ID = #{productId}
+        ORDER BY CASE CM
+                     WHEN 'XS' THEN 1
+                     WHEN 'S' THEN 2
+                     WHEN 'M' THEN 3
+                     WHEN 'L' THEN 4
+                     WHEN 'XL' THEN 5
+                     WHEN 'XXL' THEN 6
+                     WHEN 'FREE' THEN 7
+                     ELSE 8
+                     END
+    </select>
+
+<!--하의 실측 사이즈 조회-->
+    <select id="getBottomProductDetailSizeList"
+            resultType="com.avengers.musinsa.domain.product.dto.response.BottomProductDetailSizeListResponse">
+    SELECT
+        BSD.BOTTOM_SIZE_DETAIL_ID AS BottomProductDetailSizeId,
+        TO_CHAR(BSD.CM) AS cm,
+        BSD.LENGTH AS length,
+        BSD.WAIST AS waist,
+        BSD.hip AS hip,
+        BSD.THIGH AS thigh,
+        BSD.RISE AS rise,
+        BSD.HEM_WIDTH AS hemWidth
+        FROM
+            BOTTOM_SIZE_DETAILS BSD
+    WHERE
+        BSD.PRODUCT_ID = #{productId}
+    ORDER BY CASE CM
+                 WHEN 'XS' THEN 1
+                 WHEN 'S' THEN 2
+                 WHEN 'M' THEN 3
+                 WHEN 'L' THEN 4
+                 WHEN 'XL' THEN 5
+                 WHEN 'XXL' THEN 6
+                 WHEN 'FREE' THEN 7
+                 ELSE 8
+                 END
+      </select>
+
+      <select id="getProductCategories"
             resultType="com.avengers.musinsa.domain.product.dto.response.ProductCategoryListResponse">
         SELECT
             PRODUCT_ID AS productId,
@@ -194,6 +253,7 @@
         SELECT DETAIL_DESCRIPTION AS detailDescription
             FROM PRODUCTS
         WHERE PRODUCT_ID = #{productId}
+
     </select>
 
 </mapper>

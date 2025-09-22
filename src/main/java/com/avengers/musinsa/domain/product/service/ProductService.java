@@ -1,19 +1,16 @@
 package com.avengers.musinsa.domain.product.service;
 
 import com.avengers.musinsa.domain.product.dto.response.*;
-
+import com.avengers.musinsa.domain.product.entity.Product;
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
-
 import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepository;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -97,6 +94,26 @@ public class ProductService {
         }
         return result;
     }
+
+    // 상품상세 사이즈 리스트 조회
+    public Object getProductDetailSizeList(Long productId) {
+        // 상품 정보 가져오기
+        ProductDetailResponse product = productRepository.findProductById(productId);
+
+        // 상품 컬럼에서 sizeDetailImageId를 찾는다.
+        Long sizeDetailImageId = product.getSizeDetailImageId();
+
+        // 1, 2 면 상의 실측 사이즈 조회
+        // 3, 4 면 하의 실측 사이즈 조회
+        if (sizeDetailImageId == 1L || sizeDetailImageId == 2L) {
+            return productRepository.getTopProductDetailSizeList(productId);
+        } else if (sizeDetailImageId == 3L || sizeDetailImageId == 4L) {
+            return productRepository.getBottomProductDetailSizeList(productId);
+        }
+        else{
+            return Collections.emptyList();
+        }
+
     // 상품 상세 설명 조회 api
     public ProductDetailDescriptionResponse getProductDetailDescription(Long productId) {
      return productRepository.getProductDetailDescription(productId);

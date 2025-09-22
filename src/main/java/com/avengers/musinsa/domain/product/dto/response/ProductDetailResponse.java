@@ -10,17 +10,20 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class ProductDetailResponse {
-    private  Long productId;
-    private  String productName;
-    private  int productLikeCnt;
-    private  int price;
+    private Long productId;
+    private String productName;
+    private int productLikeCnt;
+    private int price;
     private int brandDiscount;
     private int finalprice;
 
-    private  Long brandId;
-    private  String brandName;
-    private  int brandLikeCnt;
+    private Long brandId;
+    private String brandName;
+    private int brandLikeCnt;
 
     private List<ProductImage> productImageList = new ArrayList<>();
+
+    private Long sizeDetailImageId;
+    private String productSizeDetailImageURL;
 
 }

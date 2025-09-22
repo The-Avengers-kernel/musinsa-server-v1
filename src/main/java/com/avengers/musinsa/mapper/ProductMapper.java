@@ -35,6 +35,11 @@ public interface ProductMapper {
 
     List<CategoryProductResponse> getCategoryProductList();
 
+    // 상의 실측 사이즈 조회
+    List<TopProductDetailSizeListResponse> getTopProductDetailSizeList(Long productId);
+
+    // 하의 실측 사이즈 조회
+    List<BottomProductDetailSizeListResponse> getBottomProductDetailSizeList(Long productId);
 
     // 상품 상세 페이지 카테고리 조회
     ProductCategoryListResponse getProductCategories(Long productId);

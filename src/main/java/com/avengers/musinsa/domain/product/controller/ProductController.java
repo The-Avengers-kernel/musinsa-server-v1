@@ -58,6 +58,12 @@ public class ProductController {
         return productService.getCategoryProductList();
     }
 
+    // 상품상세 사이즈 리스트 조회
+    @GetMapping("{productId}/detail-size-list")
+    public Object getProductDetailSizeList(@PathVariable Long productId){
+        return productService.getProductDetailSizeList(productId);
+    }
+
     // 상품 상세 설명 조회 api
     @GetMapping("/{productId}/detail-Info")
     public ProductDetailDescriptionResponse getProductDetailDescription(@PathVariable Long productId){
