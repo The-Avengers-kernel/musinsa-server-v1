@@ -109,39 +109,45 @@
                ranked_products.price         as price,
                ranked_products.product_likes as productLikes
 
-        FROM (SELECT p.product_id,
-                     p.product_name,
-                     p.brand_id,
-                     p.price,
-                     p.product_likes,
-                     -- 가중치 계산
-                     (
-                         NVL(order_stats.total_orders, 0) * 10.0 +
-                         NVL(prs.rating_avg, 3.0) * 5.0 +
-                         NVL(p.product_likes, 0) * 0.01
-                         ) AS recommendation_score
-              FROM products p
+        FROM (
+                 SELECT p.product_id,
+                        p.product_name,
+                        p.brand_id,
+                        p.price,
+                        p.product_likes,
+                        -- 가중치 계산
+                        (
+                            NVL(order_stats.total_orders, 0) * 10.0 +
+                            NVL(prs.rating_avg, 3.0) * 5.0 +
+                            NVL(p.product_likes, 0) * 2.0
+                            ) AS recommendation_score
+                 FROM products p
 
-                       -- 주문 통계 (상품별 총 주문 수)
-                       LEFT JOIN (SELECT oi.product_id, COUNT(oi.order_item_id) AS total_orders
-                                  FROM order_items oi
-                                           JOIN orders o ON o.order_id = oi.order_id
-                                  WHERE o.order_status NOT IN ('취소', '반품완료')
-                                  GROUP BY oi.product_id) order_stats ON order_stats.product_id = p.product_id
+                 -- 주문 통계 (상품별 총 주문 수)
+                 LEFT JOIN (
+                     SELECT oi.product_id, COUNT(oi.order_item_id) AS total_orders
+                     FROM order_items oi
+                              JOIN orders o ON o.order_id = oi.order_id
+                     WHERE o.order_status NOT IN ('취소', '반품완료')
+                     GROUP BY oi.product_id
+                 ) order_stats ON order_stats.product_id = p.product_id
 
-                  -- 리뷰 평점 통계
-                       LEFT JOIN (SELECT prs.product_id,
-                                         prs.rating_avg
-                                  FROM product_review_stats prs) prs ON p.product_id = prs.product_id
+                 -- 리뷰 평점 통계
+                 LEFT JOIN (
+                     SELECT prs.product_id,
+                            prs.rating_avg
+                     FROM product_review_stats prs
+                 ) prs ON p.product_id = prs.product_id
 
-              WHERE p.product_category_id = #{categoryId}) ranked_products
+                 WHERE p.product_category_id = #{categoryId}
+             ) ranked_products
 
-                 JOIN brands b ON b.brand_id = ranked_products.brand_id
-                 JOIN product_images pimg ON pimg.product_id = ranked_products.product_id
+        JOIN brands b ON b.brand_id = ranked_products.brand_id
+        JOIN product_images pimg ON pimg.product_id = ranked_products.product_id
 
         WHERE pimg.image_type = 'MAIN'
         ORDER BY ranked_products.recommendation_score DESC
-            FETCH FIRST 50 ROWS ONLY
+        FETCH FIRST 50 ROWS ONLY
     </select>
 
     <select id="getCategoryProductList"
@@ -153,6 +159,41 @@
                pc.category_level             AS categoryLevel
         FROM product_categories pc
         ORDER BY product_category_id
+    </select>
+
+    <select id="getProductCategories"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductCategoryListResponse">
+        SELECT
+            PRODUCT_ID AS productId,
+            PRODUCT_NAME AS productName
+        FROM
+            PRODUCTS
+        WHERE
+            PRODUCT_ID = #{productId}
+    </select>
+
+    <select id="getProductCategoriesList"
+            resultType="com.avengers.musinsa.domain.product.entity.ProductCategory">
+        SELECT PRODUCT_CATEGORY_ID        AS productCategoryId,
+               PARENT_PRODUCT_CATEGORY_ID AS parentProductCategoryId,
+               CATEGORY_NAME              AS categoryName,
+               CATEGORY_LEVEL             AS categoryLevel
+        FROM PRODUCT_CATEGORIES
+        START WITH PRODUCT_CATEGORY_ID = (SELECT PRODUCT_CATEGORY_ID
+                                          FROM PRODUCTS
+                                          WHERE PRODUCT_ID = #{productId})
+        CONNECT BY PRIOR parent_product_category_id = product_category_id
+        ORDER BY CATEGORY_LEVEL
+    </select>
+
+
+
+
+    <select id ="getProductDetailDescription"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductDetailDescriptionResponse">
+        SELECT DETAIL_DESCRIPTION AS detailDescription
+            FROM PRODUCTS
+        WHERE PRODUCT_ID = #{productId}
     </select>
 
 </mapper>

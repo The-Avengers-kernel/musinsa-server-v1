@@ -27,4 +27,8 @@ public class BrandRepository {
     public List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter) {
         return this.brandMapper.findBrandsByKoreanFirstLetter(brandFirstLetter);
     }
+
+    public List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId) {
+        return this.brandMapper.getBrandsByCategoryId(brandCategoryId);
+    }
 }

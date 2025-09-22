@@ -14,4 +14,6 @@ public interface BrandMapper {
 
     List<BrandResponse> findBrandsByEnglishFirstLetter(char brandFirstLetter);
     List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter);
+
+    List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
 }

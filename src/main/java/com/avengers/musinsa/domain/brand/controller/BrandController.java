@@ -16,6 +16,7 @@ import java.util.List;
 public class BrandController {
     private final BrandService brandService;
 
+    //카테고리 - 브랜드 목록 전체 조회
     @GetMapping("/categories/brands")
     public List<BrandResponse> categoryBrands() {
         return brandService.getBrandList();
@@ -24,6 +25,11 @@ public class BrandController {
     @GetMapping("/categories/{brand-first-letter}/brands")
     public List<BrandResponse> getCategoryBrandsByFirstLetter(@PathVariable("brand-first-letter") char brandFirstLetter) {
         return brandService.getCategoryBrandsByFirstLetter(brandFirstLetter);
+    }
+    //카테고리 - 카테고리 별로 브랜드 목록 조회
+    @GetMapping("/categories/{brandCategoryId}/brands")
+    public List<BrandResponse> getBrandsByCategory(@PathVariable Long brandCategoryId) {
+        return brandService.getBrandsByCategoryId(brandCategoryId);
     }
 }
 

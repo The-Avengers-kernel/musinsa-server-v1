@@ -1,14 +1,11 @@
 package com.avengers.musinsa.mapper;
 
-import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
-import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
-import com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse;
-import com.avengers.musinsa.domain.product.dto.response.ProductVariantsResponse;
-import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
+import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import java.util.List;
 import com.avengers.musinsa.domain.product.entity.Product;
+import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -37,4 +34,14 @@ public interface ProductMapper {
     List<String> findProductOptionSizes(Long productId);
 
     List<CategoryProductResponse> getCategoryProductList();
+
+
+    // 상품 상세 페이지 카테고리 조회
+    ProductCategoryListResponse getProductCategories(Long productId);
+
+    // 상품 상세 페이지 카테고리 리스트 조회
+    List<ProductCategory> getProductCategoriesList(Long productId);
+
+    ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
+
 }
