@@ -1,6 +1,5 @@
 package com.avengers.musinsa.domain.product.controller;
 
-import ch.qos.logback.core.model.Model;
 import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.service.ProductService;
@@ -54,7 +53,7 @@ public class ProductController {
 
     // 상품상세 사이즈 리스트 조회
     @GetMapping("{productId}/detail-size-list")
-    public List<ProductDetailSizeList> getProductDetailSizeList(@PathVariable Long productId){
+    public Object getProductDetailSizeList(@PathVariable Long productId){
         return productService.getProductDetailSizeList(productId);
     }
 

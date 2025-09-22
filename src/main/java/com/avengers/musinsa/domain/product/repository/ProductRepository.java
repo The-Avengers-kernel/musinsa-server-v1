@@ -68,7 +68,12 @@ public class ProductRepository {
         return productMapper.getCategoryProductList();
     }
 
-    public List<ProductDetailSizeList> getProductDetailSizeList(Long productId) {
-        return productMapper.getProductDetailSizeList(productId);
+    // 상의 실측 사이즈 조회
+    public List<TopProductDetailSizeListResponse> getTopProductDetailSizeList(Long productId) {
+        return productMapper.getTopProductDetailSizeList(productId);
+    }
+    // 하의 실측 사이즈 조회
+    public List<BottomProductDetailSizeListResponse> getBottomProductDetailSizeList(Long productId) {
+        return productMapper.getBottomProductDetailSizeList(productId);
     }
 }

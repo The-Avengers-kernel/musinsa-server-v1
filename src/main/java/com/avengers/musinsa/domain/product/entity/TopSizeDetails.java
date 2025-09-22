@@ -11,7 +11,7 @@ public class TopSizeDetails {
     private Product product;
     private Long productId;
 
-    private Size size;
+    private Size CM;
     private BigDecimal length;
     private BigDecimal shoulderWidth;
     private BigDecimal chestWidth;
