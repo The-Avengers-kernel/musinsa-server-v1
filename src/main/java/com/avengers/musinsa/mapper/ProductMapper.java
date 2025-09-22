@@ -35,9 +35,13 @@ public interface ProductMapper {
 
     List<CategoryProductResponse> getCategoryProductList();
 
+
     // 상품 상세 페이지 카테고리 조회
     ProductCategoryListResponse getProductCategories(Long productId);
 
     // 상품 상세 페이지 카테고리 리스트 조회
     List<ProductCategory> getProductCategoriesList(Long productId);
+
+    ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
+
 }

@@ -189,4 +189,11 @@
 
 
 
+    <select id ="getProductDetailDescription"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductDetailDescriptionResponse">
+        SELECT DETAIL_DESCRIPTION AS detailDescription
+            FROM PRODUCTS
+        WHERE PRODUCT_ID = #{productId}
+    </select>
+
 </mapper>

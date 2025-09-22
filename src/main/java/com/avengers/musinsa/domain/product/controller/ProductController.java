@@ -58,4 +58,11 @@ public class ProductController {
         return productService.getCategoryProductList();
     }
 
+    // 상품 상세 설명 조회 api
+    @GetMapping("/{productId}/detail-Info")
+    public ProductDetailDescriptionResponse getProductDetailDescription(@PathVariable Long productId){
+        return productService.getProductDetailDescription(productId);
+
+    }
+
 }
