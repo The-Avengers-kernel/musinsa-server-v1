@@ -5,6 +5,7 @@ import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import java.util.List;
 import com.avengers.musinsa.domain.product.entity.Product;
+import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -36,4 +37,19 @@ public interface ProductMapper {
 
     // 상품 리뷰 목록 조회
     List<ProductReviewsResponse> getProductReviews(Long productId);
+  
+    // 상의 실측 사이즈 조회
+    List<TopProductDetailSizeListResponse> getTopProductDetailSizeList(Long productId);
+
+    // 하의 실측 사이즈 조회
+    List<BottomProductDetailSizeListResponse> getBottomProductDetailSizeList(Long productId);
+
+    // 상품 상세 페이지 카테고리 조회
+    ProductCategoryListResponse getProductCategories(Long productId);
+
+    // 상품 상세 페이지 카테고리 리스트 조회
+    List<ProductCategory> getProductCategoriesList(Long productId);
+
+    ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
+
 }

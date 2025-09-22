@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +28,15 @@ public class Product {
     private Long productImageId;
 
     private String productName;
-    private String detailImageUrl;
+    private String detailDescription;
     private Integer price;
     private Gender gender;
     private Integer productLikes;
     private Timestamp createdAt;
+
+    private SizeDetailImage sizeDetailImage;
+    private String sizeDetailImageName;
+    private String sizeDetailImageUrl;
 
     public void addProductImage(ProductImage productImage){
         if(this.productImageList == null){

@@ -32,6 +32,12 @@ public class ProductController {
         return productService.getProductVariants(productId);
     }
 
+    // 상풍 상세 페이지 카테고리 조회
+    @GetMapping("/{productId}/categories")
+    public ProductCategoryListResponse getProductCategories(@PathVariable Long productId){
+        return productService.getProductCategories(productId);
+    }
+
 
     @GetMapping("/main/recommendations/{gender}")
     public List<RecommendationResponse> recommendationProducts(@PathVariable String gender ) {
@@ -57,4 +63,17 @@ public class ProductController {
     public List<ProductReviewsResponse> getProductReviews(@PathVariable Long productId){
         return productService.getProductReviews(productId);
     }
+    // 상품상세 사이즈 리스트 조회
+    @GetMapping("{productId}/detail-size-list")
+    public Object getProductDetailSizeList(@PathVariable Long productId){
+        return productService.getProductDetailSizeList(productId);
+    }
+
+    // 상품 상세 설명 조회 api
+    @GetMapping("/{productId}/detail-Info")
+    public ProductDetailDescriptionResponse getProductDetailDescription(@PathVariable Long productId){
+        return productService.getProductDetailDescription(productId);
+
+    }
+
 }
