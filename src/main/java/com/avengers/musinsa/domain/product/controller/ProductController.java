@@ -39,7 +39,6 @@ public class ProductController {
     }
 
 
-    // 성별로 상품 조회
     @GetMapping("/main/recommendations/{gender}")
     public List<RecommendationResponse> recommendationProducts(@PathVariable String gender ) {
         Gender g = Gender.valueOf(gender.toUpperCase());
@@ -54,7 +53,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-
+    // 대중소 카테고리 가져오기
     @GetMapping("/categories/products")
     public List<CategoryProductResponse> categoryProducts() {
         return productService.getCategoryProductList();
