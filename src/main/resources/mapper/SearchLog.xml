@@ -1,6 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-</beans>
+<mapper namespace="com.avengers.musinsa.mapper.SearchLogMapper">
+    <insert id="insertSearchLog" parameterType="com.avengers.musinsa.domain.search.Entity.SearchLog">
+        <selectKey keyProperty="searchLogId" resultType="Long" order="BEFORE">
+            SELECT seq_search_logs.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO search_logs (
+        search_log_id,
+        search_text,
+        search_count,
+        user_id,
+        search_datetime
+        ) VALUES (
+        #{searchLogId},
+        #{searchText},
+        #{searchCount},
+        #{userId},
+        CURRENT_TIMESTAMP
+        )
+    </insert>
+</mapper>
