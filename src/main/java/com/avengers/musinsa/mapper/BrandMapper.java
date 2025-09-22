@@ -19,4 +19,6 @@ public interface BrandMapper {
     BrandLikeResponse findIsLikeBrand(Long userId, Long brandId);
   
     List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
+
+    void updateBrandLikeCnt(Long brandId);
 }

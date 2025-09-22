@@ -32,4 +32,7 @@ public class BrandRepository {
     public List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId) {
         return this.brandMapper.getBrandsByCategoryId(brandCategoryId);
     }
+    public void updateBrandLikeCnt(Long brandId) {
+        brandMapper.updateBrandLikeCnt(brandId);
+    }
 }
