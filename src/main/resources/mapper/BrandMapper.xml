@@ -14,10 +14,10 @@
                      b.BRAND_NAME_KR AS brandName,
                      b.BRAND_NAME_ENG AS brandEngName,
                      b.BRAND_IMAGE AS brandImageUrl,
-                     MAX(rvb.BRAND_VIEW_TIME) AS maxViewTime
-                 FROM recent_visited_brands rvb
-                          JOIN brands b ON rvb.BRAND_ID = b.BRAND_ID
-                 WHERE rvb.USER_ID = #{userId}
+                     MAX(rvl.BRAND_VIEW_TIME) AS maxViewTime
+                 FROM recent_visited_log rvl
+                          JOIN brands b ON rvl.BRAND_ID = b.BRAND_ID
+                 WHERE rvl.USER_ID = #{userId}
                  GROUP BY b.BRAND_ID, b.BRAND_NAME_KR, b.BRAND_NAME_ENG, b.BRAND_IMAGE
                  ORDER BY maxViewTime DESC
              )
