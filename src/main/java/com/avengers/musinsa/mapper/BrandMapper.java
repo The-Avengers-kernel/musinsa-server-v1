@@ -3,6 +3,7 @@ package com.avengers.musinsa.mapper;
 import com.avengers.musinsa.domain.brand.dto.BrandDto;
 import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
+import com.avengers.musinsa.domain.brand.entity.Brand;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,4 +26,6 @@ public interface BrandMapper {
     List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
 
     void updateBrandLikeCnt(Long brandId);
+
+    BrandResponse findByBrandName(@Param("brandName")String brandName);
 }

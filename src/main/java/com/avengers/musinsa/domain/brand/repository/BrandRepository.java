@@ -1,46 +1,29 @@
 package com.avengers.musinsa.domain.brand.repository;
 
+import com.avengers.musinsa.domain.brand.dto.BrandDto;
 import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
-import com.avengers.musinsa.domain.brand.dto.BrandDto;
-import com.avengers.musinsa.mapper.BrandMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import com.avengers.musinsa.domain.brand.entity.Brand;
+
 import java.util.List;
 
-@Repository
-@RequiredArgsConstructor
-public class BrandRepository {
-    private final BrandMapper brandMapper;
+public interface BrandRepository {
+    List<BrandResponse> getBrandList();
 
-    public List<BrandResponse> getBrandList() {
-        return brandMapper.getBrandList();
-    }
+    List<BrandDto> selectRecentVisitedBrands(Long userId);
 
-    public List<BrandDto> selectRecentVisitedBrands(Long userId){
-        return this.brandMapper.selectRecentVisitedBrands(userId);
-    }
+    List<BrandResponse> findBrandsByEnglishFirstLetter(char brandFirstLetter);
 
-    public List<BrandResponse> findBrandsByEnglishFirstLetter(char brandFirstLetter) {
-        return this.brandMapper.findBrandsByEnglishFirstLetter(brandFirstLetter);
-    }
+    List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter);
 
-    public List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter) {
-        return this.brandMapper.findBrandsByKoreanFirstLetter(brandFirstLetter);
-    }
+    void insertUserBrandLike(Long userId, Long brandId);
 
-    public void insertUserBrandLike(Long userId, Long brandId) {
-        brandMapper.insertUserBrandLike(userId,brandId);
-    }
+    BrandLikeResponse findIsLikedBrand(Long userId, Long brandId);
 
-    public BrandLikeResponse findIsLikedBrand(Long userId, Long brandId) {
-        return brandMapper.findIsLikeBrand(userId, brandId);
-    }
-  
-    public List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId) {
-        return this.brandMapper.getBrandsByCategoryId(brandCategoryId);
-    }
-    public void updateBrandLikeCnt(Long brandId) {
-        brandMapper.updateBrandLikeCnt(brandId);
-    }
+    List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
+
+    void updateBrandLikeCnt(Long brandId);
+
+    BrandResponse findByBrandName(String brandName);
+
 }

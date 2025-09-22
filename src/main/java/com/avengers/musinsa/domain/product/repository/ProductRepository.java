@@ -1,6 +1,7 @@
 package com.avengers.musinsa.domain.product.repository;
 
 import com.avengers.musinsa.domain.product.dto.response.*;
+import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Product;
 
 import com.avengers.musinsa.domain.product.entity.Gender;
@@ -11,6 +12,7 @@ import com.avengers.musinsa.mapper.ProductMapper;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository // 이 클래스는 데이터 접근 계층
@@ -93,5 +95,13 @@ public class ProductRepository {
     // 상품 상세 설명 조회 api
     public ProductDetailDescriptionResponse getProductDetailDescription (Long productId){
         return productMapper.getProductDetailDescription(productId);
+    }
+
+    public List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId) {
+        return productMapper.findProductsByBrandId(brandId);
+    }
+
+    public List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords) {
+        return productMapper.findProductsByKeyword(keywords);
     }
 }
