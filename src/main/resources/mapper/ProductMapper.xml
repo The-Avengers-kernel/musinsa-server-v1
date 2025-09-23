@@ -16,12 +16,16 @@
                ((100 - b.BRAND_DISCOUNT) / 100) * p.price AS finalprice,
 
                p.SIZE_DETAIL_IMAGE_ID AS sizeDetailImageId,
-               SDI.IMAGE                                  AS productSizeDetailImageURL
+               SDI.IMAGE                                  AS productSizeDetailImageURL,
+
+               upl.LIKED                                  AS userProductLike,
+               ubl.LIKED                                  AS userBrandLike
+
         FROM products p
-                 JOIN
-             brands b ON p.brand_id = b.brand_id
-                 JOIN
-             SIZE_DETAIL_IMAGES SDI ON p.SIZE_DETAIL_IMAGE_ID = SDI.SIZE_DETAIL_IMAGE_ID
+                 JOIN brands b ON p.brand_id = b.brand_id
+                 JOIN SIZE_DETAIL_IMAGES SDI ON p.SIZE_DETAIL_IMAGE_ID = SDI.SIZE_DETAIL_IMAGE_ID
+                 Left JOIN user_product_likes upl ON upl.product_id = p.product_id AND upl.user_id = #{userId}
+                 Left JOIN user_brand_likes ubl ON ubl.brand_id = b.brand_id AND ubl.user_id = #{userId}
         WHERE p.product_id = #{productId}
     </select>
 

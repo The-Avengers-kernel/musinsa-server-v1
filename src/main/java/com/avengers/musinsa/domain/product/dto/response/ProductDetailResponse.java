@@ -26,4 +26,8 @@ public class ProductDetailResponse {
     private Long sizeDetailImageId;
     private String productSizeDetailImageURL;
 
+    //레코드가 없을 때 NULL 확인을 위해 Integer로 선언
+    private Integer userProductLike;
+    private Integer userBrandLike;
+
 }
