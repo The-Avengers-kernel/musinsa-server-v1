@@ -14,6 +14,10 @@
                      b.BRAND_NAME_KR AS brandName,
                      b.BRAND_NAME_ENG AS brandEngName,
                      b.BRAND_IMAGE AS brandImageUrl,
+                     MAX(rvb.BRAND_VIEW_TIME) AS maxViewTime
+                 FROM recent_visited_brands rvb
+                          JOIN brands b ON rvb.BRAND_ID = b.BRAND_ID
+                 WHERE rvb.USER_ID = #{userId}
                      MAX(sbl.SEARCH_DATETIME) AS maxViewTime
                  FROM SEARCH_BRAND_LOGS sbl
                           JOIN brands b ON sbl.SEARCH_BRAND_ID = b.BRAND_ID
@@ -146,6 +150,7 @@
         from brands b
         where brand_name_eng = #{brandName} or brand_name_kr = #{brandName}
     </select>
+
 
 </mapper>
 

@@ -1,6 +1,7 @@
-package com.avengers.musinsa.domain.other.entity;
+package com.avengers.musinsa.domain.search.entity;
 
 import lombok.Getter;
+
 
 @Getter
 public class SearchKeyword {
