@@ -249,6 +249,7 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
+
     private String preprocessKeyword(String keyword) {
         System.out.println(keyword);
         if (keyword == null || keyword.trim().isEmpty()) {

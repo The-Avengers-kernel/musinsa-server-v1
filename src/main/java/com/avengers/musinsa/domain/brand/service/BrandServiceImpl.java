@@ -3,6 +3,7 @@ package com.avengers.musinsa.domain.brand.service;
 import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
 import com.avengers.musinsa.domain.brand.dto.BrandDto;
+import com.avengers.musinsa.domain.brand.dto.response.UserBrandStatus;
 import com.avengers.musinsa.domain.brand.repository.BrandRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -53,30 +54,36 @@ public class BrandServiceImpl implements BrandService{
     }
 
     @Override
-    public BrandLikeResponse addBrandLikedByUser(Long userId, Long brandId) {
-        //user_brand_like 테이블에 레코드 추가
-        brandRepository.insertUserBrandLike(userId, brandId);
-        brandRepository.plusBrandLikeCnt(brandId);
-        //레코드 추가 후 회원과 브랜드의 현재 좋아요 상태를 반환
-        return brandRepository.getIsLikedBrand(userId, brandId);
-    }
-
-    @Override
     public List<BrandResponse> findByBrandName(String brandName) {
         return brandRepository.findByBrandName(brandName);
     }
 
-
-    //이미 좋아요 한 브랜드 좋아요 상태 바꾸기
-    @Transactional
-    // → 두 작업을 하나의 트랜잭션으로 묶어 데이터 정합성을 보장
     @Override
-    public BrandLikeResponse switchBrandLike(Long userId, Long brandId) {
-        //liked 컬럼을 0 ↔ 1
-        brandRepository.switchBrandLike(userId,brandId);
-        //브랜드 테이블의 좋아요 수를 동기화
-        brandRepository.updateBrandLikeCnt(brandId);
-        //좋아요상태 변경 후 현재 좋아요 상태를 반환
-        return brandRepository.getIsLikedBrand(userId, brandId);
+    @Transactional
+    public BrandLikeResponse BrandLikeToggle(Long userId, Long brandId) {
+        UserBrandStatus status = brandRepository.getUserBrandStatus(userId, brandId);
+        //레코드가 없을 때
+        if( status == null){
+            //user_brand_like 테이블에 레코드 추가
+            brandRepository.insertUserBrandLike(userId, brandId);
+            //brands 테이블 좋아요 수 +1
+            brandRepository.plusBrandLikeCnt(brandId);
+            //레코드 추가 후 회원과 브랜드의 현재 좋아요 상태를 반환
+            return brandRepository.getIsLikedBrand(userId, brandId);
+        }
+        //이미 좋아요 한 브랜드 좋아요 상태 바꾸기
+        else{
+            //liked 값 확인 (0 또는 1)
+            Integer currentLiked = status.getLiked();
+            //liked 컬럼을 0 ↔ 1
+            brandRepository.switchBrandLike(userId,brandId);
+            //브랜드 테이블의 좋아요 수를 동기화
+            if (currentLiked != null && currentLiked == 1){
+                brandRepository.minusBrandLikeCnt(brandId);
+            } else{
+                brandRepository.plusBrandLikeCnt(brandId);}
+            //좋아요상태 변경 후 현재 좋아요 상태를 반환
+            return brandRepository.getIsLikedBrand(userId, brandId);
+        }
     }
 }

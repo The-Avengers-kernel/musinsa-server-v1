@@ -1,6 +1,5 @@
-package com.avengers.musinsa.domain.product.controller;
+/*package com.avengers.musinsa.domain.product.controller;
 
-import com.avengers.musinsa.domain.product.dto.response.ProductLikeResponse;
 import com.avengers.musinsa.domain.product.service.ProductService;
 import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +26,5 @@ public class ProductLikeController {
             return productService.addProductLikedByUser(userId, productId);
         }
     }
-}
+}*/
 

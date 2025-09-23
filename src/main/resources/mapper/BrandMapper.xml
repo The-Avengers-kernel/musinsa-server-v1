@@ -57,6 +57,16 @@
     </select>
 
 
+    <!--첫 좋아요 여부를 null 체크(레코드 확인)-->
+    <select id="getUserBrandStatus"
+            resultType="com.avengers.musinsa.domain.brand.dto.response.UserBrandStatus">
+        SELECT ubl.liked AS liked
+        FROM BRANDS b
+        LEFT JOIN USER_BRAND_LIKES ubl
+        ON b.BRAND_ID = ubl.BRAND_ID AND ubl.USER_ID = #{userId}
+        WHERE b.BRAND_ID = #{brandId}
+    </select>
+
     <!--브랜드 최초 좋아요 하기(레코드 추가)-->
     <insert id="insertUserBrandLike">
         INSERT INTO user_brand_likes (user_brand_like_id, user_id, brand_id, liked) VALUES (user_brand_likes_seq.NEXTVAL,#{userId}, #{brandId}, 1)
@@ -69,8 +79,16 @@
         WHERE BRAND_ID = #{brandId}
     </update>
 
+    <!--브랜드 테이블의 좋아요 수-1-->
+    <update id="minusBrandLikeCnt">
+        UPDATE BRANDS
+        SET BRAND_LIKES = BRAND_LIKES - 1
+        WHERE BRAND_ID = #{brandId}
+    </update>
+
+
     <!--레코드 추가 후 회원과 브랜드의 현재 좋아요 상태를 반환-->
-    <select id="getIsLikedProduct"
+    <select id="getIsLikedBrand"
             resultType="com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse">
         SELECT brand_id as brandId,
                user_id as userId,

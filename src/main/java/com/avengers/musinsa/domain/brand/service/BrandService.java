@@ -19,11 +19,8 @@ public interface BrandService {
     //카테고리 - 초성(ㄱ, A)로 브랜드 조회
     List<BrandResponse> getCategoryBrandsByFirstLetter(char brandFirstLetter);
 
-    //브랜드 최초 좋아요 하기(레코드 추가)
-    BrandLikeResponse addBrandLikedByUser(Long userId, Long brandId);
-
     List<BrandResponse> findByBrandName(String brandName);
 
-    //이미 좋아요한 브랜드 좋아요 하기/취소하기(patch)
-    BrandLikeResponse switchBrandLike(Long userId, Long brandId);
+    //브랜드 좋아요 토글
+    BrandLikeResponse BrandLikeToggle(Long userId, Long brandId);
 }
