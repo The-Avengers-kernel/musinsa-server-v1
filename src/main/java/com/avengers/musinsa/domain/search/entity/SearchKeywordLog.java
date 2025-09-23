@@ -1,12 +1,11 @@
 package com.avengers.musinsa.domain.search.entity;
 
 import com.avengers.musinsa.domain.user.entity.User;
-import java.sql.Timestamp;
-import lombok.Getter;
 
-@Getter
-public class SearchLog {
-    private Long searchLogId;
+import java.sql.Timestamp;
+
+public class SearchKeywordLog {
+    private Long SearchKeywordLogId;
 
     private User user;
     private Long userId;

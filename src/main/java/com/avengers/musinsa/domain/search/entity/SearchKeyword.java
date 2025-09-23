@@ -2,6 +2,7 @@ package com.avengers.musinsa.domain.search.entity;
 
 import lombok.Getter;
 
+
 @Getter
 public class SearchKeyword {
     private Long searchKeywordId;
