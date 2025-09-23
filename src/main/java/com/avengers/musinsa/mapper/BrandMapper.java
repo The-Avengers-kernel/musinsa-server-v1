@@ -21,11 +21,15 @@ public interface BrandMapper {
 
     void insertUserBrandLike(@Param("userId") Long userId, @Param("brandId") Long brandId);
 
-    BrandLikeResponse findIsLikeBrand(Long userId, Long brandId);
+    BrandLikeResponse getIsLikeBrand(Long userId, Long brandId);
   
     List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
+
+    void plusBrandLikeCnt(Long brandId);
 
     void updateBrandLikeCnt(Long brandId);
 
     List<BrandResponse> findByBrandName(@Param("brandName")String brandName);
+
+    BrandLikeResponse findIsLikeBrand(Long userId, Long brandId);
 }

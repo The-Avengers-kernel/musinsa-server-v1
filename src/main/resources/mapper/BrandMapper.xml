@@ -61,13 +61,13 @@
         INSERT INTO user_brand_likes (user_brand_like_id, user_id, brand_id, liked) VALUES (user_brand_likes_seq.NEXTVAL,#{userId}, #{brandId}, 1)
     </insert>
 
-    <update id="updateBrandLikeCnt">
+    <update id="plusBrandLikeCnt">
         UPDATE BRANDS
         SET BRAND_LIKES = BRAND_LIKES + 1
         WHERE BRAND_ID = #{brandId}
     </update>
 
-    <select id="findIsLikeBrand"
+    <select id="getIsLikeBrand"
             resultType="com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse">
         SELECT brand_id as brandId,
                user_id as userId,

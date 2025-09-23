@@ -20,10 +20,13 @@ public interface BrandRepository {
 
     BrandLikeResponse findIsLikedBrand(Long userId, Long brandId);
 
-    List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
-
     void updateBrandLikeCnt(Long brandId);
 
     List<BrandResponse> findByBrandName(String brandName);
+
+
+    BrandLikeResponse getIsLikedBrand(Long userId, Long brandId);
+    List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
+    void plusBrandLikeCnt(Long brandId);
 
 }
