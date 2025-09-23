@@ -3,7 +3,6 @@ package com.avengers.musinsa.domain.brand.service;
 import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
 import com.avengers.musinsa.domain.brand.dto.BrandDto;
-import com.avengers.musinsa.domain.brand.entity.Brand;
 import com.avengers.musinsa.domain.brand.repository.BrandRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 
@@ -63,7 +62,7 @@ public class BrandServiceImpl implements BrandService {
     // 브랜드 이름 찾기
     // 한글이면 그대로 검색, 영어면 대문자로 변환해서 검색
     @Override
-    public BrandResponse findByBrandName(String brandName) {
+    public List<BrandResponse> findByBrandName(String brandName) {
         String searchKeyword = normalizeSearchKeyword(brandName);
         return brandRepositoryImpl.findByBrandName(searchKeyword);
     }

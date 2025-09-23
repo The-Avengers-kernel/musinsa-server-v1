@@ -23,5 +23,5 @@ public interface BrandService {
 
 
     // 이름으로 브랜드 찾기
-    BrandResponse findByBrandName(String brandName);
+    List<BrandResponse> findByBrandName(String brandName);
 }

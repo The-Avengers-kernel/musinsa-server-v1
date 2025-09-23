@@ -46,7 +46,7 @@ public class BrandRepositoryImpl implements BrandRepository {
     }
 
     @Override
-    public BrandResponse findByBrandName(String brandName) {
+    public List<BrandResponse> findByBrandName(String brandName) {
         return this.brandMapper.findByBrandName(brandName);
     }
 

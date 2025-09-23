@@ -180,10 +180,12 @@ public class ProductService {
     // 상품 검색
     public SearchResponse searchProducts(String keyword) {
         // 브랜드 검색 먼저 시도
-        BrandResponse brand = brandRepository.findByBrandName(keyword);
+        // 브랜드 두 개 검색될 경우도 고려하여 코드 작성
+        List<BrandResponse> brandList = brandRepository.findByBrandName(keyword);
 
-        if (brand != null) {
+        if (!brandList.isEmpty()) {
             // 브랜드 검색인 경우
+            BrandResponse brand = brandList.getFirst();
             List<SearchResponse.ProductInfo> brandProducts =
                     productRepository.findProductsByBrandId(brand.getBrandId());
 

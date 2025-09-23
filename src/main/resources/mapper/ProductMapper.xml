@@ -290,7 +290,6 @@
                p.product_id as productId,
                pi.image_url as productImage,
                p.product_name as productName,
-               b.brand_name as brandName,
                p.price,
                p.product_likes as productLikes
         FROM products p

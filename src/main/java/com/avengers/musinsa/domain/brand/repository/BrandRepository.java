@@ -24,6 +24,6 @@ public interface BrandRepository {
 
     void updateBrandLikeCnt(Long brandId);
 
-    BrandResponse findByBrandName(String brandName);
+    List<BrandResponse> findByBrandName(String brandName);
 
 }

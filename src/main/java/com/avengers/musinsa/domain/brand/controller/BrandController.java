@@ -35,12 +35,9 @@ public class BrandController {
     }
 
     @GetMapping("/get/brand/{brandName}")
-    public BrandResponse getBrand(@PathVariable String brandName){
+    public List<BrandResponse> getBrand(@PathVariable String brandName){
         System.out.println(brandName);
-        BrandResponse brand = brandServiceImpl.findByBrandName(brandName);
-        System.out.println(brand.getBrandNameEn());
-        System.out.println(brand.getBrandNameKr());
-
+        List<BrandResponse> brand = brandServiceImpl.findByBrandName(brandName);
         return brand;
     }
 }
