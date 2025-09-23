@@ -179,6 +179,7 @@
         WHERE
             r.PRODUCT_ID=#{productId}
         ORDER BY r.HELP_COUNT DESC
+
     </select>
    <!--상의 실측 사이즈 조회-->
     <select id="getTopProductDetailSizeList"
