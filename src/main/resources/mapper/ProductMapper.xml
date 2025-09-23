@@ -270,4 +270,56 @@
 
     </select>
 
+
+
+    <select id="findByBrandName" resultType="com.avengers.musinsa.domain.brand.dto.response.BrandResponse">
+        SELECT brand_id as brandId,
+               brand_name_kr as brandNameKr,
+               brand_name_eng as brandNameEn,
+               brand_image as brandImage,
+               brand_likes as brandLikes
+        FROM brands
+        WHERE brand_name_kr = #{keyword} OR brand_name_eng = #{keyword}
+        LIMIT 1
+    </select>
+
+    <select id="findProductsByBrandId" resultType="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
+        SELECT b.brand_id as brandId,
+               b.brand_name_kr as brandNameKr,
+               b.brand_name_eng as brandNameEn,
+               p.product_id as productId,
+               pi.image_url as productImage,
+               p.product_name as productName,
+               p.price,
+               p.product_likes as productLikes
+        FROM products p
+                 JOIN brands b ON p.brand_id = b.brand_id
+                 LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
+        WHERE p.brand_id = #{brandId}
+        ORDER BY p.product_likes DESC
+    </select>
+
+
+
+    <select id="findProductsByKeyword" resultType="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
+        SELECT b.brand_id as brandId,
+        b.brand_name_kr as brandNameKr,
+        b.brand_name_eng as brandNameEn,
+        p.product_id as productId,
+        pi.image_url as productImage,
+        p.product_name as productName,
+        p.price,
+        p.product_likes as productLikes
+        FROM products p
+        JOIN brands b ON p.brand_id = b.brand_id
+        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
+        WHERE (
+        <foreach collection="keywords" item="keyword" separator=" OR ">
+            p.product_name LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'
+        </foreach>
+        )
+        ORDER BY p.product_likes DESC
+        FETCH FIRST 50 ROWS ONLY
+    </select>
+
 </mapper>

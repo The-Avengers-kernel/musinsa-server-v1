@@ -1,6 +1,9 @@
 package com.avengers.musinsa.domain.product.service;
 
+import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
+import com.avengers.musinsa.domain.brand.repository.BrandRepository;
 import com.avengers.musinsa.domain.product.dto.response.*;
+import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class ProductService {
     // 의존성 주입
     private final ProductRepository productRepository;
+    private final BrandRepository brandRepository;
 
     public ProductDetailResponse getProductById(Long productId) {
         ProductDetailResponse productInfo = productRepository.findProductById(productId);
@@ -170,5 +174,56 @@ public class ProductService {
 
         productCategoryListResponse.getProductCategoryList().addAll(productCategoryList);
         return productCategoryListResponse;
+    }
+
+
+    // 상품 검색
+    public SearchResponse searchProducts(String keyword) {
+        // 브랜드 검색 먼저 시도
+        // 브랜드 두 개 검색될 경우도 고려하여 코드 작성
+        List<BrandResponse> brandList = brandRepository.findByBrandName(keyword);
+
+        if (!brandList.isEmpty()) {
+            // 브랜드 검색인 경우
+            BrandResponse brand = brandList.getFirst();
+            List<SearchResponse.ProductInfo> brandProducts =
+                    productRepository.findProductsByBrandId(brand.getBrandId());
+
+            SearchResponse.BrandInfo brandInfo = SearchResponse.BrandInfo.builder()
+                    .brandId(brand.getBrandId())
+                    .brandNameKr(brand.getBrandNameKr())
+                    .brandNameEn(brand.getBrandNameEn())
+                    .brandImage(brand.getBrandImage())
+                    .brandLikes(brand.getBrandLikes())
+                    .totalCount(brandProducts.size())
+                    .products(brandProducts)
+                    .build();
+
+            return SearchResponse.builder()
+                    .searchKeyword(keyword)
+                    .brandInfo(brandInfo)
+                    .build();
+        } else {
+            // 상품 검색인 경우
+            System.out.println("상품검색 시작");
+            String[] keywords = keyword.trim().split("\\s+");
+            for(String key : keywords){
+                System.out.println("키워드 = " + key);
+            }
+            List<SearchResponse.ProductInfo> products =
+                    productRepository.findProductsByKeyword(keywords);
+
+            if (!products.isEmpty()){
+                return SearchResponse.builder()
+                        .searchKeyword(keyword)
+                        .brandInfo(null)
+                        .totalCount(products.size())
+                        .products(products)
+                        .build();
+            }else{
+                return null;
+            }
+
+        }
     }
 }

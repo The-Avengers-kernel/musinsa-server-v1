@@ -1,10 +1,12 @@
 package com.avengers.musinsa.domain.brand.controller;
 
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
+import com.avengers.musinsa.domain.brand.entity.Brand;
 import com.avengers.musinsa.domain.brand.service.BrandService;
+import com.avengers.musinsa.domain.brand.service.BrandServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +33,13 @@ public class BrandController {
     @GetMapping("/categories/{brandCategoryId}/brands")
     public List<BrandResponse> getBrandsByCategory(@PathVariable Long brandCategoryId) {
         return brandService.getBrandsByCategoryId(brandCategoryId);
+    }
+
+    @GetMapping("/get/brand/{brandName}")
+    public List<BrandResponse> getBrand(@PathVariable String brandName){
+        System.out.println(brandName);
+        List<BrandResponse> brand = brandService.findByBrandName(brandName);
+        return brand;
     }
 }
 

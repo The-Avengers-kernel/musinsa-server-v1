@@ -1,7 +1,7 @@
 package com.avengers.musinsa.domain.product.controller;
 
-import ch.qos.logback.core.model.Model;
 import com.avengers.musinsa.domain.product.dto.response.*;
+import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.service.ProductService;
 import java.util.List;
@@ -39,6 +39,7 @@ public class ProductController {
     }
 
 
+    // 무신사 추천순
     @GetMapping("/main/recommendations/{gender}")
     public List<RecommendationResponse> recommendationProducts(@PathVariable String gender ) {
         Gender g = Gender.valueOf(gender.toUpperCase());
@@ -55,7 +56,7 @@ public class ProductController {
 
     // 대중소 카테고리 가져오기
     @GetMapping("/categories/products")
-    public List<CategoryProductResponse> getProductCategories() {
+    public List<CategoryProductResponse> categoryProducts() {
         return productService.getCategoryProductList();
     }
 
@@ -77,4 +78,19 @@ public class ProductController {
 
     }
 
+
+    // 상품 검색에 따른 상품 목록 조회
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProducts(@RequestParam("keyword") String keyword) {
+        System.out.println(keyword);
+
+        SearchResponse response = productService.searchProducts(keyword);
+
+        if(response != null) {
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.ok("검색 결과가 없습니다.");
+        }
+
+    }
 }
