@@ -9,6 +9,8 @@ import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepositoryImpl;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
+import com.avengers.musinsa.domain.search.Dto.SearchSaveDto;
+import com.avengers.musinsa.domain.search.Service.SearchLogService;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
 
 import java.util.*;
@@ -24,6 +26,7 @@ public class ProductServiceImpl implements ProductService{
     // 의존성 주입
     private final ProductRepositoryImpl productRepository;
     private final BrandRepository brandRepository;
+    private final SearchLogService searchLogService;
 
     @Override
     public ProductDetailResponse getProductById(Long productId) {
@@ -187,7 +190,7 @@ public class ProductServiceImpl implements ProductService{
 
     // 상품 검색
     @Override
-    public SearchResponse searchProducts(String keyword) {
+    public SearchResponse searchProducts(String keyword, Long userId) {
         // 브랜드 검색 먼저 시도
         // 브랜드 두 개 검색될 경우도 고려하여 코드 작성
         List<BrandResponse> brandList = brandRepository.findByBrandName(keyword);
@@ -195,6 +198,17 @@ public class ProductServiceImpl implements ProductService{
         if (!brandList.isEmpty()) {
             // 브랜드 검색인 경우
             BrandResponse brand = brandList.getFirst();
+
+            //저장할 브랜드 정보 저장
+            SearchSaveDto.searchBrandLogSaveDto brandLogSaveDto = SearchSaveDto.searchBrandLogSaveDto.builder()
+                    .userId(userId)
+                    .brandId(brand.getBrandId())
+                    .build();
+
+            // 브랜드 검석 기록 저장
+            searchLogService.saveSearchBrandLog(brand, userId);
+
+
             List<SearchResponse.ProductInfo> brandProducts =
                     productRepository.findProductsByBrandId(brand.getBrandId());
 
@@ -215,6 +229,8 @@ public class ProductServiceImpl implements ProductService{
         } else {
             // 상품 검색인 경우
             System.out.println("상품검색 시작");
+            searchLogService.saveSearchKeywordLogs(keyword, userId);
+
             String[] keywords = keyword.trim().split("\\s+");
             for(String key : keywords){
                 System.out.println("키워드 = " + key);

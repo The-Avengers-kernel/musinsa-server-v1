@@ -58,4 +58,9 @@ public interface ProductRepository {
 
     List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords);
 
+    //검색 시 검색어 로그 테이블에 검색 정보 저장하기.
+    void saveSearchKeywordLog(String keyword);
+
+    //검색 시 브랜드 로그 테이블에 검색 정보 저장하기.
+    void saveSearchBrandLog(String brand);
 }

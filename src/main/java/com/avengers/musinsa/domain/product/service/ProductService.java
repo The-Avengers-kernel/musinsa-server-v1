@@ -39,5 +39,5 @@ public interface ProductService {
     public ProductCategoryListResponse getProductCategories(Long productId);
 
     // 상품 검색
-    public SearchResponse searchProducts(String keyword);
+    public SearchResponse searchProducts(String keyword, Long userId);
 }

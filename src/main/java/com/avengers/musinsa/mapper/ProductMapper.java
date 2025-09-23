@@ -56,4 +56,8 @@ public interface ProductMapper {
     List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId);
 
     List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords);
+
+    void saveSearchKeywordLog(String keyword);
+
+    void saveSearchBrandLog(String Brand);
 }

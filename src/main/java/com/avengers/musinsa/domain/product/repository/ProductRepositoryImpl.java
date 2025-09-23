@@ -121,8 +121,22 @@ public class ProductRepositoryImpl implements ProductRepository {
         return productMapper.findProductsByBrandId(brandId);
     }
 
+    // 검색어로 상품 목록 찾기
     @Override
     public List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords) {
         return productMapper.findProductsByKeyword(keywords);
     }
+
+    //검색 시 검색어 로그 테이블에 검색 정보 저장하기.
+    @Override
+    public void saveSearchKeywordLog(String keyword){
+        productMapper.saveSearchKeywordLog(keyword);
+    }
+    //검색 시 브랜드 로그 테이블에 검색 정보 저장하기.
+    @Override
+    public void saveSearchBrandLog(String brand){
+        productMapper.saveSearchBrandLog(brand);
+    }
+
+
 }
