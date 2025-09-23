@@ -58,5 +58,29 @@
         WHERE oi.order_id = #{orderId}
     </select>
 
+    <!-- 주문 상품 리스트(상품이미지, 사이즈, 개수, 금액) -->
+
+    <select id="getOrderSheetProducts" resultType="com.avengers.musinsa.domain.order.dto.response.OrderProductDTO">
+        SELECT
+                p.PRODUCT_ID AS productId,
+                p.PRODUCT_NAME AS productName,
+                b.BRAND_NAME_KR AS "brand",
+                pi.IMAGE_URL AS productImage,
+                pv.SIZE_VALUE AS "size",
+                pv.COLOR_VALUE AS "color",
+                pv.MATERIAL_VALUE AS material,
+                p.PRICE AS unitPrice,
+                pv.STOCK_QUANTITY AS quantity
+            FROM PRODUCTS p
+            JOIN BRANDS b ON p.BRAND_ID = b.BRAND_ID
+            JOIN PRODUCT_IMAGES pi ON p.PRODUCT_ID = pi.PRODUCT_ID AND pi.IMAGE_TYPE = 'MAIN'
+            LEFT JOIN PRODUCT_VARIANTS pv ON p.PRODUCT_ID = pv.PRODUCT_ID
+            WHERE p.PRODUCT_ID IN
+            <foreach collection="productIds" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+    </select>
+
+
 
 </mapper>

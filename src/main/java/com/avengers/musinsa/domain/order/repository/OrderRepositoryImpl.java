@@ -1,6 +1,7 @@
 package com.avengers.musinsa.domain.order.repository;
 
 import com.avengers.musinsa.domain.order.dto.response.OrderDto;
+import com.avengers.musinsa.domain.order.dto.response.OrderProductDTO;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import com.avengers.musinsa.domain.order.entity.Order;
 import com.avengers.musinsa.mapper.OrderMapper;
@@ -32,6 +33,16 @@ public class OrderRepositoryImpl implements OrderRepository{
         System.out.println("첫번째값 호출");
         return orderItemInfoList;
     }
+
+    //주문상품 리스트
+    public List<OrderProductDTO> getOrderSheetProducts(List<Long> productIds){
+        return orderMapper.getOrderSheetProducts(productIds);
+    }
+
+
+
+
+
 
 
 }

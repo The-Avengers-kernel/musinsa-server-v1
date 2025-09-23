@@ -17,8 +17,8 @@ public class OrderProductDTO {
     private String size;
     private String color;
     private String material;
-    private Integer quantity;
-    private Integer totalPrice;
+    private Integer unitPrice; // 단가 (변경)
+    private Integer quantity; // 수량
 
 
 }

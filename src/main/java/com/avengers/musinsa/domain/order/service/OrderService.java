@@ -8,6 +8,7 @@ import com.avengers.musinsa.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -60,6 +61,42 @@ public class OrderService {
                 .build();
 
         return completionOrderSummaryResponse;
+    }
+
+    //주문상품 리스트
+    // 상품 하나하나 데이터베이스에서 가져오는 것.
+    // 가져와서 상품 하나하나를 리스트에 담는다.
+    // 가져온 상품에서 가격을 추출한다음. 해당 가격과 갯수를 곱해서 price 에 값을 누적
+    // 최종 반환 객체에, 상품의 리스트와, 누적된 가격을 set 해줌
+
+
+    public OrderProductResponse getOrderSheetProducts(List<Long> productIds) {
+        List<OrderProductDTO> orderProducts = orderRepository.getOrderSheetProducts(productIds);
+
+        // 상품 정보(이미지, 사이즈, 개수, 금액) 추출
+        List<OrderProductDTO> orderProductList = new ArrayList<>();
+        for (OrderProductDTO dto : orderProducts) {
+            orderProductList.add(new OrderProductDTO(
+                    dto.getProductId(),
+                    dto.getProductName(),
+                    dto.getBrand(),
+                    dto.getProductImage(),
+                    dto.getSize(),
+                    dto.getColor(),
+                    dto.getMaterial(),
+                    dto.getUnitPrice(),
+                    dto.getQuantity()
+            ));
+        }
+
+        //총금액 계산
+        Integer totalPrice = orderProductList.stream()
+                .mapToInt(p -> p.getUnitPrice() * p.getQuantity())
+                .sum();
+
+
+        return new OrderProductResponse(orderProductList, totalPrice);
+
     }
 
 

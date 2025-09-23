@@ -2,6 +2,7 @@ package com.avengers.musinsa.mapper;
 
 import com.avengers.musinsa.domain.order.dto.OrderCompletionInfoDto;
 import com.avengers.musinsa.domain.order.dto.response.OrderDto;
+import com.avengers.musinsa.domain.order.dto.response.OrderProductDTO;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import com.avengers.musinsa.domain.order.entity.Order;
 import org.apache.ibatis.annotations.Mapper;
@@ -28,6 +29,7 @@ public interface OrderMapper {
 
 
     //주문상품 리스트
+    List<OrderProductDTO> getOrderSheetProducts(@Param("productIds") List<Long> productIds );
 
 
 
