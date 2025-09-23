@@ -207,6 +207,9 @@ public class ProductService {
             // 상품 검색인 경우
             System.out.println("상품검색 시작");
             String[] keywords = keyword.trim().split("\\s+");
+            for(String key : keywords){
+                System.out.println("키워드 = " + key);
+            }
             List<SearchResponse.ProductInfo> products =
                     productRepository.findProductsByKeyword(keywords);
 
