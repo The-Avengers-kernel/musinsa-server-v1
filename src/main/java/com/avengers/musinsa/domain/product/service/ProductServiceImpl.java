@@ -228,10 +228,10 @@ public class ProductServiceImpl implements ProductService{
         } else {
             // 상품 검색인 경우
             System.out.println("상품검색 시작");
-            searchLogService.saveSearchKeywordLogs(processedKeyword, userId);
-
             String[] keywords = keyword.trim().split("\\s+");
-
+            for(String key : keywords){
+                System.out.println("키워드 = " + key);
+            }
             List<SearchResponse.ProductInfo> products =
                     productRepository.findProductsByKeyword(keywords);
 
@@ -261,5 +261,14 @@ public class ProductServiceImpl implements ProductService{
         }
         return keyword;
 
+    }
+    @Override
+    public ProductLikeResponse addProductLikedByUser(Long userId, Long productId) {
+        //user_product_like 테이블에 레코드 추가
+        productRepository.insertUserProductLike(userId, productId);
+        //products 테이블의 좋아요 수 +1
+        productRepository.plusProductLikeCnt(productId);
+        //레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환
+        return productRepository.getIsLikedProduct(userId, productId);
     }
 }

@@ -57,17 +57,20 @@
     </select>
 
 
+    <!--브랜드 최초 좋아요 하기(레코드 추가)-->
     <insert id="insertUserBrandLike">
         INSERT INTO user_brand_likes (user_brand_like_id, user_id, brand_id, liked) VALUES (user_brand_likes_seq.NEXTVAL,#{userId}, #{brandId}, 1)
     </insert>
 
+    <!--브랜드 테이블의 좋아요 수+1-->
     <update id="plusBrandLikeCnt">
         UPDATE BRANDS
         SET BRAND_LIKES = BRAND_LIKES + 1
         WHERE BRAND_ID = #{brandId}
     </update>
 
-    <select id="getIsLikeBrand"
+    <!--레코드 추가 후 회원과 브랜드의 현재 좋아요 상태를 반환-->
+    <select id="getIsLikedProduct"
             resultType="com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse">
         SELECT brand_id as brandId,
                user_id as userId,
