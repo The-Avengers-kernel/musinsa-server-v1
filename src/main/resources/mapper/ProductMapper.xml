@@ -331,26 +331,26 @@
         WHERE p.PRODUCT_ID = #{productId}
     </select>
 
-    <!--브랜드 최초 좋아요 하기(레코드 추가)-->
+    <!--상품 최초 좋아요 하기(레코드 추가)-->
     <insert id="insertUserProductLike">
         INSERT INTO user_product_likes (user_product_like_id, user_id, product_id, liked) VALUES (seq_user_product_likes.NEXTVAL,#{userId}, #{productId}, 1)
     </insert>
 
-    <!--브랜드 테이블의 좋아요 수+1-->
+    <!--상품 테이블의 좋아요 수+1-->
     <update id="plusProductLikeCnt" >
         UPDATE PRODUCTS
         SET PRODUCT_LIKES = PRODUCT_LIKES + 1
         WHERE PRODUCT_ID = #{productId}
     </update>
 
-    <!--브랜드 테이블의 좋아요 수-1-->
+    <!--상품 테이블의 좋아요 수-1-->
     <update id="minusProductLikeCnt">
         UPDATE PRODUCTS
         SET PRODUCT_LIKES = PRODUCT_LIKES - 1
         WHERE PRODUCT_ID = #{productId}
     </update>
 
-    <!--레코드 추가 후 회원과 브랜드의 현재 좋아요 상태를 반환-->
+    <!--레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환-->
     <select id="getIsLikedProduct"
             resultType="com.avengers.musinsa.domain.product.dto.response.ProductLikeResponse">
         SELECT PRODUCT_ID as productId,
@@ -360,7 +360,7 @@
         WHERE PRODUCT_ID = #{productId} and USER_ID = #{userId}
     </select>
 
-    <!--회원브랜드좋아요 테이블 liked 0 ↔ 1-->
+    <!--회원상품좋아요 테이블 liked 0 ↔ 1-->
     <update id="switchProductLike">
         UPDATE USER_PRODUCT_LIKES
         SET liked = CASE liked
@@ -369,33 +369,4 @@
             END
         WHERE user_id = #{userId} AND PRODUCT_ID = #{productId}
     </update>
-
-
-    <!--카테고리 - 카테고리 별로 브랜드 목록 조회-->
-    <select id="getBrandsByCategoryId"
-            resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
-        SELECT bc.brand_category_id as brandCategoryId,
-               bc.category_name as categoryName,
-               b.brand_id as brandId,
-               b.brand_name_kr as brandNameKr,
-               b.brand_name_eng as brandNameEn,
-               b.brand_image as brandImage
-        FROM brands b
-                 JOIN brand_has_categories bhc ON b.BRAND_ID = bhc.BRAND_ID
-                 JOIN brand_categories bc ON bc.brand_category_id = bhc.brand_category_id
-        WHERE bc.BRAND_CATEGORY_ID = #{categoryID}
-        ORDER BY BRAND_LIKES DESC, brand_name_kr ASC
-    </select>
-
-    <select id="findByProductName" resultType="com.avengers.musinsa.domain.brand.dto.response.BrandResponse" parameterType="String">
-        select b.brand_id as brandId,
-               b.brand_name_kr as brandNameKr,
-               b.brand_name_eng as brandNameEn,
-               b.brand_image as brandImage,
-               b.brand_likes as brandLikes
-
-        from brands b
-        where brand_name_eng = #{brandName} or brand_name_kr = #{brandName}
-    </select>
-
 </mapper>
