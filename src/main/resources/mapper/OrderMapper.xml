@@ -61,17 +61,17 @@
     <!-- 배송지 목록 조회 -->
     <select id="getShippingAddressesUserId" resultType="com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO" parameterType="Long">
         SELECT
-            address_id AS shippingId,
-            user_id AS userId,
-            recipient_name AS recipientName,
-            phone_number AS recipientPhone,
-            address_line1 || ' ' || address_line2 AS recipientAddress,
-            detail_address AS detailedAddress,
-            postal_code AS postalCode,
-            is_default AS isDefault
-        FROM user_addresses
-        WHERE user_id = #{userId}
-        ORDER BY is_default DESC, address_id ASC
+            ua.user_address_id AS shippingId,
+            ua.user_id AS userId,
+            s.recipient_name AS recipientName,
+            s.recipient_phone AS recipientPhone,
+            ua.address_line1 || ' ' || ua.address_line2 AS recipientAddress,
+            s.postal_code AS postalCode,
+            ua.is_default AS isDefault
+        FROM user_addresses ua
+                 LEFT JOIN shipments s ON ua.user_address_id = s.shipping_id
+        WHERE ua.user_id = #{userId}
+        ORDER BY ua.is_default DESC, ua.user_address_id ASC
     </select>
 
 

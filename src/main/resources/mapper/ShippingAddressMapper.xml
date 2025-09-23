@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper>
+<mapper namespace="com.avengers.musinsa.mapper.ShippingAddressMapper">
     <select id="findByUserId" resultType="com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO" parameterType="Long">
         SELECT
             address_id AS shippingId,
@@ -9,7 +9,6 @@
             recipient_name AS recipientName,
             phone_number AS recipientPhone,
             address_line1 || ' ' || address_line2 AS recipientAddress,
-            detail_address AS detailAddress,
             postal_code AS postalCode,
             is_default AS isDefault
         FROM user_addresses
