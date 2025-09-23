@@ -1,10 +1,12 @@
 package com.avengers.musinsa.domain.product.controller;
 
-import ch.qos.logback.core.model.Model;
 import com.avengers.musinsa.domain.product.dto.response.*;
+import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
-import com.avengers.musinsa.domain.product.service.ProductService;
+import com.avengers.musinsa.domain.product.service.ProductServiceImpl;
 import java.util.List;
+
+import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/products") // 이 컨트롤러의 모든 API는 /api/v1/products로 시작
 @RequiredArgsConstructor
 public class ProductController {
-    // 서비스 계층에 일을 시킨다, 주입
 
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
+    private final TokenProviderService tokenProviderService;
 
     // /api/v1/products/{숫자} 형태의 url 요청을 받아서,
     // 그 숫자를 productId 변수로 넘겨주는 역할
@@ -39,6 +41,7 @@ public class ProductController {
     }
 
 
+    // 무신사 추천순
     @GetMapping("/main/recommendations/{gender}")
     public List<RecommendationResponse> recommendationProducts(@PathVariable String gender ) {
         Gender g = Gender.valueOf(gender.toUpperCase());
@@ -53,9 +56,21 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    // 대중소 카테고리 가져오기
     @GetMapping("/categories/products")
     public List<CategoryProductResponse> categoryProducts() {
         return productService.getCategoryProductList();
+    }
+
+    // 상품 리뷰 목록 조회
+    @GetMapping("{productId}/reviews")
+    public List<ProductReviewsResponse> getProductReviews(@PathVariable Long productId){
+        return productService.getProductReviews(productId);
+    }
+    // 상품상세 사이즈 리스트 조회
+    @GetMapping("{productId}/detail-size-list")
+    public Object getProductDetailSizeList(@PathVariable Long productId){
+        return productService.getProductDetailSizeList(productId);
     }
 
     // 상품 상세 설명 조회 api
@@ -65,4 +80,20 @@ public class ProductController {
 
     }
 
+
+    // 상품 검색에 따른 상품 목록 조회
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProducts(@RequestParam("keyword") String keyword,
+                                            @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+        System.out.println(keyword);
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        SearchResponse response = productService.searchProducts(keyword,userId);
+
+        if(response != null) {
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.ok("검색 결과가 없습니다.");
+        }
+
+    }
 }

@@ -17,5 +17,5 @@ public class Review {
     private String nickname;
     private String content;
     private String purchaseOptions;
-    private Integer helpCount;
+    private int helpCount;
 }

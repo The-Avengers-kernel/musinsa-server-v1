@@ -26,7 +26,7 @@ public class UserRepository {
         }
     }
 
-    public User findByUserId(Integer userId) {
+    public User findByUserId(Long userId) {
         return userMapper.findByUserId(userId);
     }
 
