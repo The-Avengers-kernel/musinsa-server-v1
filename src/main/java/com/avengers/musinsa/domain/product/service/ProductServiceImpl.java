@@ -193,10 +193,11 @@ public class ProductServiceImpl implements ProductService{
     public SearchResponse searchProducts(String keyword, Long userId) {
 
         String processedKeyword = preprocessKeyword(keyword);
+        System.out.println("검색어 : " + processedKeyword);
 
         // 브랜드 검색 먼저 시도
         // 브랜드 두 개 검색될 경우도 고려하여 코드 작성
-        List<BrandResponse> brandList = brandRepository.findByBrandName(keyword);
+        List<BrandResponse> brandList = brandRepository.findByBrandName(processedKeyword);
 
         if (!brandList.isEmpty()) {
             // 브랜드 검색인 경우
@@ -227,12 +228,10 @@ public class ProductServiceImpl implements ProductService{
         } else {
             // 상품 검색인 경우
             System.out.println("상품검색 시작");
-            searchLogService.saveSearchKeywordLogs(keyword, userId);
+            searchLogService.saveSearchKeywordLogs(processedKeyword, userId);
 
             String[] keywords = keyword.trim().split("\\s+");
-            for(String key : keywords){
-                System.out.println("키워드 = " + key);
-            }
+
             List<SearchResponse.ProductInfo> products =
                     productRepository.findProductsByKeyword(keywords);
 
@@ -251,6 +250,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     private String preprocessKeyword(String keyword) {
+        System.out.println(keyword);
         if (keyword == null || keyword.trim().isEmpty()) {
             return keyword;
         }
