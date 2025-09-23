@@ -191,6 +191,9 @@ public class ProductServiceImpl implements ProductService{
     // 상품 검색
     @Override
     public SearchResponse searchProducts(String keyword, Long userId) {
+
+        String processedKeyword = preprocessKeyword(keyword);
+
         // 브랜드 검색 먼저 시도
         // 브랜드 두 개 검색될 경우도 고려하여 코드 작성
         List<BrandResponse> brandList = brandRepository.findByBrandName(keyword);
@@ -199,16 +202,11 @@ public class ProductServiceImpl implements ProductService{
             // 브랜드 검색인 경우
             BrandResponse brand = brandList.getFirst();
 
-            //저장할 브랜드 정보 저장
-            SearchSaveDto.searchBrandLogSaveDto brandLogSaveDto = SearchSaveDto.searchBrandLogSaveDto.builder()
-                    .userId(userId)
-                    .brandId(brand.getBrandId())
-                    .build();
-
             // 브랜드 검석 기록 저장
             searchLogService.saveSearchBrandLog(brand, userId);
 
 
+            // 브랜드 상품 불러오기
             List<SearchResponse.ProductInfo> brandProducts =
                     productRepository.findProductsByBrandId(brand.getBrandId());
 
@@ -250,5 +248,18 @@ public class ProductServiceImpl implements ProductService{
             }
 
         }
+    }
+
+    private String preprocessKeyword(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return keyword;
+        }
+
+        // 영어 문자가 포함되어 있는지 확인
+        if (keyword.matches(".*[a-zA-Z].*")) {
+            return keyword.toUpperCase();
+        }
+        return keyword;
+
     }
 }
