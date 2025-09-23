@@ -1,5 +1,6 @@
 package com.avengers.musinsa.domain.product.service;
 
+import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
 import com.avengers.musinsa.domain.brand.repository.BrandRepository;
 import com.avengers.musinsa.domain.product.dto.response.*;
@@ -234,5 +235,14 @@ public class ProductServiceImpl implements ProductService{
             }
 
         }
+    }
+    @Override
+    public ProductLikeResponse addProductLikedByUser(Long userId, Long productId) {
+        //user_product_like 테이블에 레코드 추가
+        productRepository.insertUserProductLike(userId, productId);
+        //products 테이블의 좋아요 수 +1
+        productRepository.plusProductLikeCnt(productId);
+        //레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환
+        return productRepository.getIsLikedProduct(userId, productId);
     }
 }
