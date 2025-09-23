@@ -15,7 +15,7 @@ public class BrandLikeController {
     private final BrandService brandService;
     private final TokenProviderService tokenProviderService;
 
-    /*//브랜드 좋아요 토글 기능
+    //브랜드 좋아요 토글 기능
     @PostMapping("/brands/{brandId}/liked")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public BrandLikeResponse BrandLikeToggle(@PathVariable Long brandId, @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
@@ -26,11 +26,6 @@ public class BrandLikeController {
             System.out.println("userId = " + userId);
             return brandService.BrandLikeToggle(userId, brandId);
         }
-    }*/
-    //브랜드 좋아요 토글 기능
-    @PostMapping("/{userId}/brands/{brandId}/liked")
-    public BrandLikeResponse BrandLikeToggle(@PathVariable Long brandId,@PathVariable Long userId) {
-            return brandService.BrandLikeToggle(userId, brandId);
     }
 }
 
