@@ -20,10 +20,10 @@ public class SearchLogController {
     // /api/v1/logs/search-keyword url 요청을 받아서,
     //logid로 응답을 넘겨준다
     @PostMapping("/search-logs")
-    public SearchLogResponseDTO saveSearchLog(@RequestBody SearchLogRequestDTO request){
+    public void saveSearchLog(@RequestBody SearchLogRequestDTO request){
 
         //Service에 저장 요청하고 바로 return
-        return searchLogService.saveSearchLogs(request);
+//        return searchLogService.saveSearchLogs(request);
     }
 
 

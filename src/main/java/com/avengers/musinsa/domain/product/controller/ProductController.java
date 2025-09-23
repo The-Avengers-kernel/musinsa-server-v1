@@ -5,6 +5,8 @@ import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.service.ProductServiceImpl;
 import java.util.List;
+
+import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/products") // 이 컨트롤러의 모든 API는 /api/v1/products로 시작
 @RequiredArgsConstructor
 public class ProductController {
-    // 서비스 계층에 일을 시킨다, 주입
 
     private final ProductServiceImpl productService;
+    private final TokenProviderService tokenProviderService;
 
     // /api/v1/products/{숫자} 형태의 url 요청을 받아서,
     // 그 숫자를 productId 변수로 넘겨주는 역할
@@ -81,10 +83,11 @@ public class ProductController {
 
     // 상품 검색에 따른 상품 목록 조회
     @GetMapping("/search")
-    public ResponseEntity<?> searchProducts(@RequestParam("keyword") String keyword) {
+    public ResponseEntity<?> searchProducts(@RequestParam("keyword") String keyword,
+                                            @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         System.out.println(keyword);
-
-        SearchResponse response = productService.searchProducts(keyword);
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        SearchResponse response = productService.searchProducts(keyword,userId);
 
         if(response != null) {
             return ResponseEntity.ok(response);
