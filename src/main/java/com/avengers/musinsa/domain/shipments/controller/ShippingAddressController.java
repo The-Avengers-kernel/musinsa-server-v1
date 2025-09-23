@@ -29,15 +29,25 @@ public class ShippingAddressController {
         /*if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Authorization 헤더가 누락되었거나 형식이 올바르지 않습니다.");
         }*/
-        String token = authorizationHeader.replace("Bearer ", "");
-
-        Long userId = tokenProviderService.getUserIdFromToken(token);
 
 
+        if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
 
-        List<ShippingAddressOrderDTO> shippingAddresses = shippingAddressService.getShippingAddressesUserId(userId);
+            Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
 
-        return ResponseEntity.ok(shippingAddresses);
+            List<ShippingAddressOrderDTO> shippingAddresses = shippingAddressService.getShippingAddressesUserId(userId);
+
+            return ResponseEntity.ok(shippingAddresses);
+
+        }else{
+
+            System.out.println("헤더 없음");
+            return null;
+        }
+
+
+
+
     }
 
 
