@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class ShippingAddressOrderDTO {
 
-    private Long shippingId;
+    private Long shippingAddressId;
     //private UserInfoDTO userInfo;
     private Long userId;
     private String recipientName;
