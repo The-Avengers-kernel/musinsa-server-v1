@@ -313,10 +313,11 @@
         FROM products p
         JOIN brands b ON p.brand_id = b.brand_id
         LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
-        WHERE 1=1
-        <foreach collection="keywords" item="keyword">
-            or p.product_name LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'
+        WHERE (
+        <foreach collection="keywords" item="keyword" separator=" OR ">
+            p.product_name LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'
         </foreach>
+        )
         ORDER BY p.product_likes DESC
         FETCH FIRST 50 ROWS ONLY
     </select>
