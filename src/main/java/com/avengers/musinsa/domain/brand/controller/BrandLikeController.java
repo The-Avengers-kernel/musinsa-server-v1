@@ -1,6 +1,7 @@
 package com.avengers.musinsa.domain.brand.controller;
 import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.service.BrandService;
+import com.avengers.musinsa.domain.brand.service.BrandServiceImpl;
 import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

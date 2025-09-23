@@ -4,9 +4,8 @@ package com.avengers.musinsa.domain.brand.controller;
 
 import ch.qos.logback.core.model.Model;
 import com.avengers.musinsa.domain.brand.dto.BrandDto;
-import com.avengers.musinsa.domain.brand.service.BrandService;
+import com.avengers.musinsa.domain.brand.service.BrandServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +26,11 @@ import java.util.List;
 public class ShowRecentBrandController {
     //최근 방문한 브랜드 조회 API
 
-    private final BrandService brandService;
+    private final BrandServiceImpl brandServiceImpl;
 
 
     @GetMapping("/recent-keyword/{user_id}")
     public List<BrandDto> recentBrands(@PathVariable("user_id") Long userId, Model model) {
-            return brandService.getRecentVisitBrands(userId);
+            return brandServiceImpl.getRecentVisitBrands(userId);
     }
 }

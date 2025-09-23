@@ -1,6 +1,7 @@
 package com.avengers.musinsa.mapper;
 
 import com.avengers.musinsa.domain.product.dto.response.*;
+import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import java.util.List;
@@ -52,4 +53,7 @@ public interface ProductMapper {
 
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
 
+    List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId);
+
+    List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords);
 }

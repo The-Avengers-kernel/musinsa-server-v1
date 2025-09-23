@@ -114,11 +114,19 @@
         WHERE bc.BRAND_CATEGORY_ID = #{categoryID}
         ORDER BY BRAND_LIKES DESC, brand_name_kr ASC
     </select>
+
+    <select id="findByBrandName" resultType="com.avengers.musinsa.domain.brand.dto.response.BrandResponse" parameterType="String">
+        select b.brand_id as brandId,
+               b.brand_name_kr as brandNameKr,
+               b.brand_name_eng as brandNameEn,
+               b.brand_image as brandImage,
+               b.brand_likes as brandLikes
+
+        from brands b
+        where brand_name_eng = #{brandName} or brand_name_kr = #{brandName}
+    </select>
+
 </mapper>
-
-
-        <!--최근 검색 브랜드는 검색 로그만 사용--> <!--상품 조회 기록과는 별개-->
-<!--데이터 소스 연결 필수-->
 
 
 
