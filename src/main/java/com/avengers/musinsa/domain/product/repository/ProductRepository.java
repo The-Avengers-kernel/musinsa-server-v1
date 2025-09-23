@@ -58,4 +58,10 @@ public interface ProductRepository {
 
     List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords);
 
+    //user_product_like 테이블에 레코드 추가
+    void insertUserProductLike(Long userId, Long productId);
+    //products 테이블의 좋아요 수 +1
+    void plusProductLikeCnt(Long productId);
+    //레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환
+    ProductLikeResponse getIsLikedProduct(Long userId, Long productId);
 }

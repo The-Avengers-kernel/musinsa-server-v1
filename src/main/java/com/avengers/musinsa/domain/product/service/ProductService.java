@@ -1,5 +1,6 @@
 package com.avengers.musinsa.domain.product.service;
 
+import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.product.dto.response.*;
@@ -40,4 +41,7 @@ public interface ProductService {
 
     // 상품 검색
     public SearchResponse searchProducts(String keyword);
+
+    //상품 최초 좋아요 하기(레코드 추가)
+    ProductLikeResponse addProductLikedByUser(Long userId, Long ProductId);
 }
