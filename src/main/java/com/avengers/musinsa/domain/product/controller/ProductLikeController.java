@@ -13,9 +13,9 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class ProductLikeController {
     private final ProductService productService;
-    //private final TokenProviderService tokenProviderService;
+    private final TokenProviderService tokenProviderService;
 
-    /*//상품 최초 좋아요 하기 (레코드 추가)
+    //상품 최초 좋아요 하기 (레코드 추가)
     @PostMapping("/brands/{productId}/liked")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ProductLikeResponse addProductLikedByUser(@PathVariable Long productId, @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
@@ -26,11 +26,6 @@ public class ProductLikeController {
             System.out.println("userId = " + userId);
             return productService.addProductLikedByUser(userId, productId);
         }
-    }*/
-
-    //상품 최초 좋아요 하기 (레코드 추가)
-    @PostMapping("/{userId}/brands/{productId}/liked")
-    public ProductLikeResponse addProductLikedByUser(@PathVariable Long productId, @PathVariable Long userId) {
-        return productService.addProductLikedByUser(userId, productId);
-        }
     }
+}
+
