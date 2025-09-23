@@ -67,4 +67,9 @@ public class BrandRepositoryImpl implements BrandRepository {
         brandMapper.plusBrandLikeCnt(brandId);
     }
 
+    @Override
+    public void switchBrandLike(Long userId, Long brandId) {
+        brandMapper.switchBrandLike(userId,brandId);
+    }
+
 }

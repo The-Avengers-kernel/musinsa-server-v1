@@ -3,7 +3,7 @@ package com.avengers.musinsa.domain.product.controller;
 import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
-import com.avengers.musinsa.domain.product.service.ProductService;
+import com.avengers.musinsa.domain.product.service.ProductServiceImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
     // 서비스 계층에 일을 시킨다, 주입
 
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
 
     // /api/v1/products/{숫자} 형태의 url 요청을 받아서,
     // 그 숫자를 productId 변수로 넘겨주는 역할

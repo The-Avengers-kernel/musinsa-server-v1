@@ -25,9 +25,11 @@ public interface BrandMapper {
   
     List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
 
-    void plusBrandLikeCnt(Long brandId);
-
     void updateBrandLikeCnt(Long brandId);
+
+    void switchBrandLike(Long userId, Long brandId);
+
+    void plusBrandLikeCnt(Long brandId);
 
     List<BrandResponse> findByBrandName(@Param("brandName")String brandName);
 

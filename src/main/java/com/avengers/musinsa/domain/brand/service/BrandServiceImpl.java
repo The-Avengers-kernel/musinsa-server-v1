@@ -7,6 +7,7 @@ import com.avengers.musinsa.domain.brand.repository.BrandRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -65,4 +66,17 @@ public class BrandServiceImpl implements BrandService{
         return brandRepository.findByBrandName(brandName);
     }
 
+
+    //이미 좋아요 한 브랜드 좋아요 상태 바꾸기
+    @Transactional
+    // → 두 작업을 하나의 트랜잭션으로 묶어 데이터 정합성을 보장
+    @Override
+    public BrandLikeResponse switchBrandLike(Long userId, Long brandId) {
+        //liked 컬럼을 0 ↔ 1
+        brandRepository.switchBrandLike(userId,brandId);
+        //브랜드 테이블의 좋아요 수를 동기화
+        brandRepository.updateBrandLikeCnt(brandId);
+        //좋아요상태 변경 후 현재 좋아요 상태를 반환
+        return brandRepository.getIsLikedBrand(userId, brandId);
+    }
 }

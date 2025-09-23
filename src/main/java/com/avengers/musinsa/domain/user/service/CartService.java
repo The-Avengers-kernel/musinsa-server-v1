@@ -1,6 +1,6 @@
 package com.avengers.musinsa.domain.user.service;
 
-import com.avengers.musinsa.domain.product.service.ProductService;
+import com.avengers.musinsa.domain.product.service.ProductServiceImpl;
 import com.avengers.musinsa.domain.user.dto.ProductOptionInfo;
 import com.avengers.musinsa.domain.user.dto.ProductOptionUpdateRequest;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class CartService {
 
     private final CartRepository cartRepository;
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
 
     public List<ProductsInCartInfoResponse> getProductsInCart(Long userId) {
         // 장바구니에 담은 상품 가져옴
