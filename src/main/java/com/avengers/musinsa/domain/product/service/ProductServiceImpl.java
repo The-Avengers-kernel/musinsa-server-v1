@@ -1,6 +1,5 @@
 package com.avengers.musinsa.domain.product.service;
 
-import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
 import com.avengers.musinsa.domain.brand.repository.BrandRepository;
 import com.avengers.musinsa.domain.product.dto.response.*;
@@ -10,6 +9,8 @@ import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepositoryImpl;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
+import com.avengers.musinsa.domain.search.Dto.SearchSaveDto;
+import com.avengers.musinsa.domain.search.Service.SearchLogService;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
 
 import java.util.*;
@@ -25,6 +26,7 @@ public class ProductServiceImpl implements ProductService{
     // 의존성 주입
     private final ProductRepositoryImpl productRepository;
     private final BrandRepository brandRepository;
+    private final SearchLogService searchLogService;
 
     @Override
     public ProductDetailResponse getProductById(Long productId) {
@@ -188,14 +190,24 @@ public class ProductServiceImpl implements ProductService{
 
     // 상품 검색
     @Override
-    public SearchResponse searchProducts(String keyword) {
+    public SearchResponse searchProducts(String keyword, Long userId) {
+
+        String processedKeyword = preprocessKeyword(keyword);
+        System.out.println("검색어 : " + processedKeyword);
+
         // 브랜드 검색 먼저 시도
         // 브랜드 두 개 검색될 경우도 고려하여 코드 작성
-        List<BrandResponse> brandList = brandRepository.findByBrandName(keyword);
+        List<BrandResponse> brandList = brandRepository.findByBrandName(processedKeyword);
 
         if (!brandList.isEmpty()) {
             // 브랜드 검색인 경우
             BrandResponse brand = brandList.getFirst();
+
+            // 브랜드 검석 기록 저장
+            searchLogService.saveSearchBrandLog(brand, userId);
+
+
+            // 브랜드 상품 불러오기
             List<SearchResponse.ProductInfo> brandProducts =
                     productRepository.findProductsByBrandId(brand.getBrandId());
 
@@ -235,6 +247,20 @@ public class ProductServiceImpl implements ProductService{
             }
 
         }
+    }
+
+    private String preprocessKeyword(String keyword) {
+        System.out.println(keyword);
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return keyword;
+        }
+
+        // 영어 문자가 포함되어 있는지 확인
+        if (keyword.matches(".*[a-zA-Z].*")) {
+            return keyword.toUpperCase();
+        }
+        return keyword;
+
     }
     @Override
     public ProductLikeResponse addProductLikedByUser(Long userId, Long productId) {

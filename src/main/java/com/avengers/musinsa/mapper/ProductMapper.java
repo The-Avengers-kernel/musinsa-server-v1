@@ -57,6 +57,10 @@ public interface ProductMapper {
 
     List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords);
 
+    void saveSearchKeywordLog(String keyword);
+
+    void saveSearchBrandLog(String Brand);
+
     //user_product_like 테이블에 레코드 추가
     void insertUserProductLike(Long userId, Long productId);
 
