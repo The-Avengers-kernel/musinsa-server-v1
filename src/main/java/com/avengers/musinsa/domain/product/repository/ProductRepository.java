@@ -64,12 +64,19 @@ public interface ProductRepository {
     //검색 시 브랜드 로그 테이블에 검색 정보 저장하기.
     void saveSearchBrandLog(String brand);
 
+
+    //상품 좋아요 토글
+    //좋아요 상태(null, 0,1) 반환하기
+    UserProductStatus getUserProductStatus(Long userId, Long productId);
     //user_product_like 테이블에 레코드 추가
     void insertUserProductLike(Long userId, Long productId);
-
     //products 테이블의 좋아요 수 +1
     void plusProductLikeCnt(Long productId);
-
     //레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환
     ProductLikeResponse getIsLikedProduct(Long userId, Long productId);
+    //liked 컬럼을 0 ↔ 1
+    void switchProductLike(Long userId, Long productId);
+    //products 테이블의 좋아요 수 -1
+    void minusProductLikeCnt(Long productId);
+
 }

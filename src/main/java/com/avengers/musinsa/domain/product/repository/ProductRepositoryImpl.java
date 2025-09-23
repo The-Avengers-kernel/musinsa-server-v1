@@ -139,22 +139,33 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
 
-
+    //상품 좋아요 토글
+    //좋아요 상태(null, 0,1) 반환하기
+    @Override
+    public UserProductStatus getUserProductStatus(Long userId, Long productId){
+        return productMapper.getUserProductStatus(userId, productId);
+    }
     //user_product_like 테이블에 레코드 추가
     @Override
     public void insertUserProductLike(Long userId, Long productId){
         productMapper.insertUserProductLike(userId, productId);
     }
-
     //products 테이블의 좋아요 수 +1
     @Override
     public void plusProductLikeCnt(Long productId){
         productMapper.plusProductLikeCnt(productId);
     }
-
     //레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환
     @Override
     public ProductLikeResponse getIsLikedProduct(Long userId, Long productId){
         return productMapper.getIsLikedProduct(userId, productId);
+    }
+    //liked 컬럼을 0 ↔ 1
+    public void switchProductLike(Long userId, Long productId){
+        productMapper.switchProductLike(userId, productId);
+    }
+    //products 테이블의 좋아요 수 -1
+    public void minusProductLikeCnt(Long productId){
+        productMapper.minusProductLikeCnt(productId);
     }
 }
