@@ -59,17 +59,19 @@
     </select>
 
     <!-- 배송지 목록 조회 -->
-    <select id="getShippingAddresses" resultType="com.avengers.musinsa.domain.shipments.dto.ShippingAddressDTO" parameterType="Long">
+    <select id="getShippingAddressesUserId" resultType="com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO" parameterType="Long">
         SELECT
-            ua.address_id AS shippingId,
-            ua.recipient_name AS recipientName,
-            ua.phone_number AS recipientPhone,
-            ua.address_line1 || ' ' || ua.address_line2 AS recipientAddress,
-            ua.postal_code AS postalCode,
-            ua.detail_address AS detailAddress
-        FROM user_addresses ua
-        WHERE ua.user_id = #{userId}
-        ORDER BY ua.is_default DESC, ua.address_id ASC
+            address_id AS shippingId,
+            user_id AS userId,
+            recipient_name AS recipientName,
+            phone_number AS recipientPhone,
+            address_line1 || ' ' || address_line2 AS recipientAddress,
+            detail_address AS detailedAddress,
+            postal_code AS postalCode,
+            is_default AS isDefault
+        FROM user_addresses
+        WHERE user_id = #{userId}
+        ORDER BY is_default DESC, address_id ASC
     </select>
 
 

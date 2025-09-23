@@ -1,6 +1,6 @@
 package com.avengers.musinsa.domain.shipments.controller;
 
-import com.avengers.musinsa.domain.shipments.dto.ShippingAddressDTO;
+import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import com.avengers.musinsa.domain.shipments.service.ShippingAddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +18,12 @@ public class ShippingAddressController {
 
     //배송지 목록 조회
     @RequestMapping("/shipping-addresses/{userId}")
-    public ResponseEntity<List<ShippingAddressDTO>> getShippingAddresses(@PathVariable Long userId){
-        List<ShippingAddressDTO> shippingAddresses = shippingAddressService.getShippingAddresses(userId);
+    public ResponseEntity<List<ShippingAddressOrderDTO>> getShippingAddressesUserId(@PathVariable Long userId){
+        List<ShippingAddressOrderDTO> shippingAddresses = shippingAddressService.getShippingAddressesUserId(userId);
 
         return ResponseEntity.ok(shippingAddresses);
     }
 
 
 }
+

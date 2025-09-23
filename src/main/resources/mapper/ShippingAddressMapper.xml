@@ -2,17 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper>
-    <select id="findByUserId" resultType="com.avengers.musinsa.domain.shipments.dto.ShippingAddressDTO" parameterType="Long">
+    <select id="findByUserId" resultType="com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO" parameterType="Long">
         SELECT
-            ua.address_id AS shippingId,
-            ua.recipient_name AS recipientName,
-            ua.phone_number AS recipientPhone,
-            ua.address_line1 || ' ' || ua.address_line2 AS recipientAddress,
-            ua.postal_code AS postalCode,
-            ua.detail_address AS detailAddress
-        FROM user_addresses ua
-        WHERE ua.user_id = #{userId}
-        ORDER BY ua.is_default DESC, ua.address_id ASC
+            address_id AS shippingId,
+            user_id AS userId,
+            recipient_name AS recipientName,
+            phone_number AS recipientPhone,
+            address_line1 || ' ' || address_line2 AS recipientAddress,
+            detail_address AS detailAddress,
+            postal_code AS postalCode,
+            is_default AS isDefault
+        FROM user_addresses
+        WHERE user_id = #{userId}
+        ORDER BY is_default DESC, address_id ASC
 
 
     </select>

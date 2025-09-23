@@ -1,6 +1,6 @@
 package com.avengers.musinsa.domain.shipments.repository;
 
-import com.avengers.musinsa.domain.shipments.dto.ShippingAddressDTO;
+import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import com.avengers.musinsa.mapper.ShippingAddressMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -12,8 +12,9 @@ import java.util.List;
 public class ShippingAddressRepository {
     private final ShippingAddressMapper shippingAddressMapper;
 
-    public List<ShippingAddressDTO> findByUserId(Long userId) {
+    public List<ShippingAddressOrderDTO> findByUserId(Long userId) {
         return shippingAddressMapper.findByUserId(userId);
 
     }
 }
+

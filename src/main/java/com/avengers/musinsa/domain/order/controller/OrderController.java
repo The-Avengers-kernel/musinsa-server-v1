@@ -4,7 +4,7 @@ package com.avengers.musinsa.domain.order.controller;
 import com.avengers.musinsa.domain.order.dto.response.OrderSummaryResponse;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import com.avengers.musinsa.domain.order.service.OrderService;
-import com.avengers.musinsa.domain.shipments.dto.ShippingAddressDTO;
+import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,9 +44,9 @@ public class OrderController {
     }
 
     //배송지 목록 조회
-    @GetMapping("/orders/shipping-addresses/{userId}")
-    public ResponseEntity<List<ShippingAddressDTO>> getShippingAddresses(@PathVariable Long userId) {
-        List<ShippingAddressDTO> shippingAddresses = orderService.getShippingAddresses(userId);
+    @GetMapping("/address-list/{userId}")
+    public ResponseEntity<List<ShippingAddressOrderDTO>> getShippingAddressesUserId(@PathVariable Long userId) {
+        List<ShippingAddressOrderDTO> shippingAddresses = orderService.getShippingAddressesUserId(userId);
 
         return ResponseEntity.ok(shippingAddresses);
 

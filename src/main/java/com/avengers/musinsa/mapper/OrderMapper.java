@@ -1,10 +1,9 @@
 package com.avengers.musinsa.mapper;
 
-import com.avengers.musinsa.domain.order.dto.OrderCompletionInfoDto;
 import com.avengers.musinsa.domain.order.dto.response.OrderDto;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import com.avengers.musinsa.domain.order.entity.Order;
-import com.avengers.musinsa.domain.shipments.dto.ShippingAddressDTO;
+import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,7 +24,7 @@ public interface OrderMapper {
     List<OrderDto.OrderItemInfoTest> getOrderItemInfoTest(@Param("orderId") Long orderId);
 
     //배송지 목록 조회
-    List<ShippingAddressDTO> getShippingAddresses(@Param("userId") Long userId);
+    List<ShippingAddressOrderDTO> getShippingAddressesUserId(@Param("userId") Long userId);
 
 
     //주문상품 리스트

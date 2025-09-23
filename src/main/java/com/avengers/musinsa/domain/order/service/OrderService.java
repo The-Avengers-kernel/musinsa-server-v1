@@ -3,7 +3,7 @@ package com.avengers.musinsa.domain.order.service;
 import com.avengers.musinsa.domain.order.dto.response.*;
 import com.avengers.musinsa.domain.order.entity.Order;
 import com.avengers.musinsa.domain.order.repository.OrderRepository;
-import com.avengers.musinsa.domain.shipments.dto.ShippingAddressDTO;
+import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import com.avengers.musinsa.domain.user.dto.UserResponseDto;
 import com.avengers.musinsa.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -64,9 +64,10 @@ public class OrderService {
     }
 
     //배송지 목록 조회
-    public List<ShippingAddressDTO> getShippingAddresses(Long userId) {
-        return orderRepository.getShippingAddresses(userId);
+    public List<ShippingAddressOrderDTO> getShippingAddressesUserId(Long userId) {
+        return orderRepository.getShippingAddressesUserId(userId);
     }
+
 
 
 

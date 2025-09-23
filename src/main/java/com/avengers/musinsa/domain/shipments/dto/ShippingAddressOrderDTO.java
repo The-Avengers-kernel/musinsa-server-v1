@@ -1,5 +1,6 @@
 package com.avengers.musinsa.domain.shipments.dto;
 
+import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -9,12 +10,16 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ShippingAddressDTO {
+public class ShippingAddressOrderDTO {
 
-    private Integer shippingId;
+    private Long shippingId;
+    //private UserInfoDTO userInfo;
+    private Long userId;
     private String recipientName;
     private String recipientPhone;
     private String recipientAddress;
-    private Integer postalCode;
     private String detailedAddress;
+    private Integer postalCode;
+    private Boolean isDefault;
+
 }
