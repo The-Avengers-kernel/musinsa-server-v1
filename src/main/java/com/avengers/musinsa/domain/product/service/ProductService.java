@@ -210,12 +210,17 @@ public class ProductService {
             List<SearchResponse.ProductInfo> products =
                     productRepository.findProductsByKeyword(keywords);
 
-            return SearchResponse.builder()
-                    .searchKeyword(keyword)
-                    .brandInfo(null)
-                    .totalCount(products.size())
-                    .products(products)
-                    .build();
+            if (!products.isEmpty()){
+                return SearchResponse.builder()
+                        .searchKeyword(keyword)
+                        .brandInfo(null)
+                        .totalCount(products.size())
+                        .products(products)
+                        .build();
+            }else{
+                return null;
+            }
+
         }
     }
 }

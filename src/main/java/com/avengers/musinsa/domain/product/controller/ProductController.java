@@ -81,9 +81,16 @@ public class ProductController {
 
     // 상품 검색에 따른 상품 목록 조회
     @GetMapping("/search")
-    public ResponseEntity<SearchResponse> searchProducts(@RequestParam("keyword") String keyword) {
+    public ResponseEntity<?> searchProducts(@RequestParam("keyword") String keyword) {
         System.out.println(keyword);
+
         SearchResponse response = productService.searchProducts(keyword);
-        return ResponseEntity.ok(response);
+
+        if(response != null) {
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.ok("검색 결과가 없습니다.");
+        }
+
     }
 }
