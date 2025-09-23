@@ -4,6 +4,7 @@ import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
 import com.avengers.musinsa.domain.brand.dto.BrandDto;
 import com.avengers.musinsa.domain.brand.repository.BrandRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -57,6 +58,8 @@ public class BrandService {
     }
 
     //이미 좋아요 한 브랜드 좋아요 상태 바꾸기
+    @Transactional
+    // → 두 작업을 하나의 트랜잭션으로 묶어 데이터 정합성을 보장
     public BrandLikeResponse switchBrandLike(Long userId, Long brandId) {
         //liked 컬럼을 0 ↔ 1
         brandRepository.switchBrandLike(userId,brandId);
