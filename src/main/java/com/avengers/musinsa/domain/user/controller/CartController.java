@@ -1,6 +1,5 @@
 package com.avengers.musinsa.domain.user.controller;
 
-import com.avengers.musinsa.domain.product.service.ProductService;
 import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import com.avengers.musinsa.domain.user.auth.oauth2.dto.CustomOAuth2User;
 import com.avengers.musinsa.domain.user.dto.AddCartRequest;
@@ -15,6 +14,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1")

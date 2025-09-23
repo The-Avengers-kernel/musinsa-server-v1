@@ -1,6 +1,7 @@
 package com.avengers.musinsa.mapper;
 
 import com.avengers.musinsa.domain.product.dto.response.*;
+import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import java.util.List;
@@ -51,5 +52,22 @@ public interface ProductMapper {
     List<ProductCategory> getProductCategoriesList(Long productId);
 
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
+
+    List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId);
+
+    List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords);
+
+    void saveSearchKeywordLog(String keyword);
+
+    void saveSearchBrandLog(String Brand);
+
+    //user_product_like 테이블에 레코드 추가
+    void insertUserProductLike(Long userId, Long productId);
+
+    //products 테이블의 좋아요 수+1
+    void plusProductLikeCnt(Long productId);
+
+    //레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환
+    ProductLikeResponse getIsLikedProduct(Long userId, Long productId);
 
 }

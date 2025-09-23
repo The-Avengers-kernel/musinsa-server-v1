@@ -271,4 +271,79 @@
 
     </select>
 
+
+
+    <select id="findByBrandName" resultType="com.avengers.musinsa.domain.brand.dto.response.BrandResponse">
+        SELECT brand_id as brandId,
+               brand_name_kr as brandNameKr,
+               brand_name_eng as brandNameEn,
+               brand_image as brandImage,
+               brand_likes as brandLikes
+        FROM brands
+        WHERE brand_name_kr = #{keyword} OR brand_name_eng = #{keyword}
+        LIMIT 1
+    </select>
+
+    <select id="findProductsByBrandId" resultType="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
+        SELECT b.brand_id as brandId,
+               b.brand_name_kr as brandNameKr,
+               b.brand_name_eng as brandNameEn,
+               p.product_id as productId,
+               pi.image_url as productImage,
+               p.product_name as productName,
+               p.price,
+               p.product_likes as productLikes
+        FROM products p
+                 JOIN brands b ON p.brand_id = b.brand_id
+                 LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
+        WHERE p.brand_id = #{brandId}
+        ORDER BY p.product_likes DESC
+    </select>
+
+
+
+    <select id="findProductsByKeyword" resultType="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
+        SELECT b.brand_id as brandId,
+        b.brand_name_kr as brandNameKr,
+        b.brand_name_eng as brandNameEn,
+        p.product_id as productId,
+        pi.image_url as productImage,
+        p.product_name as productName,
+        p.price,
+        p.product_likes as productLikes
+        FROM products p
+        JOIN brands b ON p.brand_id = b.brand_id
+        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
+        WHERE (
+        <foreach collection="keywords" item="keyword" separator=" OR ">
+            p.product_name LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'
+        </foreach>
+        )
+        ORDER BY p.product_likes DESC
+        FETCH FIRST 50 ROWS ONLY
+    </select>
+
+    <!--상품 최초 좋아요 하기(레코드 추가)-->
+    <insert id="insertUserProductLike">
+        INSERT INTO user_product_likes (user_product_like_id, user_id, product_id, liked) VALUES (seq_user_product_likes.NEXTVAL, #{userId}, #{productId}, 1)
+    </insert>
+
+    <!--상품 테이블의 좋아요 수+1-->
+    <update id="plusProductLikeCnt">
+        UPDATE PRODUCTS
+        SET PRODUCT_LIKES = PRODUCT_LIKES + 1
+        WHERE PRODUCT_ID = #{productId}
+    </update>
+
+    <!--레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환-->
+    <select id="getIsLikedProduct"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductLikeResponse">
+        SELECT product_id as productId,
+               user_id as userId,
+               liked as liked
+        FROM USER_PRODUCT_LIKES
+        WHERE PRODUCT_ID = #{productId} and USER_ID = #{userId}
+        <!--FETCH FIRST 1 ROWS ONLY-->
+    </select>
+
 </mapper>

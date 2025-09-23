@@ -2,12 +2,15 @@ package com.avengers.musinsa.domain.user.service;
 
 import com.avengers.musinsa.domain.product.service.ProductService;
 import com.avengers.musinsa.domain.user.dto.*;
+import com.avengers.musinsa.domain.product.service.ProductServiceImpl;
+import com.avengers.musinsa.domain.user.dto.ProductOptionInfo;
+import com.avengers.musinsa.domain.user.dto.ProductOptionUpdateRequest;
+import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
 import com.avengers.musinsa.domain.user.repository.CartRepository;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.avengers.musinsa.mapper.CartMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,7 +25,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductService productService;
     private final CartMapper cartMapper;
-
+    private final ProductServiceImpl productService;
 
     // 상품 상세 화면에서 장바구니 추가 POST Request
     @Transactional

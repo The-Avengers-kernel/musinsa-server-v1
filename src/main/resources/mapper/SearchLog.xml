@@ -20,4 +20,37 @@
         CURRENT_TIMESTAMP
         )
     </insert>
+
+    <insert id="insertSearchBrandLog" parameterType="com.avengers.musinsa.domain.search.Dto.SearchSaveDto$searchBrandLogSaveDto">
+        <selectKey keyProperty="searchBrandLogSaveId" resultType="Long" order = "BEFORE">
+            select seq_search_keyword_logs.nextval from dual
+        </selectKey>
+            insert into search_brand_logs(
+                search_brand_log_id,
+                search_brand_id,
+                user_id,
+                search_datetime
+        )values (
+                #{searchBrandLogSaveId},
+                #{brandId},
+                #{userId},
+                current_timestamp
+        )
+    </insert>
+    <insert id="insertSearchKeywordLog" parameterType="com.avengers.musinsa.domain.search.Dto.SearchSaveDto$searchKeywordLogSaveDto">
+        <selectKey keyProperty="searchKeywordLogSaveId" resultType="Long" order="BEFORE">
+            select seq_search_keyword_logs.nextval from dual
+        </selectKey>
+            insert into search_keyword_logs(
+                search_keyword_log_id,
+                search_text,
+                user_id,
+                search_datetime
+        )values(
+            #{searchKeywordLogSaveId},
+            #{searchText},
+            #{userId},
+            current_timestamp
+        )
+    </insert>
 </mapper>
