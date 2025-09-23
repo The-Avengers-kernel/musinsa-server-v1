@@ -3,6 +3,7 @@ package com.avengers.musinsa.domain.brand.repository;
 import com.avengers.musinsa.domain.brand.dto.BrandDto;
 import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
+import com.avengers.musinsa.domain.brand.dto.response.UserBrandStatus;
 
 import java.util.List;
 
@@ -24,12 +25,13 @@ public interface BrandRepository {
 
     List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
 
-    void plusBrandLikeCnt(Long brandId);
-
     void switchBrandLike(Long userId, Long brandId);
 
-    void updateBrandLikeCnt(Long brandId);
+    void minusBrandLikeCnt(Long brandId);
 
-    BrandLikeResponse findIsLikedBrand(Long userId, Long brandId);
+    void plusBrandLikeCnt(Long brandId);
+
+    UserBrandStatus getUserBrandStatus(Long userId, Long brandId);
+
 
 }

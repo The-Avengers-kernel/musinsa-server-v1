@@ -15,29 +15,22 @@ public class BrandLikeController {
     private final BrandService brandService;
     private final TokenProviderService tokenProviderService;
 
-    //브랜드 최초 좋아요 하기 (레코드 추가)
+    /*//브랜드 좋아요 토글 기능
     @PostMapping("/brands/{brandId}/liked")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public BrandLikeResponse addBrandLikedByUser(@PathVariable Long brandId, @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+    public BrandLikeResponse BrandLikeToggle(@PathVariable Long brandId, @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         if (authorizationHeader == null || authorizationHeader.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization token is missing");
         } else {
             Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
             System.out.println("userId = " + userId);
-            return brandService.addBrandLikedByUser(userId, brandId);
+            return brandService.BrandLikeToggle(userId, brandId);
         }
-    }
-    //이미 좋아요한 브랜드 좋아요 하기/취소하기 (patch)
-    @PatchMapping("/brands/{brandId}/liked")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public BrandLikeResponse updateBrandLikedByUser(@PathVariable Long brandId, @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
-        if (authorizationHeader == null || authorizationHeader.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization token is missing");
-        } else {
-            Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-            System.out.println("userId = " + userId);
-            return brandService.switchBrandLike(userId, brandId);
-        }
+    }*/
+    //브랜드 좋아요 토글 기능
+    @PostMapping("/{userId}/brands/{brandId}/liked")
+    public BrandLikeResponse BrandLikeToggle(@PathVariable Long brandId,@PathVariable Long userId) {
+            return brandService.BrandLikeToggle(userId, brandId);
     }
 }
 

@@ -42,6 +42,4 @@ public interface ProductService {
     // 상품 검색
     public SearchResponse searchProducts(String keyword);
 
-    //상품 최초 좋아요 하기(레코드 추가)
-    ProductLikeResponse addProductLikedByUser(Long userId, Long ProductId);
 }
