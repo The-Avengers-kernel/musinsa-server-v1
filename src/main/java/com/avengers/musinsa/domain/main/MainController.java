@@ -15,12 +15,14 @@ public class MainController {
     public String getMainHompage(
             @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
 
+        //토큰 검사
         if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
             Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
             System.out.println("userId = " + userId);
         }else{
             System.out.println("헤더 없음");
         }
+
         return "main/main";
     }
 
