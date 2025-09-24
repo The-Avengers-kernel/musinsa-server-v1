@@ -4,6 +4,7 @@ import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import com.avengers.musinsa.domain.order.dto.response.*;
 import com.avengers.musinsa.domain.order.entity.Order;
 import com.avengers.musinsa.domain.order.repository.OrderRepository;
+import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import com.avengers.musinsa.domain.user.dto.UserResponseDto;
 import com.avengers.musinsa.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +63,13 @@ public class OrderService {
 
         return completionOrderSummaryResponse;
     }
+
+    //배송지 목록 조회
+    public List<ShippingAddressOrderDTO> getShippingAddressesUserId(Long userId) {
+        return orderRepository.getShippingAddressesUserId(userId);
+    }
+
+
 
 
 }
