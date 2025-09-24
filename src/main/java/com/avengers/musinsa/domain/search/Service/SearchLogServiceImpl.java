@@ -49,7 +49,7 @@ public class SearchLogServiceImpl implements SearchLogService{
 
 
     @Override
-    public void saveSearchKeywordLogs(String keyword, Long userId) {
+    public void saveSearchKeywordLog(String keyword, Long userId) {
         try{
             SearchSaveDto.searchKeywordLogSaveDto brandLogSaveDto = SearchSaveDto.searchKeywordLogSaveDto.builder()
                     .userId(userId)

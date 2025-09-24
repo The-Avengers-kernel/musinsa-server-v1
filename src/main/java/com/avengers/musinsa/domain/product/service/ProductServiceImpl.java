@@ -226,8 +226,8 @@ public class ProductServiceImpl implements ProductService{
                     .brandInfo(brandInfo)
                     .build();
         } else {
-            // 상품 검색인 경우
-            System.out.println("상품검색 시작");
+            // 상품 검색인 경우, 키워드 저장
+            searchLogService.saveSearchKeywordLog(keyword,userId);
             String[] keywords = keyword.trim().split("\\s+");
             for(String key : keywords){
                 System.out.println("키워드 = " + key);

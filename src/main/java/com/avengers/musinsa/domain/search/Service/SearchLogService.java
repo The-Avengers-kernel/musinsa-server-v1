@@ -12,7 +12,7 @@ public interface SearchLogService {
 
 
     // 검색 로그 저장
-    void saveSearchKeywordLogs(String keyword,Long userId);
+    void saveSearchKeywordLog(String keyword,Long userId);
 
     void saveSearchBrandLog(BrandResponse brandResponse, Long userId);
 }
