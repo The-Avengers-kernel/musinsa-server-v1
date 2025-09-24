@@ -1,6 +1,5 @@
 package com.avengers.musinsa.mapper;
 
-import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
 import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest;
 import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest.Payment;
 import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest.ProductLine;
