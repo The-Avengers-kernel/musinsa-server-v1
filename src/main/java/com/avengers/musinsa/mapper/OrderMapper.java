@@ -1,13 +1,16 @@
 package com.avengers.musinsa.mapper;
 
+import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
+import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest;
+import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest.Payment;
+import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest.ProductLine;
+import java.util.List;
 import com.avengers.musinsa.domain.order.dto.response.OrderDto;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import com.avengers.musinsa.domain.order.entity.Order;
 import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 @Mapper
 public interface OrderMapper {
@@ -27,15 +30,14 @@ public interface OrderMapper {
     List<ShippingAddressOrderDTO> getShippingAddressesUserId(@Param("userId") Long userId);
 
 
-    //주문상품 리스트
-
-
-
-
-    //상품별 할인금액 계산
-
-
     //주문하기
+    int createShipment(OrderCreateRequest orderCreateRequest);
 
+    int createOrder(@Param("userId") Long userId,
+                    @Param("shippingId") Long shippingId,
+                    @Param("userAddressId") Long userAddressId,
+                    @Param("payment") Payment payment);
 
+    void createOrderItems(@Param("orderId") Long orderId,
+                          @Param("product") ProductLine orderProduct);
 }

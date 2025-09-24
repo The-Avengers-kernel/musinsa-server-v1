@@ -1,12 +1,17 @@
 package com.avengers.musinsa.domain.order.controller;
 
 
+import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
+import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest;
+import com.avengers.musinsa.domain.order.dto.response.OrderCreateResponse;
 import com.avengers.musinsa.domain.order.dto.response.OrderSummaryResponse;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import com.avengers.musinsa.domain.order.service.OrderService;
 import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +31,6 @@ public class OrderController {
         return "order";
     }
 
-    //주문자 기본정보 조회
     @GetMapping("/user-info/{userId}")
     public ResponseEntity<UserInfoDTO> getUserInfo(@PathVariable Long userId) {
         UserInfoDTO userInfo = orderService.getUserInfo(userId);
@@ -34,7 +38,15 @@ public class OrderController {
         return ResponseEntity.ok(userInfo);
     }
 
-    // 주문 완료 화면 조회
+    //주문하기
+    @PostMapping("/{userId}/order")
+    public ResponseEntity<OrderCreateResponse> createOrder(@PathVariable Long userId,
+                                                           @RequestBody OrderCreateRequest orderCreateRequest) {
+        OrderCreateResponse orderCreateResponse = orderService.createOrder(userId, orderCreateRequest);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderCreateResponse);
+
+      // 주문 완료 화면 조회
     @GetMapping("/{orderId}/completion/summary")
     public ResponseEntity<OrderSummaryResponse.OrderSummaryDto> getCompletionOrderSummary(@PathVariable Long orderId, @CookieValue(value = "Authorization") String authorization) {
         Long userId = tokenProviderService.getUserIdFromToken(authorization);
@@ -49,7 +61,6 @@ public class OrderController {
         List<ShippingAddressOrderDTO> shippingAddresses = orderService.getShippingAddressesUserId(userId);
 
         return ResponseEntity.ok(shippingAddresses);
-
 
     }
 }
