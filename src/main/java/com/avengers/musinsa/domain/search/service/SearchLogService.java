@@ -1,8 +1,8 @@
-package com.avengers.musinsa.domain.search.Service;
+package com.avengers.musinsa.domain.search.service;
 
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
-import com.avengers.musinsa.domain.search.Dto.SearchLogRequestDTO;
-import com.avengers.musinsa.domain.search.Dto.SearchLogResponseDTO;
+import com.avengers.musinsa.domain.search.dto.SearchLogRequestDTO;
+import com.avengers.musinsa.domain.search.dto.SearchLogResponseDTO;
 
 public interface SearchLogService {
 
@@ -12,7 +12,7 @@ public interface SearchLogService {
 
 
     // 검색 로그 저장
-    void saveSearchKeywordLogs(String keyword,Long userId);
+    void saveSearchKeywordLog(String keyword,Long userId);
 
     void saveSearchBrandLog(BrandResponse brandResponse, Long userId);
 }

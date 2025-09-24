@@ -20,4 +20,5 @@ public interface OrderRepository {
 
     Long createOrder(Long userId, Long shippingId, Long userAddressId, OrderCreateRequest.Payment payment);
 
+    void createOrderItems(Long orderId, OrderCreateRequest.ProductLine orderProduct);
 }

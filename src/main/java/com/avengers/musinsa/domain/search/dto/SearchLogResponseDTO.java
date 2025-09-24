@@ -1,4 +1,4 @@
-package com.avengers.musinsa.domain.search.Dto;
+package com.avengers.musinsa.domain.search.dto;
 
 
 import lombok.AllArgsConstructor;

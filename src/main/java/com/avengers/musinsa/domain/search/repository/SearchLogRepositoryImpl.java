@@ -1,8 +1,7 @@
-package com.avengers.musinsa.domain.search.Repository;
+package com.avengers.musinsa.domain.search.repository;
 
-import com.avengers.musinsa.domain.search.Dto.SearchLogRequestDTO;
-import com.avengers.musinsa.domain.search.Dto.SearchSaveDto;
-import com.avengers.musinsa.domain.search.Entity.SearchLog;
+import com.avengers.musinsa.domain.search.dto.SearchSaveDto;
+import com.avengers.musinsa.domain.search.entity.SearchLog;
 import com.avengers.musinsa.mapper.SearchLogMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

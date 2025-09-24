@@ -1,6 +1,5 @@
 package com.avengers.musinsa.domain.product.repository;
 
-import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.product.dto.response.BottomProductDetailSizeListResponse;
 import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;

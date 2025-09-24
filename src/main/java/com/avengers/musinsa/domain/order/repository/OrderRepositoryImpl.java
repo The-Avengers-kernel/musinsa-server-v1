@@ -56,4 +56,9 @@ public class OrderRepositoryImpl implements OrderRepository {
         return payment.getOrderId();
     }
 
+    @Override
+    public void createOrderItems(Long orderId, OrderCreateRequest.ProductLine orderProduct) {
+        orderMapper.createOrderItems(orderId, orderProduct);
+    }
+
 }

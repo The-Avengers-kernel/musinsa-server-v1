@@ -24,8 +24,6 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final ProductService productService;
-    private final CartMapper cartMapper;
-    private final ProductServiceImpl productService;
 
     // 상품 상세 화면에서 장바구니 추가 POST Request
     @Transactional

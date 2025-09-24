@@ -1,7 +1,6 @@
 package com.avengers.musinsa.domain.order.controller;
 
 
-import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
 import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest;
 import com.avengers.musinsa.domain.order.dto.response.OrderCreateResponse;
 import com.avengers.musinsa.domain.order.dto.response.OrderSummaryResponse;
@@ -10,7 +9,6 @@ import com.avengers.musinsa.domain.order.service.OrderService;
 import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +43,7 @@ public class OrderController {
         OrderCreateResponse orderCreateResponse = orderService.createOrder(userId, orderCreateRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderCreateResponse);
-
+    }
       // 주문 완료 화면 조회
     @GetMapping("/{orderId}/completion/summary")
     public ResponseEntity<OrderSummaryResponse.OrderSummaryDto> getCompletionOrderSummary(@PathVariable Long orderId, @CookieValue(value = "Authorization") String authorization) {

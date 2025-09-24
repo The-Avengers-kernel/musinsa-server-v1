@@ -1,8 +1,6 @@
-package com.avengers.musinsa.domain.search.Dto;
+package com.avengers.musinsa.domain.search.dto;
 
 import lombok.*;
-
-import java.util.List;
 
 public class SearchSaveDto {
 

@@ -1,8 +1,6 @@
 package com.avengers.musinsa.domain.product.service;
 
-import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
-import com.avengers.musinsa.domain.brand.dto.response.UserBrandStatus;
 import com.avengers.musinsa.domain.brand.repository.BrandRepository;
 import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
@@ -11,8 +9,7 @@ import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepositoryImpl;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
-import com.avengers.musinsa.domain.search.Dto.SearchSaveDto;
-import com.avengers.musinsa.domain.search.Service.SearchLogService;
+import com.avengers.musinsa.domain.search.service.SearchLogService;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
 
 import java.util.*;
@@ -229,8 +226,8 @@ public class ProductServiceImpl implements ProductService{
                     .brandInfo(brandInfo)
                     .build();
         } else {
-            // 상품 검색인 경우
-            System.out.println("상품검색 시작");
+            // 상품 검색인 경우, 키워드 저장
+            searchLogService.saveSearchKeywordLog(keyword,userId);
             String[] keywords = keyword.trim().split("\\s+");
             for(String key : keywords){
                 System.out.println("키워드 = " + key);

@@ -1,7 +1,7 @@
 package com.avengers.musinsa.mapper;
 
-import com.avengers.musinsa.domain.search.Dto.SearchSaveDto;
-import com.avengers.musinsa.domain.search.Entity.SearchLog;
+import com.avengers.musinsa.domain.search.dto.SearchSaveDto;
+import com.avengers.musinsa.domain.search.entity.SearchLog;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

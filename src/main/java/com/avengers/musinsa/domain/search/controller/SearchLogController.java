@@ -1,8 +1,7 @@
 package com.avengers.musinsa.domain.search.controller;
 
-import com.avengers.musinsa.domain.search.Dto.SearchLogResponseDTO;
-import com.avengers.musinsa.domain.search.Dto.SearchLogRequestDTO;
-import com.avengers.musinsa.domain.search.Service.SearchLogService;
+import com.avengers.musinsa.domain.search.dto.SearchLogRequestDTO;
+import com.avengers.musinsa.domain.search.service.SearchLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

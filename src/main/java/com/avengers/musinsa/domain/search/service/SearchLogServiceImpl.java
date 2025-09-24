@@ -1,11 +1,11 @@
-package com.avengers.musinsa.domain.search.Service;
+package com.avengers.musinsa.domain.search.service;
 
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
-import com.avengers.musinsa.domain.search.Dto.SearchLogResponseDTO;
-import com.avengers.musinsa.domain.search.Dto.SearchLogRequestDTO;
-import com.avengers.musinsa.domain.search.Dto.SearchSaveDto;
-import com.avengers.musinsa.domain.search.Entity.SearchLog;
-import com.avengers.musinsa.domain.search.Repository.SearchLogRepository;
+import com.avengers.musinsa.domain.search.dto.SearchLogResponseDTO;
+import com.avengers.musinsa.domain.search.dto.SearchLogRequestDTO;
+import com.avengers.musinsa.domain.search.dto.SearchSaveDto;
+import com.avengers.musinsa.domain.search.entity.SearchLog;
+import com.avengers.musinsa.domain.search.repository.SearchLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class SearchLogServiceImpl implements SearchLogService{
 
 
     @Override
-    public void saveSearchKeywordLogs(String keyword, Long userId) {
+    public void saveSearchKeywordLog(String keyword, Long userId) {
         try{
             SearchSaveDto.searchKeywordLogSaveDto brandLogSaveDto = SearchSaveDto.searchKeywordLogSaveDto.builder()
                     .userId(userId)

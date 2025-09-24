@@ -1,9 +1,7 @@
 package com.avengers.musinsa.domain.order.service;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 
-import com.avengers.musinsa.domain.order.dto.UserInfoDTO;
 import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest;
-import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest.Payment;
 import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest.ProductLine;
 import com.avengers.musinsa.domain.order.dto.response.OrderCreateResponse;
 import com.avengers.musinsa.domain.order.repository.OrderRepository;
