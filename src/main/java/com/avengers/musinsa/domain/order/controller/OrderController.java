@@ -44,6 +44,7 @@ public class OrderController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderCreateResponse);
     }
+
       // 주문 완료 화면 조회
     @GetMapping("/{orderId}/completion/summary")
     public ResponseEntity<OrderSummaryResponse.OrderSummaryDto> getCompletionOrderSummary(@PathVariable Long orderId, @CookieValue(value = "Authorization") String authorization) {
