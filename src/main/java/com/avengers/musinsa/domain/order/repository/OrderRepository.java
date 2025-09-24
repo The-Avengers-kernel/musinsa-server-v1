@@ -1,4 +1,6 @@
 package com.avengers.musinsa.domain.order.repository;
+
+import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest;
 import com.avengers.musinsa.domain.order.dto.response.OrderDto;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
 import com.avengers.musinsa.domain.order.entity.Order;
@@ -6,12 +8,16 @@ import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import java.util.List;
 
 public interface OrderRepository {
-    public UserInfoDTO getUserInfo(Long userId);
-    public Order getOrder(Long orderId);
-    public List<OrderDto.OrderItemInfo> findOrderItems(Long orderId);
+    UserInfoDTO getUserInfo(Long userId);
+
+    Order getOrder(Long orderId);
+
+    List<OrderDto.OrderItemInfo> findOrderItems(Long orderId);
+
     List<ShippingAddressOrderDTO> getShippingAddressesUserId(Long userId);
-  
-    public void createOrderItems(Long orderId, ProductLine orderProduct) {
-        orderMapper.createOrderItems(orderId, orderProduct);
-    }
+
+    Long createShipment(OrderCreateRequest orderCreateRequest);
+
+    Long createOrder(Long userId, Long shippingId, Long userAddressId, OrderCreateRequest.Payment payment);
+
 }
