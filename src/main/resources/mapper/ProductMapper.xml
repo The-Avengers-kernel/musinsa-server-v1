@@ -300,8 +300,6 @@
         ORDER BY p.product_likes DESC
     </select>
 
-
-
     <select id="findProductsByKeyword" resultType="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
         SELECT b.brand_id as brandId,
         b.brand_name_kr as brandNameKr,
@@ -323,27 +321,53 @@
         FETCH FIRST 50 ROWS ONLY
     </select>
 
+    <!--상품 좋아요 토글-->
+    <!--첫 좋아요 여부를 null 체크(레코드 확인)-->
+    <select id="getUserProductStatus"
+            resultType="com.avengers.musinsa.domain.product.dto.response.UserProductStatus">
+        SELECT upl.liked AS liked
+        FROM PRODUCTS p
+                 LEFT JOIN USER_PRODUCT_LIKES upl
+                           ON p.PRODUCT_ID = upl.PRODUCT_ID AND upl.USER_ID = #{userId}
+        WHERE p.PRODUCT_ID = #{productId}
+    </select>
+
     <!--상품 최초 좋아요 하기(레코드 추가)-->
     <insert id="insertUserProductLike">
-        INSERT INTO user_product_likes (user_product_like_id, user_id, product_id, liked) VALUES (seq_user_product_likes.NEXTVAL, #{userId}, #{productId}, 1)
+        INSERT INTO user_product_likes (user_product_like_id, user_id, product_id, liked) VALUES (seq_user_product_likes.NEXTVAL,#{userId}, #{productId}, 1)
     </insert>
 
     <!--상품 테이블의 좋아요 수+1-->
-    <update id="plusProductLikeCnt">
+    <update id="plusProductLikeCnt" >
         UPDATE PRODUCTS
         SET PRODUCT_LIKES = PRODUCT_LIKES + 1
+        WHERE PRODUCT_ID = #{productId}
+    </update>
+
+    <!--상품 테이블의 좋아요 수-1-->
+    <update id="minusProductLikeCnt">
+        UPDATE PRODUCTS
+        SET PRODUCT_LIKES = PRODUCT_LIKES - 1
         WHERE PRODUCT_ID = #{productId}
     </update>
 
     <!--레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환-->
     <select id="getIsLikedProduct"
             resultType="com.avengers.musinsa.domain.product.dto.response.ProductLikeResponse">
-        SELECT product_id as productId,
-               user_id as userId,
+        SELECT PRODUCT_ID as productId,
+               USER_ID as userId,
                liked as liked
         FROM USER_PRODUCT_LIKES
         WHERE PRODUCT_ID = #{productId} and USER_ID = #{userId}
-        <!--FETCH FIRST 1 ROWS ONLY-->
     </select>
 
+    <!--회원상품좋아요 테이블 liked 0 ↔ 1-->
+    <update id="switchProductLike">
+        UPDATE USER_PRODUCT_LIKES
+        SET liked = CASE liked
+                        WHEN 0 THEN 1
+                        WHEN 1 THEN 0
+            END
+        WHERE user_id = #{userId} AND PRODUCT_ID = #{productId}
+    </update>
 </mapper>

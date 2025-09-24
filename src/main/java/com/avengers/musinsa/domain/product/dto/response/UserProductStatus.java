@@ -7,8 +7,6 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class ProductLikeResponse {
-    private Long productId;
-    private Long userId;
-    private boolean liked;
+public class UserProductStatus {
+    private Integer liked;
 }
