@@ -2,12 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avengers.musinsa.mapper.OrderMapper">
-    <!--주문자 기본정보 조회 -->
-    <select id="getUserInfo" resultType="com.avengers.musinsa.domain.order.dto.UserInfoDTO" parameterType="Long">
-        SELECT u.user_id                                   as userId,
-               u.user_name                                 as userName,
-               ua.phone_number                             as phoneNumber,
-               ua.address_line1 || ' ' || ua.address_line2 AS location
+  
+    <select id="getUserInfo" resultType="com.avengers.musinsa.domain.order.dto.response.UserInfoDTO" parameterType="Long">
+        SELECT
+            u.user_id as userId,
+            u.user_name as userName,
+            ua.phone_number as phoneNumber,
+            ua.address_line1 || ' ' || ua.address_line2     AS location
         FROM USERS u
                  join user_addresses ua ON u.user_id = ua.user_id
         WHERE u.user_id = #{userId}
@@ -76,16 +77,71 @@
         VALUES (SEQ_ORDER_ITEMS.NEXTVAL, #{product.productId}, #{orderId}, #{product.quantity}, #{product.price},
                 #{product.price} * #{product.quantity})
     </insert>
-    <!-- 배송지 목록 조회 -->
 
+    <select id="getOrder" resultType="com.avengers.musinsa.domain.order.entity.Order" parameterType="Long">
+        select
+            o.order_id as orderId,
+            o.user_id as userId,
+            o.user_address_id as userAddressId,
+            o.shipping_id as shipmentId,
+            o.payment_method_id as paymentMethodId,
+            o.order_code as orderCode,
+            o.total_price as totalPrice,
+            o.order_discount_amount as orderDiscountAmount,
+            o.final_price as finalPrice,
+            o.order_status as orderStatus,
+            o.created_at as orderDateTime,
+            o.recipient_phone as recipientPhone,
+            o.recipient_name as recipientName,
+            o.recipient_address as recipientAddress,
+            o.postal_code as postalCode
 
-    <!-- 주문 상품 리스트(상품이미지, 사이즈, 개수, 금액) -->
+        from orders o
+        where o.order_id = #{orderId}
+    </select>
 
+    <select id="findOrderItems" resultType="com.avengers.musinsa.domain.order.dto.response.OrderDto$OrderItemInfo" parameterType="Long">
+        SELECT
+            b.brand_id as brandId,
+            b.brand_name_kr as brandNameKr,
+            b.brand_name_eng as brandNameEng,
+            b.brand_image as brandImage,
+            p.product_id as productId,
+            p.product_name as productName,
+            p.price as price,
+            pi.image_url as imageUrl,
+            oi.quantity as quantity,
+            oi.unit_price as unitPrice,
+            oi.discount_rate as discountRate,
+            oi.total_price as totalPrice
+        FROM order_items oi
+                 JOIN products p ON oi.product_id = p.product_id
+                 JOIN brands b ON p.brand_id = b.brand_id
+                 LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
+        WHERE oi.order_id = #{orderId}
+    </select>
 
-    <!-- 상품별 할인 금액 계산 (브랜드 자체 할인) -->
-
-
-    <!-- 주문하기 -->
-
+    <select id="getShippingAddressesUserId" resultType="com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO" parameterType="Long">
+        SELECT
+            ua.user_address_id AS shippingId,
+            ua.user_id AS userId,
+            ua.recipient_name AS recipientName,
+            ua.phone_number AS recipientPhone,
+            ua.address_line1 || ' ' || ua.address_line2 AS recipientAddress,
+            s.postal_code AS postalCode,
+            ua.is_default AS isDefault
+        FROM user_addresses ua
+        LEFT JOIN (
+            SELECT shipping_id, postal_code
+            FROM (
+                     SELECT shipping_id, postal_code,
+                            ROW_NUMBER() OVER (PARTITION BY shipping_id ORDER BY created_at DESC) rn
+                     FROM shipments
+                 )
+            WHERE rn = 1
+        ) s ON ua.user_address_id = s.shipping_id
+        WHERE ua.user_id = #{userId}
+        ORDER BY ua.is_default DESC, ua.user_address_id ASC
+    </select>
 
 </mapper>

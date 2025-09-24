@@ -1,4 +1,4 @@
-package com.avengers.musinsa.domain.order.dto;
+package com.avengers.musinsa.domain.order.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

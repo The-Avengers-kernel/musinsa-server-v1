@@ -18,7 +18,7 @@ public class ProductsInCartInfoResponse {
 
     private List<OptionGroup> optionGroups = new ArrayList<>();
 
-    // ★ MyBatis가 사용할 7-파라미터 생성자 (SQL 컬럼 순서와 동일!)
+    // ★ My Batis가 사용할 7-파라미터 생성자(SQL 컬럼 순서와 동일!)
     public ProductsInCartInfoResponse(
             Long productId,
             String productName,

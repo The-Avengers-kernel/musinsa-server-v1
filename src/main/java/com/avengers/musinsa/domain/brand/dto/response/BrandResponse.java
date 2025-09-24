@@ -13,4 +13,5 @@ public class BrandResponse {
     private String brandNameKr;
     private String brandNameEn;
     private String brandImage;
+    private Integer brandLikes;
 }

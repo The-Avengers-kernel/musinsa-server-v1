@@ -13,10 +13,15 @@
                b.brand_name_kr                            AS brandName,
                b.brand_likes                              AS brandLikeCnt,
                b.BRAND_DISCOUNT                           AS brandDiscount,
-               ((100 - b.BRAND_DISCOUNT) / 100) * p.price AS finalprice
+               ((100 - b.BRAND_DISCOUNT) / 100) * p.price AS finalprice,
+
+               p.SIZE_DETAIL_IMAGE_ID AS sizeDetailImageId,
+               SDI.IMAGE                                  AS productSizeDetailImageURL
         FROM products p
                  JOIN
              brands b ON p.brand_id = b.brand_id
+                 JOIN
+             SIZE_DETAIL_IMAGES SDI ON p.SIZE_DETAIL_IMAGE_ID = SDI.SIZE_DETAIL_IMAGE_ID
         WHERE p.product_id = #{productId}
     </select>
 
@@ -161,11 +166,208 @@
         ORDER BY product_category_id
     </select>
 
+    <select id="getProductReviews"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductReviewsResponse">
+        SELECT
+            r.REVIEW_ID AS reviewId,
+            r.NICKNAME AS nickName,
+            r.CONTENT AS content,
+            r.PURCHASE_OPTIONS AS purchaseOptions,
+            r.HELP_COUNT AS helpCount
+        FROM
+            REVIEWS r
+        WHERE
+            r.PRODUCT_ID=#{productId}
+        ORDER BY r.HELP_COUNT DESC
+
+    </select>
+   <!--상의 실측 사이즈 조회-->
+    <select id="getTopProductDetailSizeList"
+            resultType="com.avengers.musinsa.domain.product.dto.response.TopProductDetailSizeListResponse">
+        SELECT
+            TSD.TOP_SIZE_DETAIL_ID AS topSizeDetailId,
+            TO_CHAR(TSD.CM) AS cm,
+            TSD.LENGTH AS length,
+            TSD.SHOULDER_WIDTH AS shoulderWidth,
+            TSD.CHEST_WIDTH AS chestWidth,
+            TSD.SLEAVE_LENGTH AS sleaveLength
+        FROM
+            TOP_SIZE_DETAILS TSD
+        WHERE
+            TSD.PRODUCT_ID = #{productId}
+        ORDER BY CASE CM
+                     WHEN 'XS' THEN 1
+                     WHEN 'S' THEN 2
+                     WHEN 'M' THEN 3
+                     WHEN 'L' THEN 4
+                     WHEN 'XL' THEN 5
+                     WHEN 'XXL' THEN 6
+                     WHEN 'FREE' THEN 7
+                     ELSE 8
+                     END
+    </select>
+
+<!--하의 실측 사이즈 조회-->
+    <select id="getBottomProductDetailSizeList"
+            resultType="com.avengers.musinsa.domain.product.dto.response.BottomProductDetailSizeListResponse">
+    SELECT
+        BSD.BOTTOM_SIZE_DETAIL_ID AS BottomProductDetailSizeId,
+        TO_CHAR(BSD.CM) AS cm,
+        BSD.LENGTH AS length,
+        BSD.WAIST AS waist,
+        BSD.hip AS hip,
+        BSD.THIGH AS thigh,
+        BSD.RISE AS rise,
+        BSD.HEM_WIDTH AS hemWidth
+        FROM
+            BOTTOM_SIZE_DETAILS BSD
+    WHERE
+        BSD.PRODUCT_ID = #{productId}
+    ORDER BY CASE CM
+                 WHEN 'XS' THEN 1
+                 WHEN 'S' THEN 2
+                 WHEN 'M' THEN 3
+                 WHEN 'L' THEN 4
+                 WHEN 'XL' THEN 5
+                 WHEN 'XXL' THEN 6
+                 WHEN 'FREE' THEN 7
+                 ELSE 8
+                 END
+      </select>
+
+      <select id="getProductCategories"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductCategoryListResponse">
+        SELECT
+            PRODUCT_ID AS productId,
+            PRODUCT_NAME AS productName
+        FROM
+            PRODUCTS
+        WHERE
+            PRODUCT_ID = #{productId}
+    </select>
+
+    <select id="getProductCategoriesList"
+            resultType="com.avengers.musinsa.domain.product.entity.ProductCategory">
+        SELECT PRODUCT_CATEGORY_ID        AS productCategoryId,
+               PARENT_PRODUCT_CATEGORY_ID AS parentProductCategoryId,
+               CATEGORY_NAME              AS categoryName,
+               CATEGORY_LEVEL             AS categoryLevel
+        FROM PRODUCT_CATEGORIES
+        START WITH PRODUCT_CATEGORY_ID = (SELECT PRODUCT_CATEGORY_ID
+                                          FROM PRODUCTS
+                                          WHERE PRODUCT_ID = #{productId})
+        CONNECT BY PRIOR parent_product_category_id = product_category_id
+        ORDER BY CATEGORY_LEVEL
+    </select>
+
+
+
+
     <select id ="getProductDetailDescription"
             resultType="com.avengers.musinsa.domain.product.dto.response.ProductDetailDescriptionResponse">
         SELECT DETAIL_DESCRIPTION AS detailDescription
             FROM PRODUCTS
         WHERE PRODUCT_ID = #{productId}
+
     </select>
 
+
+
+    <select id="findByBrandName" resultType="com.avengers.musinsa.domain.brand.dto.response.BrandResponse">
+        SELECT brand_id as brandId,
+               brand_name_kr as brandNameKr,
+               brand_name_eng as brandNameEn,
+               brand_image as brandImage,
+               brand_likes as brandLikes
+        FROM brands
+        WHERE brand_name_kr = #{keyword} OR brand_name_eng = #{keyword}
+        LIMIT 1
+    </select>
+
+    <select id="findProductsByBrandId" resultType="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
+        SELECT b.brand_id as brandId,
+               b.brand_name_kr as brandNameKr,
+               b.brand_name_eng as brandNameEn,
+               p.product_id as productId,
+               pi.image_url as productImage,
+               p.product_name as productName,
+               p.price,
+               p.product_likes as productLikes
+        FROM products p
+                 JOIN brands b ON p.brand_id = b.brand_id
+                 LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
+        WHERE p.brand_id = #{brandId}
+        ORDER BY p.product_likes DESC
+    </select>
+
+    <select id="findProductsByKeyword" resultType="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
+        SELECT b.brand_id as brandId,
+        b.brand_name_kr as brandNameKr,
+        b.brand_name_eng as brandNameEn,
+        p.product_id as productId,
+        pi.image_url as productImage,
+        p.product_name as productName,
+        p.price,
+        p.product_likes as productLikes
+        FROM products p
+        JOIN brands b ON p.brand_id = b.brand_id
+        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
+        WHERE (
+        <foreach collection="keywords" item="keyword" separator=" OR ">
+            p.product_name LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'
+        </foreach>
+        )
+        ORDER BY p.product_likes DESC
+        FETCH FIRST 50 ROWS ONLY
+    </select>
+
+    <!--상품 좋아요 토글-->
+    <!--첫 좋아요 여부를 null 체크(레코드 확인)-->
+    <select id="getUserProductStatus"
+            resultType="com.avengers.musinsa.domain.product.dto.response.UserProductStatus">
+        SELECT upl.liked AS liked
+        FROM PRODUCTS p
+                 LEFT JOIN USER_PRODUCT_LIKES upl
+                           ON p.PRODUCT_ID = upl.PRODUCT_ID AND upl.USER_ID = #{userId}
+        WHERE p.PRODUCT_ID = #{productId}
+    </select>
+
+    <!--상품 최초 좋아요 하기(레코드 추가)-->
+    <insert id="insertUserProductLike">
+        INSERT INTO user_product_likes (user_product_like_id, user_id, product_id, liked) VALUES (seq_user_product_likes.NEXTVAL,#{userId}, #{productId}, 1)
+    </insert>
+
+    <!--상품 테이블의 좋아요 수+1-->
+    <update id="plusProductLikeCnt" >
+        UPDATE PRODUCTS
+        SET PRODUCT_LIKES = PRODUCT_LIKES + 1
+        WHERE PRODUCT_ID = #{productId}
+    </update>
+
+    <!--상품 테이블의 좋아요 수-1-->
+    <update id="minusProductLikeCnt">
+        UPDATE PRODUCTS
+        SET PRODUCT_LIKES = PRODUCT_LIKES - 1
+        WHERE PRODUCT_ID = #{productId}
+    </update>
+
+    <!--레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환-->
+    <select id="getIsLikedProduct"
+            resultType="com.avengers.musinsa.domain.product.dto.response.ProductLikeResponse">
+        SELECT PRODUCT_ID as productId,
+               USER_ID as userId,
+               liked as liked
+        FROM USER_PRODUCT_LIKES
+        WHERE PRODUCT_ID = #{productId} and USER_ID = #{userId}
+    </select>
+
+    <!--회원상품좋아요 테이블 liked 0 ↔ 1-->
+    <update id="switchProductLike">
+        UPDATE USER_PRODUCT_LIKES
+        SET liked = CASE liked
+                        WHEN 0 THEN 1
+                        WHEN 1 THEN 0
+            END
+        WHERE user_id = #{userId} AND PRODUCT_ID = #{productId}
+    </update>
 </mapper>

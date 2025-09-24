@@ -4,6 +4,7 @@ spring:
   application:
     name: ${SPRING_APPLICATION_NAME}
 
+
   jwt:
     secret: ${JWT_SECRET}
   # JSP 뷰 설정
@@ -57,3 +58,6 @@ mybatis:
   mapper-locations: ${MYBATIS_MAPPER_LOCATIONS}
   type-aliases-package: ${MYBATIS_TYPE_ALIASES_PACKAGE}
 
+logging:
+  level:
+    com.avengers.musinsa.mapper.BrandMapper: TRACE

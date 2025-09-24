@@ -1,10 +1,12 @@
 package com.avengers.musinsa.domain.product.controller;
 
-import ch.qos.logback.core.model.Model;
 import com.avengers.musinsa.domain.product.dto.response.*;
+import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
-import com.avengers.musinsa.domain.product.service.ProductService;
+import com.avengers.musinsa.domain.product.service.ProductServiceImpl;
 import java.util.List;
+
+import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,49 +15,82 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/products") // 이 컨트롤러의 모든 API는 /api/v1/products로 시작
 @RequiredArgsConstructor
 public class ProductController {
-    // 서비스 계층에 일을 시킨다, 주입
 
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
+    private final TokenProviderService tokenProviderService;
 
-    // /api/v1/products/{숫자} 형태의 url 요청을 받아서,
-    // 그 숫자를 productId 변수로 넘겨주는 역할
+    // "해당 productId 상품 정보를 반환해준다.
     @GetMapping("{productId}")
-    // get은 임의로 정한 메서드 이름 나중에 바꾸면 된다.
-    // @PathVariable은 Spring MVC에서 URL 경로의 일부 값을 메서드의 매개변수로 바인딩 해주는 애너테이션 없으면 오류가 난다.
-    public ProductDetailResponse getDetailProduct(@PathVariable Long productId){
-        // "해당 productId 상품 정보를 반환해준다.
+    public ProductDetailResponse getDetailProduct(@PathVariable Long productId) {
         return productService.getProductById(productId);
     }
 
     @GetMapping("/{productId}/options")
-    public ProductVariantsResponse getProductVariants(@PathVariable Long productId){
+    public ProductVariantsResponse getProductVariants(@PathVariable Long productId) {
         return productService.getProductVariants(productId);
     }
 
+    // 상풍 상세 페이지 카테고리 조회
+    @GetMapping("/{productId}/categories")
+    public ProductCategoryListResponse getProductCategories(@PathVariable Long productId) {
+        return productService.getProductCategories(productId);
+    }
 
-    @GetMapping("/main/recommendations/{gender}")
-    public List<RecommendationResponse> recommendationProducts(@PathVariable String gender ) {
+
+    // 무신사 추천순
+    @GetMapping("/recommendations/{gender}")
+    public List<RecommendationResponse> recommendationProducts(@PathVariable String gender) {
         Gender g = Gender.valueOf(gender.toUpperCase());
         return productService.getRecommendationProductList(g);
     }
 
     //카테고리 선택 시 상품 목록 조회되는 화면
-    @GetMapping("/products/category/{categoryId}")
-    public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(@PathVariable Long categoryId){
-        System.out.println("category_id = " + categoryId );
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(@PathVariable Long categoryId) {
+        System.out.println("category_id = " + categoryId);
         List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId);
         return ResponseEntity.ok(products);
     }
 
+    // 대중소 카테고리 가져오기
     @GetMapping("/categories/products")
     public List<CategoryProductResponse> categoryProducts() {
         return productService.getCategoryProductList();
     }
 
+    // 상품 리뷰 목록 조회
+    @GetMapping("{productId}/reviews")
+    public List<ProductReviewsResponse> getProductReviews(@PathVariable Long productId) {
+        return productService.getProductReviews(productId);
+    }
+
+    // 상품상세 사이즈 리스트 조회
+    @GetMapping("{productId}/detail-size-list")
+    public Object getProductDetailSizeList(@PathVariable Long productId) {
+        return productService.getProductDetailSizeList(productId);
+    }
+
     // 상품 상세 설명 조회 api
     @GetMapping("/{productId}/detail-Info")
-    public ProductDetailDescriptionResponse getProductDetailDescription(@PathVariable Long productId){
+    public ProductDetailDescriptionResponse getProductDetailDescription(@PathVariable Long productId) {
         return productService.getProductDetailDescription(productId);
+
+    }
+
+
+    // 상품 검색에 따른 상품 목록 조회
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProducts(@RequestParam("keyword") String keyword,
+                                            @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+        System.out.println(keyword);
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        SearchResponse response = productService.searchProducts(keyword, userId);
+
+        if (response != null) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.ok("검색 결과가 없습니다.");
+        }
 
     }
 }
