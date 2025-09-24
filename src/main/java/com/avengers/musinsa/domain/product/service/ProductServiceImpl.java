@@ -9,8 +9,7 @@ import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepositoryImpl;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
-import com.avengers.musinsa.domain.search.Dto.SearchSaveDto;
-import com.avengers.musinsa.domain.search.Service.SearchLogService;
+import com.avengers.musinsa.domain.search.service.SearchLogService;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
 
 import java.util.*;
@@ -18,6 +17,7 @@ import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -249,6 +249,7 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
+
     private String preprocessKeyword(String keyword) {
         System.out.println(keyword);
         if (keyword == null || keyword.trim().isEmpty()) {
@@ -262,13 +263,34 @@ public class ProductServiceImpl implements ProductService{
         return keyword;
 
     }
+
+    //상품 좋아요 토글
     @Override
-    public ProductLikeResponse addProductLikedByUser(Long userId, Long productId) {
-        //user_product_like 테이블에 레코드 추가
-        productRepository.insertUserProductLike(userId, productId);
-        //products 테이블의 좋아요 수 +1
-        productRepository.plusProductLikeCnt(productId);
-        //레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환
-        return productRepository.getIsLikedProduct(userId, productId);
+    @Transactional
+    public ProductLikeResponse ProductLikeToggle(Long userId, Long productId) {
+        UserProductStatus status = productRepository.getUserProductStatus(userId, productId);
+        //레코드가 없을 때
+        if(status == null){
+            //user_product_like 테이블에 레코드 추가
+            productRepository.insertUserProductLike(userId, productId);
+            //brands 테이블 좋아요 수 +1
+            productRepository.plusProductLikeCnt(productId);
+            //레코드 추가 후 회원과 브랜드의 현재 좋아요 상태를 반환
+            return productRepository.getIsLikedProduct(userId, productId);
+        }
+        //이미 좋아요 한 브랜드 좋아요 상태 바꾸기
+        else{
+            //liked 값 확인 (0 또는 1)
+            Integer currentLiked = status.getLiked();
+            //liked 컬럼을 0 ↔ 1
+            productRepository.switchProductLike(userId,productId);
+            //브랜드 테이블의 좋아요 수를 동기화
+            if (currentLiked != null && currentLiked == 1){
+                productRepository.minusProductLikeCnt(productId);
+            } else{
+                productRepository.plusProductLikeCnt(productId);}
+            //좋아요상태 변경 후 현재 좋아요 상태를 반환
+            return productRepository.getIsLikedProduct(userId, productId);
+        }
     }
 }

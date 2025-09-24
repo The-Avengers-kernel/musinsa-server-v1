@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avengers.musinsa.mapper.SearchLogMapper">
-    <insert id="insertSearchLog" parameterType="com.avengers.musinsa.domain.search.Entity.SearchLog">
+    <insert id="insertSearchLog" parameterType="com.avengers.musinsa.domain.search.entity.SearchLog">
         <selectKey keyProperty="searchLogId" resultType="Long" order="BEFORE">
             SELECT seq_search_logs.NEXTVAL FROM DUAL
         </selectKey>
@@ -21,7 +21,7 @@
         )
     </insert>
 
-    <insert id="insertSearchBrandLog" parameterType="com.avengers.musinsa.domain.search.Dto.SearchSaveDto$searchBrandLogSaveDto">
+    <insert id="insertSearchBrandLog" parameterType="com.avengers.musinsa.domain.search.dto.SearchSaveDto$searchBrandLogSaveDto">
         <selectKey keyProperty="searchBrandLogSaveId" resultType="Long" order = "BEFORE">
             select seq_search_keyword_logs.nextval from dual
         </selectKey>
@@ -37,7 +37,7 @@
                 current_timestamp
         )
     </insert>
-    <insert id="insertSearchKeywordLog" parameterType="com.avengers.musinsa.domain.search.Dto.SearchSaveDto$searchKeywordLogSaveDto">
+    <insert id="insertSearchKeywordLog" parameterType="com.avengers.musinsa.domain.search.dto.SearchSaveDto$searchKeywordLogSaveDto">
         <selectKey keyProperty="searchKeywordLogSaveId" resultType="Long" order="BEFORE">
             select seq_search_keyword_logs.nextval from dual
         </selectKey>

@@ -3,7 +3,7 @@ package com.avengers.musinsa.domain.brand.repository;
 import com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse;
 import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
 import com.avengers.musinsa.domain.brand.dto.BrandDto;
-import com.avengers.musinsa.domain.brand.entity.Brand;
+import com.avengers.musinsa.domain.brand.dto.response.UserBrandStatus;
 import com.avengers.musinsa.mapper.BrandMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -33,15 +33,20 @@ public class BrandRepositoryImpl implements BrandRepository {
     public List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter) {
         return this.brandMapper.findBrandsByKoreanFirstLetter(brandFirstLetter);
     }
+    @Override
+    public List<BrandResponse> findByBrandName(String brandName) {
+        return this.brandMapper.findByBrandName(brandName);
+    }
 
+
+    //브랜드 좋아요 토글
+    @Override
+    public UserBrandStatus getUserBrandStatus(Long userId, Long brandId){
+        return brandMapper.getUserBrandStatus(userId,brandId);
+    }
     @Override
     public void insertUserBrandLike(Long userId, Long brandId) {
         brandMapper.insertUserBrandLike(userId,brandId);
-    }
-
-    @Override
-    public BrandLikeResponse findIsLikedBrand(Long userId, Long brandId) {
-        return brandMapper.findIsLikeBrand(userId, brandId);
     }
 
     public void updateBrandLikeCnt(Long brandId) {
@@ -49,18 +54,8 @@ public class BrandRepositoryImpl implements BrandRepository {
     }
 
     @Override
-    public List<BrandResponse> findByBrandName(String brandName) {
-        return this.brandMapper.findByBrandName(brandName);
-    }
-
-    @Override
     public BrandLikeResponse getIsLikedBrand(Long userId, Long brandId) {
-        return brandMapper.getIsLikeBrand(userId, brandId);
-    }
-
-    @Override
-    public List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId) {
-        return this.brandMapper.getBrandsByCategoryId(brandCategoryId);
+        return brandMapper.getIsLikedBrand(userId, brandId);
     }
     @Override
     public void plusBrandLikeCnt(Long brandId) {
@@ -68,8 +63,18 @@ public class BrandRepositoryImpl implements BrandRepository {
     }
 
     @Override
+    public void minusBrandLikeCnt(Long brandId) {
+        brandMapper.minusBrandLikeCnt(brandId);
+    }
+
+    @Override
     public void switchBrandLike(Long userId, Long brandId) {
         brandMapper.switchBrandLike(userId,brandId);
     }
+    //
 
+    @Override
+    public List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId) {
+        return this.brandMapper.getBrandsByCategoryId(brandCategoryId);
+    }
 }

@@ -19,39 +19,35 @@ public class ProductController {
     private final ProductServiceImpl productService;
     private final TokenProviderService tokenProviderService;
 
-    // /api/v1/products/{숫자} 형태의 url 요청을 받아서,
-    // 그 숫자를 productId 변수로 넘겨주는 역할
+    // "해당 productId 상품 정보를 반환해준다.
     @GetMapping("{productId}")
-    // get은 임의로 정한 메서드 이름 나중에 바꾸면 된다.
-    // @PathVariable은 Spring MVC에서 URL 경로의 일부 값을 메서드의 매개변수로 바인딩 해주는 애너테이션 없으면 오류가 난다.
-    public ProductDetailResponse getDetailProduct(@PathVariable Long productId){
-        // "해당 productId 상품 정보를 반환해준다.
+    public ProductDetailResponse getDetailProduct(@PathVariable Long productId) {
         return productService.getProductById(productId);
     }
 
     @GetMapping("/{productId}/options")
-    public ProductVariantsResponse getProductVariants(@PathVariable Long productId){
+    public ProductVariantsResponse getProductVariants(@PathVariable Long productId) {
         return productService.getProductVariants(productId);
     }
 
     // 상풍 상세 페이지 카테고리 조회
     @GetMapping("/{productId}/categories")
-    public ProductCategoryListResponse getProductCategories(@PathVariable Long productId){
+    public ProductCategoryListResponse getProductCategories(@PathVariable Long productId) {
         return productService.getProductCategories(productId);
     }
 
 
     // 무신사 추천순
-    @GetMapping("/main/recommendations/{gender}")
-    public List<RecommendationResponse> recommendationProducts(@PathVariable String gender ) {
+    @GetMapping("/recommendations/{gender}")
+    public List<RecommendationResponse> recommendationProducts(@PathVariable String gender) {
         Gender g = Gender.valueOf(gender.toUpperCase());
         return productService.getRecommendationProductList(g);
     }
 
     //카테고리 선택 시 상품 목록 조회되는 화면
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(@PathVariable Long categoryId){
-        System.out.println("category_id = " + categoryId );
+      @GetMapping("/category/{categoryId}")
+      public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(@PathVariable Long categoryId) {
+        System.out.println("category_id = " + categoryId);
         List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId);
         return ResponseEntity.ok(products);
     }
@@ -64,18 +60,19 @@ public class ProductController {
 
     // 상품 리뷰 목록 조회
     @GetMapping("{productId}/reviews")
-    public List<ProductReviewsResponse> getProductReviews(@PathVariable Long productId){
+    public List<ProductReviewsResponse> getProductReviews(@PathVariable Long productId) {
         return productService.getProductReviews(productId);
     }
+
     // 상품상세 사이즈 리스트 조회
     @GetMapping("{productId}/detail-size-list")
-    public Object getProductDetailSizeList(@PathVariable Long productId){
+    public Object getProductDetailSizeList(@PathVariable Long productId) {
         return productService.getProductDetailSizeList(productId);
     }
 
     // 상품 상세 설명 조회 api
     @GetMapping("/{productId}/detail-Info")
-    public ProductDetailDescriptionResponse getProductDetailDescription(@PathVariable Long productId){
+    public ProductDetailDescriptionResponse getProductDetailDescription(@PathVariable Long productId) {
         return productService.getProductDetailDescription(productId);
 
     }
@@ -87,11 +84,11 @@ public class ProductController {
                                             @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         System.out.println(keyword);
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-        SearchResponse response = productService.searchProducts(keyword,userId);
+        SearchResponse response = productService.searchProducts(keyword, userId);
 
-        if(response != null) {
+        if (response != null) {
             return ResponseEntity.ok(response);
-        }else {
+        } else {
             return ResponseEntity.ok("검색 결과가 없습니다.");
         }
 

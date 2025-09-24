@@ -1,5 +1,6 @@
 package com.avengers.musinsa.domain.product.repository;
 
+import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest;
 import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Product;
@@ -8,6 +9,7 @@ import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
+import com.avengers.musinsa.mapper.OrderMapper;
 import com.avengers.musinsa.mapper.ProductMapper;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Repository;
 @Repository // 이 클래스는 데이터 접근 계층
 @RequiredArgsConstructor // 필드를 초기화하는 생성자 코드를 자동으로 만들어주는 애너테이션
 public class ProductRepositoryImpl implements ProductRepository {
+
     // ProductMapper 주입
     private final ProductMapper productMapper;
 
@@ -98,6 +101,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     public List<BottomProductDetailSizeListResponse> getBottomProductDetailSizeList(Long productId) {
         return productMapper.getBottomProductDetailSizeList(productId);
     }
+
     // 상품 상세 페이지 카테고리 조회
     @Override
     public ProductCategoryListResponse getProductCategories(Long productId) {
@@ -112,7 +116,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     // 상품 상세 설명 조회 api
     @Override
-    public ProductDetailDescriptionResponse getProductDetailDescription (Long productId){
+    public ProductDetailDescriptionResponse getProductDetailDescription(Long productId) {
         return productMapper.getProductDetailDescription(productId);
     }
 
@@ -129,32 +133,49 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     //검색 시 검색어 로그 테이블에 검색 정보 저장하기.
     @Override
-    public void saveSearchKeywordLog(String keyword){
+    public void saveSearchKeywordLog(String keyword) {
         productMapper.saveSearchKeywordLog(keyword);
     }
+
     //검색 시 브랜드 로그 테이블에 검색 정보 저장하기.
     @Override
-    public void saveSearchBrandLog(String brand){
+    public void saveSearchBrandLog(String brand) {
         productMapper.saveSearchBrandLog(brand);
     }
 
 
+    //상품 좋아요 토글
+    //좋아요 상태(null, 0,1) 반환하기
+    @Override
+    public UserProductStatus getUserProductStatus(Long userId, Long productId) {
+        return productMapper.getUserProductStatus(userId, productId);
+    }
 
     //user_product_like 테이블에 레코드 추가
     @Override
-    public void insertUserProductLike(Long userId, Long productId){
+    public void insertUserProductLike(Long userId, Long productId) {
         productMapper.insertUserProductLike(userId, productId);
     }
 
     //products 테이블의 좋아요 수 +1
     @Override
-    public void plusProductLikeCnt(Long productId){
+    public void plusProductLikeCnt(Long productId) {
         productMapper.plusProductLikeCnt(productId);
     }
 
     //레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환
     @Override
-    public ProductLikeResponse getIsLikedProduct(Long userId, Long productId){
+    public ProductLikeResponse getIsLikedProduct(Long userId, Long productId) {
         return productMapper.getIsLikedProduct(userId, productId);
+    }
+
+    //liked 컬럼을 0 ↔ 1
+    public void switchProductLike(Long userId, Long productId) {
+        productMapper.switchProductLike(userId, productId);
+    }
+
+    //products 테이블의 좋아요 수 -1
+    public void minusProductLikeCnt(Long productId) {
+        productMapper.minusProductLikeCnt(productId);
     }
 }

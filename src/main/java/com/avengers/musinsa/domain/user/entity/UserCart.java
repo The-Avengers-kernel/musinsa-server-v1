@@ -1,9 +1,12 @@
 package com.avengers.musinsa.domain.user.entity;
 
 import com.avengers.musinsa.domain.product.entity.Product;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class UserCart {
     private Long userCartId;
 
@@ -14,6 +17,8 @@ public class UserCart {
     private Long productId;
 
     private Integer cartQuantity;
-    private String cartOption;
+    private String cartOption;   // black/m
     private String cartStatus;
+
+
 }
