@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.avengers.musinsa.mapper.PopularKeywordMapper">
+    <select id="selectTrendingKeywords" resultType="com.avengers.musinsa.domain.search.dto.ResultDTO">
+        SELECT
+            RANK() OVER (ORDER BY DAILY_COUNT DESC) AS rank,
+            KEYWORD
+        FROM SEARCH_KEYWORDS sk
+        WHERE IS_TRENDING = 'Y'
+          AND sk.UPDATED_AT >= SYSDATE - (30/1440)
+            FETCH FIRST 10 ROWS ONLY
+    </select>
+</mapper>
