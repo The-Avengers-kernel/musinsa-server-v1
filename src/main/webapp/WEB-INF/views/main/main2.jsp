@@ -396,26 +396,43 @@
 
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
         }
 
         .product-card {
             cursor: pointer;
-            /* 호버 효과 제거 - transform transition 제거 */
+            transition: transform 0.2s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
         }
 
         .product-image {
             width: 100%;
-            height: 250px;
-            background-color: #e9ecef;
+            height: 200px;
             border-radius: 8px;
             margin-bottom: 12px;
+            overflow: hidden;
+            background-color: #f8f9fa;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #666;
             font-size: 14px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-image.placeholder {
+            background-color: #e9ecef;
+            border: 2px dashed #ddd;
         }
 
         .product-brand {
@@ -450,7 +467,20 @@
             font-size: 14px;
         }
 
+        .original-price {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 12px;
+        }
+
         /* Responsive */
+        @media (max-width: 1200px) {
+            .product-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 15px;
+            }
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -466,6 +496,11 @@
             }
 
             .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .product-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 15px;
             }
@@ -695,14 +730,18 @@
 
 <!-- Main Content -->
 <main class="container">
-    <!-- 남성 아이템 추천 섹션 (순서 변경) -->
+    <!-- 남성 아이템 추천 섹션 -->
     <section class="section">
         <h2 class="section-title">남성 아이템 추천</h2>
         <p class="section-subtitle">스타일리시한 남성 패션</p>
         <div class="product-grid">
             <c:forEach var="product" items="${menProducts}" varStatus="status">
                 <div class="product-card" onclick="location.href='/product/${product.id}'">
-                    <img src="${product.imageUrl}" alt="${product.name}" class="product-image">
+                    <div class="product-image">
+                        <img src="${product.imageUrl}" alt="${product.name}"
+                             onload="this.parentElement.classList.remove('placeholder')"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('placeholder'); this.parentElement.textContent='이미지 없음';">
+                    </div>
                     <div class="product-brand">${product.brandName}</div>
                     <div class="product-name">${product.name}</div>
                     <div class="product-price">
@@ -710,12 +749,12 @@
                             <span class="discount-rate">${product.discountRate}%</span>
                         </c:if>
                         <span class="current-price">
-                                <fmt:formatNumber value="${product.currentPrice}" pattern="#,###"/>원
-                            </span>
+                            <fmt:formatNumber value="${product.currentPrice}" pattern="#,###"/>원
+                        </span>
                         <c:if test="${product.originalPrice > product.currentPrice}">
-                                <span class="original-price">
-                                    <fmt:formatNumber value="${product.originalPrice}" pattern="#,###"/>원
-                                </span>
+                            <span class="original-price">
+                                <fmt:formatNumber value="${product.originalPrice}" pattern="#,###"/>원
+                            </span>
                         </c:if>
                     </div>
                 </div>
@@ -772,14 +811,18 @@
         </div>
     </section>
 
-    <!-- 여성 아이템 추천 섹션 (순서 변경) -->
+    <!-- 여성 아이템 추천 섹션 -->
     <section class="section">
         <h2 class="section-title">여성 아이템 추천</h2>
         <p class="section-subtitle">트렌디한 여성 패션</p>
         <div class="product-grid">
             <c:forEach var="product" items="${womenProducts}" varStatus="status">
                 <div class="product-card" onclick="location.href='/product/${product.id}'">
-                    <img src="${product.imageUrl}" alt="${product.name}" class="product-image">
+                    <div class="product-image">
+                        <img src="${product.imageUrl}" alt="${product.name}"
+                             onload="this.parentElement.classList.remove('placeholder')"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('placeholder'); this.parentElement.textContent='이미지 없음';">
+                    </div>
                     <div class="product-brand">${product.brandName}</div>
                     <div class="product-name">${product.name}</div>
                     <div class="product-price">
@@ -787,12 +830,12 @@
                             <span class="discount-rate">${product.discountRate}%</span>
                         </c:if>
                         <span class="current-price">
-                                <fmt:formatNumber value="${product.currentPrice}" pattern="#,###"/>원
-                            </span>
+                            <fmt:formatNumber value="${product.currentPrice}" pattern="#,###"/>원
+                        </span>
                         <c:if test="${product.originalPrice > product.currentPrice}">
-                                <span class="original-price">
-                                    <fmt:formatNumber value="${product.originalPrice}" pattern="#,###"/>원
-                                </span>
+                            <span class="original-price">
+                                <fmt:formatNumber value="${product.originalPrice}" pattern="#,###"/>원
+                            </span>
                         </c:if>
                     </div>
                 </div>
@@ -974,8 +1017,6 @@
             closeSidebarFunc();
         }
     });
-
-    // 상품 카드 호버 효과 제거됨 - 관련 코드 삭제
 </script>
 </body>
 </html>
