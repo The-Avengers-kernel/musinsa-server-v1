@@ -1,0 +1,357 @@
+/* 팝업 메뉴 통합 스타일 */
+
+/* 전체 오버레이 (배경 포함) */
+.category-dropdown-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 2000;
+    display: none; /* 초기에는 숨김 */
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+.category-dropdown-overlay.active {
+    display: flex; /* 활성화 시 flex로 변경하여 중앙 정렬 */
+    opacity: 1;
+}
+
+/* 실제 메뉴 컨테이너 */
+.category-dropdown-menu {
+    width: 600px; /* 전체 너비를 늘려 브랜드/카테고리 상세를 수용 */
+    max-width: 90vw;
+    height: 700px;
+    max-height: 90vh;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.9);
+    transition: transform 0.3s ease-out;
+}
+
+.category-dropdown-overlay.active .category-dropdown-menu {
+    transform: scale(1);
+}
+
+/* 드롭다운 상단 탭 (카테고리/브랜드) */
+.dropdown-header {
+    padding-left: 10px;
+    border-bottom: 1px solid #eee;
+    background-color: #f8f9fa;
+    flex-shrink: 0;
+    display: flex;
+    position: relative;
+}
+
+.dropdown-header a {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    padding: 15px 10px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.dropdown-header a.active {
+    color: #000;
+    border-bottom-color: #000;
+}
+
+/* 탭 내용 컨테이너 */
+.dropdown-content-container {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-content {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    background-color: #fff;
+}
+
+.tab-content.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* --- 공통 콘텐츠 스타일 (좌우 분할) --- */
+.dropdown-content {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* 왼쪽 카테고리 목록 */
+.category-list {
+    width: 110px; /* Changed from 150px */
+    background-color: #f7f7f7;
+    padding: 0 0 15px 0;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.category-list ul li a {
+    display: block;
+    padding: 12px 16px; /* Changed from 9px 20px */
+    font-size: 13px; /* Changed from 14px */
+    font-weight: 500;
+    color: darkgray;
+    font-family: Pretendard, Apple SD Gothic Neo, sans-serif; /* Ensure font-family is included */
+}
+
+.category-list ul li a.active {
+    color: black;
+    background-color: #fff;
+    font-weight: 700;
+}
+
+/* 오른쪽 상세 내용 (상품 탭) */
+.category-details {
+    flex-grow: 1;
+    padding: 20px 15px;
+    overflow-y: auto;
+}
+
+/* 상세 헤더 */
+.detail-section {
+    margin-bottom: 40px;
+    padding-bottom: 15px;
+    position: relative;
+}
+.detail-section:first-of-type { border-bottom: none; }
+
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.detail-section h4 {
+    font-size: 14px; /* font-size 통일 */
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.detail-section .view-all {
+    position: static;
+    font-size: 12px; /* Reduced font-size */
+    color: #999;
+    line-height: 1;
+    flex-shrink: 0;
+    flex-grow: 0;
+    text-decoration: underline;
+}
+
+/* 상세 아이템 (이미지 + 텍스트) */
+.detail-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+.detail-items .item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(33.333% - 17px);
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+}
+
+.detail-items .item img {
+    width: 45px;
+    height: 45px;
+    margin-bottom: 10px;
+}
+
+
+/* --- 브랜드 탭 (Brand Tab) 스타일 --- */
+
+/* 1. 전체 레이아웃을 Flex로 설정 (좌우 분할) */
+.brand-layout-content {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* 2. 왼쪽 브랜드 카테고리 목록 */
+
+
+/* 3. 오른쪽 브랜드 상세 내용 컨테이너 */
+.brand-details-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 15px;
+    overflow: hidden;
+}
+
+/* --- 한글/알파벳 토글 목록 스타일 --- */
+.brand-initial-list-wrapper {
+    flex-shrink: 0;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    height: 35px; /* 한 줄 높이 고정 */
+    overflow: hidden;
+}
+
+.initial-list {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.initial-list.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.initial-list a {
+    font-size: 13px;
+    padding: 5px 0;
+    color: #666;
+    text-decoration: none;
+}
+
+.initial-list a.active,
+.initial-list a:not(.toggle-initial-btn):hover {
+    color: #000;
+    font-weight: 700;
+}
+
+/* 토글 버튼 (가나다순/ABC순) 및 아이콘 스타일 */
+.toggle-initial-btn {
+    font-weight: 700 !important;
+    color: #000 !important;
+    margin-left: 10px;
+
+    /* 아이콘과 텍스트 정렬 */
+    display: inline-flex;
+    align-items: center;
+}
+
+.toggle-initial-btn i {
+    font-size: 10px; /* 아이콘 크기 조정 */
+    margin-left: 3px; /* 텍스트와 아이콘 간격 조정 */
+}
+
+
+/* 4. 브랜드 스크롤 리스트 */
+.brand-scroll-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-top: 15px;
+}
+
+.brand-list-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.brand-list-title .brand-count {
+    font-size: 13px;
+    font-weight: 400;
+    color: #999;
+    margin-left: 5px;
+}
+
+/* 개별 브랜드 아이템 */
+.brand-item-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.brand-item-list li a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+    text-decoration: none;
+}
+
+.brand-info {
+    display: flex;
+    align-items: center;
+}
+
+.brand-info img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.brand-info .text-info {
+    line-height: 1.3;
+}
+
+.brand-info .kor-name {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.brand-info .eng-name {
+    font-size: 12px;
+    color: #999;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.brand-info .exclusive {
+    font-size: 11px;
+    color: #d94242;
+    border: 1px solid #d94242;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-weight: 400;
+    margin-left: 5px;
+}
+
+.heart-icon {
+    font-size: 16px;
+    color: #ccc;
+}
+
+
+/* --- 서비스 탭 --- */
+.service-content {
+    padding: 30px;
+}
