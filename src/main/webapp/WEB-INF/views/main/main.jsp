@@ -1,119 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MUSINSA - 무신사</title>
-    <link rel="stylesheet" href="/css/header.css">
-    <script src="/js/header.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/header.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-
+        /* General Body & Main Content Styles */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: #f8f9fa;
-        }
-
-        /* Header */
-        .header {
-            background-color: #000;
-            color: white;
-            padding: 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-top {
-            background-color: #333;
-            padding: 8px 0;
-            font-size: 12px;
-            text-align: right;
-            padding-right: 20px;
-        }
-
-        .header-top a {
-            color: #ccc;
-            text-decoration: none;
-            margin: 0 5px;
-        }
-
-        .header-main {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-        }
-
-        .menu-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 18px;
-            margin-right: 20px;
-            cursor: pointer;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            margin-right: 30px;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
             margin: 0;
             padding: 0;
-        }
-
-        .nav-menu li {
-            margin-right: 30px;
-        }
-
-        .nav-menu a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .search-container {
-            flex: 1;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: 20px;
-        }
-
-        .search-box {
-            width: 100%;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 25px;
-            background-color: #fff;
-            color: #333;
-            font-size: 14px;
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .notification-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
         }
 
         /* Sidebar */
@@ -405,7 +308,6 @@
 
         .product-card {
             cursor: pointer;
-            /* 호버 효과 제거 - transform transition 제거 */
         }
 
         .product-image {
@@ -459,24 +361,12 @@
                 width: 100%;
                 left: -100%;
             }
-
-            .nav-menu {
-                display: none;
-            }
-
-            .search-container {
-                max-width: 200px;
-            }
-
-            .category-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
-            }
         }
     </style>
 </head>
 <body>
-<jsp:include page="header.jsp"/>
+
+<%@ include file="header.jsp" %>
 
 <!-- Sidebar Overlay -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -820,5 +710,139 @@
         </div>
     </section>
 </main>
+
+<script>
+    // 사이드바 관련 변수
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const closeSidebar = document.getElementById('closeSidebar');
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    // 햄버거 메뉴 버튼 클릭
+    if (menuBtn) {
+        menuBtn.addEventListener('click', function() {
+            openSidebar();
+        });
+    }
+
+    // 사이드바 닫기 버튼 클릭
+    if(closeSidebar) {
+        closeSidebar.addEventListener('click', function() {
+            closeSidebarFunc();
+        });
+    }
+
+    // 오버레이 클릭시 사이드바 닫기
+    if(sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', function() {
+            closeSidebarFunc();
+        });
+    }
+
+    // 사이드바 열기
+    function openSidebar() {
+        sidebar.classList.add('open');
+        sidebarOverlay.classList.add('show');
+        sidebarOverlay.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // 사이드바 닫기
+    function closeSidebarFunc() {
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('show');
+        setTimeout(() => {
+            sidebarOverlay.style.display = 'none';
+        }, 300);
+        document.body.style.overflow = 'auto';
+    }
+
+    // 탭 버튼 클릭 이벤트
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const tabName = this.getAttribute('data-tab');
+
+            // 모든 탭 버튼 비활성화
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            // 클릭된 탭 버튼 활성화
+            this.classList.add('active');
+
+            // 모든 탭 콘텐츠 숨기기
+            tabContents.forEach(content => content.classList.remove('active'));
+            // 선택된 탭 콘텐츠 보이기
+            document.getElementById(tabName + '-tab').classList.add('active');
+        });
+    });
+
+    // 알파벳 버튼 클릭 이벤트
+    const alphabetButtons = document.querySelectorAll('.alphabet-btn');
+    alphabetButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            alphabetButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            console.log('선택된 초성:', this.textContent);
+        });
+    });
+
+    // 브랜드 검색 기능
+    const brandSearchInput = document.getElementById('brandSearchInput');
+    if (brandSearchInput) {
+        brandSearchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const brandItems = document.querySelectorAll('.brand-item');
+
+            brandItems.forEach(item => {
+                const brandName = item.querySelector('.brand-name').textContent.toLowerCase();
+                const brandNameEng = item.querySelector('.brand-name-eng').textContent.toLowerCase();
+
+                if (brandName.includes(searchTerm) || brandNameEng.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // 좋아요 버튼 클릭 이벤트
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('like-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.target.textContent === '♡') {
+                e.target.textContent = '♥';
+                e.target.style.color = '#e74c3c';
+            } else {
+                e.target.textContent = '♡';
+                e.target.style.color = '#ccc';
+            }
+        }
+    });
+
+    // 카테고리 아이템 클릭 이벤트
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.category-item')) {
+            const categoryName = e.target.closest('.category-item').querySelector('.category-name').textContent;
+            alert('선택된 카테고리: ' + categoryName);
+            closeSidebarFunc();
+        }
+
+        if (e.target.closest('.brand-item') && !e.target.classList.contains('like-btn')) {
+            const brandName = e.target.closest('.brand-item').querySelector('.brand-name').textContent;
+            alert('선택된 브랜드: ' + brandName);
+            closeSidebarFunc();
+        }
+    });
+
+    // ESC 키로 사이드바 닫기
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+            closeSidebarFunc();
+        }
+    });
+</script>
 </body>
 </html>
