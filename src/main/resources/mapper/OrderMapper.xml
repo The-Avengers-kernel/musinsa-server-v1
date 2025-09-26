@@ -128,18 +128,10 @@
             ua.recipient_name AS recipientName,
             ua.phone_number AS recipientPhone,
             ua.address_line1 || ' ' || ua.address_line2 AS recipientAddress,
-            s.postal_code AS postalCode,
+            ua.postal AS postalCode,
             ua.is_default AS isDefault
         FROM user_addresses ua
-        LEFT JOIN (
-            SELECT shipping_id, postal_code
-            FROM (
-                     SELECT shipping_id, postal_code,
-                            ROW_NUMBER() OVER (PARTITION BY shipping_id ORDER BY created_at DESC) rn
-                     FROM shipments
-                 )
-            WHERE rn = 1
-        ) s ON ua.user_address_id = s.shipping_id
+        
         WHERE ua.user_id = #{userId}
         ORDER BY ua.is_default DESC, ua.user_address_id ASC
     </select>
