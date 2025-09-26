@@ -555,7 +555,7 @@
             // productId -> cartItemIds로  바꿔야함.
             var it = state.raw[i];
             if (state.selected.has(it.productId)) {
-                ids.push(it.cartItemId || it.productId);
+                ids.push(it.userCartId);
             }
         }
         return ids;
@@ -573,6 +573,7 @@
             }
 
             var $wrap = $('#order-form-ids').empty();
+
             ids.forEach(function (id) {
                 $('<input>', {
                     type: 'hidden',
@@ -580,8 +581,6 @@
                     value: String(id)
                 }).appendTo($wrap);
             })
-
-
         })
 
 

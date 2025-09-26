@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="<c:url value='/resources/css/header.css'/>">
     <link rel="stylesheet" href="<c:url value='/resources/css/cart.css'/>">
+    <script src="" defer></script>
 </head>
 <body>
 <%@ include file="../main/header.jsp" %>
