@@ -6,10 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MUSINSA - 무신사</title>
-    <%@ include file="header.jsp" %>
+    <%@ include file="../main/header.jsp" %>
+    <%@ page import="jakarta.servlet.http.Cookie" %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/header.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
     <style>
         body {
             font-family: 'Noto Sans KR', sans-serif;
@@ -17,6 +18,62 @@
             margin: 0;
             padding: 0;
         }
+        /* 배너를 컨테이너 밖으로 확장하여 양옆 공백 제거 */
+        .section-banner {
+            margin: -20px -20px 0 -20px; /* 컨테이너의 padding을 상쇄 */
+        }
+
+        .banner-swiper {
+            width: 100%;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .banner-swiper .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 !important;
+            margin: 0 !important;
+            position: relative;
+        }
+
+        .banner-text {
+            position: absolute;
+            bottom: 45px;
+            left: 6px;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            z-index: 10;
+        }
+        .banner-brand {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .banner-swiper img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 0;
+            display: block;
+        }
+
+        /* 배너 네비게이션 버튼 */
+        .banner-prev, .banner-next {
+            color: #000000;
+            width: 30px;
+            height: 30px;
+        }
+        .banner-prev { left: 10px; }
+        .banner-next { right: 10px; }
 
         .container {
             max-width: 1200px;
@@ -47,8 +104,14 @@
             margin-bottom: 15px;
         }
 
-        /* Swiper 완전 간격 제거 */
-        .swiper {
+        .sub-title-woman{
+            margin-top: 70px;
+        }
+
+        /* 공통 스와이퍼 스타일 - men-swiper, women-swiper 모두 적용 */
+        .swiper,
+        .men-swiper,
+        .women-swiper {
             width: 100%;
             height: auto;
             position: relative;
@@ -82,7 +145,6 @@
             padding: 0;
             border: none;
             margin-bottom: 20px;
-
         }
 
         .product-card:hover {
@@ -91,7 +153,7 @@
 
         .product-image {
             width: 100%;
-            height: 240px; /* 이미지 크기 작게 조정 */
+            height: 240px;
             background-color: #e9ecef;
             margin: 0 0 8px 0;
             display: flex;
@@ -158,9 +220,11 @@
             text-decoration: line-through;
         }
 
-        /* Navigation 버튼 스타일 */
-        .swiper-button-next,
-        .swiper-button-prev {
+        /* Navigation 버튼 스타일 - 모든 스와이퍼에 적용 */
+        .men-swiper .swiper-button-next,
+        .men-swiper .swiper-button-prev,
+        .women-swiper .swiper-button-next,
+        .women-swiper .swiper-button-prev {
             color: #000000;
             width: 30px;
             height: 30px;
@@ -191,14 +255,69 @@
             }
         }
     </style>
+
 </head>
 <body>
 <main class="container">
-    <!-- 하나의 컨테이너에 남성/여성 슬라이드 -->
     <section class="section">
-        <h2 class="section-title">아이템 추천</h2>
-        <p class="section-subtitle">스타일리시한 패션</p>
+        <section class = section-banner>
+            <div class="swiper banner-swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/24/e3fdccde17774155863f22d1f2e42ae9.jpg" alt="배너1">
+                        <div class="banner-text">품절 대란<br>인기 경량 패딩 </div>
+                        <div class="banner-brand">무신사 스탠사드, 스파오 외</div>
 
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/25/07fa8436dca44704b24ab045746893c2.jpg" alt="배너2">
+                        <div class="banner-text">인기 백팩<br>20% 쿠폰 증정 </div>
+                        <div class="banner-brand">잔스포츠 외</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/24/687ffbe6e14842029cab5585daada692.jpg" alt="배너3" >
+                        <div class="banner-text">라이브 특가<br>09.26 22시</div>
+                        <div class="banner-brand">펜필드</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/25/7fe42e21285a4ea38aff44523636fe30.jpg" alt="배너4">
+                        <div class="banner-text">풍성한 추석 빅세일<br>최대 55% 할인</div>
+                        <div class="banner-brand">무신사 스탠다드 스포츠</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/25/1aad2910df144acc81c80355503915ad.jpg" alt="배너5">
+                        <div class="banner-text">가을 슈즈 신상<br>최대 20% 쿠폰</div>
+                        <div class="banner-brand">살라몬 리복 외</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/24/0b24d1c9e4164602a9c47d7d0d240ef8.jpg" alt="배너6" >
+                        <div class="banner-text">무탠다드 총출동<br>최대 80% 할인</div>
+                        <div class="banner-brand">무신사 스탠다드 외</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/24/e09ba08c86f140b1831e277e01d4c2d4.jpg" alt="배너7" >
+                        <div class="banner-text">50주년 기념<br>로스트 가든 에디션</div>
+                        <div class="banner-brand">펜필드</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/24/f7a5493dcb494cf28827e8baf9c36f85.jpg" alt="배너8" >
+                        <div class="banner-text">시그니처 특가<br>최대 30% 할인</div>
+                        <div class="banner-brand">시그니처, 르아르 외</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/24/31555606f2de4339837cf8c9a4548204.jpg" alt="배너9" >
+                        <div class="banner-text">명절 선물로 제격<br>추석 빅세일</div>
+                        <div class="banner-brand">수아레, 제로 외</div>
+                    </div>
+                </div>
+                <!-- 좌우 버튼 -->
+                <div class="swiper-button-prev banner-prev"></div>
+                <div class="swiper-button-next banner-next"></div>
+            </div>
+        </section>
+
+
+        </div>
         <!-- 남성 아이템 -->
         <h3 class="sub-title">남성 아이템 추천</h3>
         <div class="swiper men-swiper">
@@ -240,8 +359,8 @@
         </div>
 
         <!-- 여성 아이템 -->
-        <h3 class="sub-title">여성 아이템 추천</h3>
-        <div class="swiper men-swiper">
+        <h3 class="sub-title-woman">여성 아이템 추천</h3>
+        <div class="swiper women-swiper">
             <div class="swiper-wrapper">
                 <c:forEach var="product" items="${womenProducts}">
                     <div class="swiper-slide">
@@ -283,7 +402,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
-    const menSwiper = new Swiper('.men-swiper', {
+    // 공통 스와이퍼 설정
+    const swiperConfig = {
         slidesPerView: 5.5,   // 한 줄에 5.5개
         slidesPerGroup: 4,    // 슬라이드할 때 4개씩 이동
         spaceBetween: 0,
@@ -293,11 +413,6 @@
         grid: {
             rows: 2,          // 2줄로 배치
             fill: 'row'
-        },
-
-        navigation: {
-            nextEl: '.men-swiper .swiper-button-next',
-            prevEl: '.men-swiper .swiper-button-prev',
         },
 
         breakpoints: {
@@ -323,12 +438,45 @@
             },
             1200: {
                 slidesPerView: 5.5,
-                slidesPerGroup: 4,  // 👉 여기 중요 (네 요구사항)
+                slidesPerGroup: 4,
                 grid: { rows: 2 }
             }
         }
+    };
+
+    // 남성 스와이퍼 초기화
+    const menSwiper = new Swiper('.men-swiper', {
+        ...swiperConfig,
+        navigation: {
+            nextEl: '.men-swiper .swiper-button-next',
+            prevEl: '.men-swiper .swiper-button-prev',
+        }
     });
 
+    // 여성 스와이퍼 초기화
+    const womenSwiper = new Swiper('.women-swiper', {
+        ...swiperConfig,
+        navigation: {
+            nextEl: '.women-swiper .swiper-button-next',
+            prevEl: '.women-swiper .swiper-button-prev',
+        }
+    });
+
+    const bannerSwiper = new Swiper('.banner-swiper', {
+        slidesPerView: 3,      // 한 번에 보이는 배너 3개
+        slidesPerGroup: 3,     // 슬라이드 이동 시 3개 단위
+        spaceBetween: 0,      // 배너 간 간격
+        loop: true,            // 무한 루프
+        autoplay: {
+            delay: 3000,       // 3초마다 자동 슬라이드
+            disableOnInteraction: false,
+        },
+        navigation: {
+            nextEl: '.banner-next',
+            prevEl: '.banner-prev',
+        },
+        speed: 600
+    });
 </script>
 
 </body>

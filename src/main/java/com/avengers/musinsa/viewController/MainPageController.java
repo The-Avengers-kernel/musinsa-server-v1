@@ -45,7 +45,7 @@ public class MainPageController {
             e.printStackTrace();
         }
 
-        return "main/main3";
+        return "main/main";
     }
 
     // RecommendationResponse DTO를 JSP에서 사용하기 위한 어댑터
