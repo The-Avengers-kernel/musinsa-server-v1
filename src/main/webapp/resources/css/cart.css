@@ -108,13 +108,18 @@ body {
 }
 
 .thumb {
-    width: 84px;
-    height: 84px;
-    border: 1px solid #eee;
-    border-radius: 8px;
+    width: 72px;
+    height: 72px;
     overflow: hidden;
-    background: #fafafa
 }
+
+.thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 
 .name {
     font-weight: 600
