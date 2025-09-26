@@ -245,7 +245,7 @@
             <div class="swiper-wrapper">
                 <c:forEach var="product" items="${womenProducts}">
                     <div class="swiper-slide">
-                        <div class="product-card" onclick="location.href='/product/${product.id}'">
+                        <div class="product-card" onclick="location.href='/products/${product.id}'">
                             <div class="product-image">
                                 <c:choose>
                                     <c:when test="${not empty product.imageUrl}">

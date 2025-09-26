@@ -73,8 +73,10 @@
                b.brand_id      AS brandId,
                p.product_name  AS productName,
                b.brand_name_kr AS productBrand,
-               p.price         AS productPrice,
-               img.image_url   AS productImage
+               FLOOR(((100 - b.BRAND_DISCOUNT) / 100) * p.price / 10) * 10 AS productPrice,
+               img.image_url   AS productImage,
+               b.brand_discount as discountRate
+
         FROM products p
                  JOIN brands b
                       ON b.brand_id = p.brand_id
@@ -83,7 +85,7 @@
                                AND img.image_type = 'MAIN'
         WHERE p.gender = #{gender}
         ORDER BY p.created_at DESC
-            FETCH FIRST 20 ROWS ONLY
+            FETCH FIRST 32 ROWS ONLY
     </select>
 
     <select id="findOptionsByProductIds"
