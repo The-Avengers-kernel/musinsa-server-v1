@@ -260,9 +260,6 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    //상품 좋아요 토글
-    @Override
-    @Transactional
     public ProductLikeResponse ProductLikeToggle(Long userId, Long productId) {
         UserProductStatus status = productRepository.getUserProductStatus(userId, productId);
         //레코드가 없을 때

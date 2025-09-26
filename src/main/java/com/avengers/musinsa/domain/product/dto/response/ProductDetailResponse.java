@@ -16,10 +16,12 @@ public class ProductDetailResponse {
     private int price;
     private int brandDiscount;
     private int finalprice;
+    private String detailSizeImage;
 
     private Long brandId;
     private String brandName;
     private int brandLikeCnt;
+    private String brandImage;
 
     private List<ProductImage> productImageList = new ArrayList<>();
 

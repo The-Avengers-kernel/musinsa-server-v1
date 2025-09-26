@@ -17,9 +17,7 @@ public class ProductDetailViewController {
 
     @GetMapping("/{productId}")
     public String geetProductDetail(@PathVariable Long productId, Model model) {
-        //ProductDetailResponse product = productService.getProductById(productId);
 
         return "product/test";
-        //return "product/productDetail";
     }
 }

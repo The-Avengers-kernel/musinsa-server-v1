@@ -1,0 +1,301 @@
+/* 기본 스타일 및 컨테이너 */
+body {
+    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Dotum', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+}
+
+.container {
+    width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* --------------------------------- 제품 페이지 레이아웃 --------------------------------- */
+.content-wrapper {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start; /* 좌측 정렬 */
+}
+
+/* -------------------- 좌측: 이미지 영역 -------------------- */
+.product-left {
+    display: flex;
+    width: 45%; /* 이미지 영역 축소 */
+}
+
+.image-previews {
+    width: 60px; /* 썸네일 영역 너비 */
+    margin-right: 15px;
+}
+
+.preview-item {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #eee;
+    margin-bottom: 10px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.main-image-container {
+    flex-grow: 1;
+}
+
+.main-image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* -------------------- 우측: 제품 정보 및 구매 영역 -------------------- */
+.product-right {
+    width: 30%; /* 구매 영역 */
+    padding-left: 20px;
+    box-sizing: border-box;
+}
+
+.seller-info {
+    margin-bottom: 20px;
+}
+.brand-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 하트 버튼과 정렬 */
+    margin-bottom: 10px;
+}
+.brand-image-container {
+    width: 25px; /* 이미지 크기 축소 */
+    height: 25px;
+    border-color: transparent; /* 이미지와 노스페이스 텍스트가 붙어있음 */
+    margin-right: 5px;
+}
+.brand-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.brand-name {
+    font-size: 16px;
+    font-weight: 500; /* 일반 굵기 */
+    margin-right: auto; /* 노스페이스 로고와 이름이 좌측에 붙도록 */
+    color: #000;
+}
+/* 제품명 위 아우터, 나일론/코치 재킷 등 카테고리 정보 */
+.product-category {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+}
+.product-title {
+    font-size: 24px;
+    font-weight: 500;
+    display: block;
+    margin-top: 5px;
+}
+/* NEW 뱃지 스타일 */
+.new-badge {
+    display: inline-block;
+    background-color: #f00;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+.price-section {
+    border: none; /* 상단 테두리 제거 */
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.original-price {
+    font-size: 24px;
+    font-weight: normal;
+    text-decoration: none; /* 원가 텍스트 강조 */
+    color: #000;
+    display: inline-block;
+}
+
+.coupon-btn {
+    float: right;
+    background-color: #f7f7f7;
+    border: 1px solid #ccc;
+    color: #000;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.final-price-wrapper {
+    background-color: #fef0f0; /* 빨간색 배경 */
+    color: #ff0000;
+    padding: 15px 10px;
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-start;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+.discounted-price {
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 0;
+    color: #ff0000;
+}
+.max-benefit-label {
+    font-size: 14px;
+    margin-left: 8px;
+    margin-right: 15px;
+    color: #ff0000;
+}
+.detail-link {
+    font-size: 14px;
+    color: #ff0000;
+    cursor: pointer;
+}
+.arrow-down { /* 화살표 아이콘 대체 */
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #ff0000;
+    margin-left: 5px;
+}
+
+/* -------------------- 적립금 섹션 -------------------- */
+.point-section {
+    border: 1px solid #eee;
+    padding: 15px 10px;
+    margin-bottom: 15px;
+}
+.max-point-amount {
+    font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+.point-section ul {
+    list-style: none;
+    padding: 0;
+}
+.point-section ul li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+}
+.point-section ul li span {
+    font-weight: bold;
+    color: #333;
+}
+
+/* -------------------- M Money 배너 -------------------- */
+.money-benefit-banner {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #f0f8ff; /* 연한 파란색 배경 */
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+.money-logo {
+    font-weight: bold;
+    color: #000;
+    margin-right: 15px;
+}
+.money-benefit-banner p {
+    font-size: 14px;
+    margin: 0;
+    flex-grow: 1;
+}
+.money-benefit-banner strong {
+    color: #007bff; /* 파란색 강조 */
+}
+.money-benefit-banner .arrow-right {
+    font-weight: bold;
+}
+/* -------------------- 구매 버튼 (하단 액션) -------------------- */
+.bottom-action-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.wishlist-icon {
+    width: 60px; /* 찜 아이콘 크기 고정 */
+    height: 50px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 12px;
+}
+.heart-icon {
+    font-size: 18px;
+    margin-bottom: 2px;
+}
+
+.large-btn {
+    flex-grow: 1;
+    padding: 15px 0;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+/* 장바구니 버튼 (흰색 배경) */
+.add-to-cart-btn.large-btn {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #000;
+}
+
+/* 구매하기 버튼 (검은색 배경) */
+.buy-now.large-btn {
+    background-color: #000;
+    color: #fff;
+    border: 1px solid #000;
+}
+
+/* 기존 purchase-buttons 스타일은 사용하지 않거나 삭제해야 합니다. */
+.purchase-buttons {
+    display: none; /* 이 섹션은 숨기거나 삭제 */
+}
+
+.size-table {
+    th {
+        height: 34px;
+        border: 1px solid rgb(235, 235, 235);
+        box-sizing: border-box;
+        color: rgb(0, 0, 0);
+    }
+
+    td {
+        height: 34px;
+        border: 1px solid rgb(235, 235, 235);
+        box-sizing: border-box;
+        color: rgb(0, 0, 0);
+    }
+}
