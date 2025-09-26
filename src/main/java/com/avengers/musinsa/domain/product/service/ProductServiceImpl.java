@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
     // 의존성 주입
     private final ProductRepositoryImpl productRepository;
     private final BrandRepository brandRepository;
@@ -86,7 +86,7 @@ public class ProductServiceImpl implements ProductService{
                 builder = new OptionGroupBuilder(productOptionRow.getOptionType());
                 groupMap.put(optionType, builder);
             }
-
+//            System.out.println(productOptionRow.getOptionType() + " " + productOptionRow.getValue());
             // 한 상품에 대해 옵션에 대한 값 추가
             builder.addValue(productOptionRow.getValue());
         }
@@ -133,7 +133,7 @@ public class ProductServiceImpl implements ProductService{
     // 상품 상세 설명 조회 api
     @Override
     public ProductDetailDescriptionResponse getProductDetailDescription(Long productId) {
-     return productRepository.getProductDetailDescription(productId);
+        return productRepository.getProductDetailDescription(productId);
     }
 
     // 내부 전용 빌더: 중복 제거 + 입력 순서 보존
@@ -179,7 +179,7 @@ public class ProductServiceImpl implements ProductService{
 
     // 상품 상세 페이지 카테고리 조회
     @Override
-    public ProductCategoryListResponse getProductCategories(Long productId){
+    public ProductCategoryListResponse getProductCategories(Long productId) {
         ProductCategoryListResponse productCategoryListResponse = productRepository.getProductCategories(productId);
         List<ProductCategory> productCategoryList = productRepository.getProductCategoriesList(productId);
 
@@ -193,6 +193,7 @@ public class ProductServiceImpl implements ProductService{
     public SearchResponse searchProducts(String keyword, Long userId) {
 
         String processedKeyword = preprocessKeyword(keyword);
+        searchLogService.saveSearchKeywordLog(keyword, userId);
         System.out.println("검색어 : " + processedKeyword);
 
         // 브랜드 검색 먼저 시도
@@ -204,8 +205,7 @@ public class ProductServiceImpl implements ProductService{
             BrandResponse brand = brandList.getFirst();
 
             // 브랜드 검석 기록 저장
-            searchLogService.saveSearchBrandLog(brand, userId);
-
+//            searchLogService.saveSearchBrandLog(brand, userId);
 
             // 브랜드 상품 불러오기
             List<SearchResponse.ProductInfo> brandProducts =
@@ -227,22 +227,22 @@ public class ProductServiceImpl implements ProductService{
                     .build();
         } else {
             // 상품 검색인 경우, 키워드 저장
-            searchLogService.saveSearchKeywordLog(keyword,userId);
+//            searchLogService.saveSearchKeywordLog(keyword, userId);
             String[] keywords = keyword.trim().split("\\s+");
-            for(String key : keywords){
+            for (String key : keywords) {
                 System.out.println("키워드 = " + key);
             }
             List<SearchResponse.ProductInfo> products =
                     productRepository.findProductsByKeyword(keywords);
 
-            if (!products.isEmpty()){
+            if (!products.isEmpty()) {
                 return SearchResponse.builder()
                         .searchKeyword(keyword)
                         .brandInfo(null)
                         .totalCount(products.size())
                         .products(products)
                         .build();
-            }else{
+            } else {
                 return null;
             }
 
@@ -270,7 +270,7 @@ public class ProductServiceImpl implements ProductService{
     public ProductLikeResponse ProductLikeToggle(Long userId, Long productId) {
         UserProductStatus status = productRepository.getUserProductStatus(userId, productId);
         //레코드가 없을 때
-        if(status == null){
+        if (status == null) {
             //user_product_like 테이블에 레코드 추가
             productRepository.insertUserProductLike(userId, productId);
             //brands 테이블 좋아요 수 +1
@@ -279,16 +279,17 @@ public class ProductServiceImpl implements ProductService{
             return productRepository.getIsLikedProduct(userId, productId);
         }
         //이미 좋아요 한 브랜드 좋아요 상태 바꾸기
-        else{
+        else {
             //liked 값 확인 (0 또는 1)
             Integer currentLiked = status.getLiked();
             //liked 컬럼을 0 ↔ 1
-            productRepository.switchProductLike(userId,productId);
+            productRepository.switchProductLike(userId, productId);
             //브랜드 테이블의 좋아요 수를 동기화
-            if (currentLiked != null && currentLiked == 1){
+            if (currentLiked != null && currentLiked == 1) {
                 productRepository.minusProductLikeCnt(productId);
-            } else{
-                productRepository.plusProductLikeCnt(productId);}
+            } else {
+                productRepository.plusProductLikeCnt(productId);
+            }
             //좋아요상태 변경 후 현재 좋아요 상태를 반환
             return productRepository.getIsLikedProduct(userId, productId);
         }
