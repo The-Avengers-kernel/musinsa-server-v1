@@ -2,13 +2,11 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <header class="musinsa-header">
     <div class="inner">
-        <%-- 로고와 메인 메뉴 --%>
         <div class="header-left">
             <button type="button" id="menuBtn" class="hamburger-btn" aria-label="카테고리 메뉴 열기">
                 <i class="fas fa-bars"></i>
             </button>
 
-            <%-- 햄버거 버튼과 로고 사이에 구분선 추가 --%>
             <div class="logo-separator">|</div>
 
             <div class="logo">
@@ -30,12 +28,11 @@
             </nav>
         </div>
 
-        <%-- 우측 사용자 메뉴 --%>
         <div class="header-right">
             <ul class="user-menu">
                 <li><a href="#">오프라인스토어</a></li>
                 <li class="separator">|</li>
-                <li><a href="${pageContext.request.contextPath}/search"><i class="fas fa-search"></i>검색</a></li>
+                <li><a href="${pageContext.request.contextPath}/main/search" id="searchBtn"><i class="fas fa-search"></i>검색</a></li>
                 <li class="separator">|</li>
                 <li><a href="#"><i class="far fa-heart"></i>좋아요</a></li>
                 <li class="separator">|</li>
@@ -53,3 +50,18 @@
         </div>
     </div>
 </header>
+
+<div id="searchOverlayContainer" data-overlay-container="recent"></div>
+
+<script>
+    window.appContextPath = window.appContextPath || '${pageContext.request.contextPath}';
+    window.userIsLoggedIn = false;
+    window.musinsaUserId = null;
+    <c:if test="${not empty sessionScope.loginUser}">
+    window.userIsLoggedIn = true;
+    window.musinsaUserId = '<c:out value="${sessionScope.loginUser.userId}"/>';
+    </c:if>
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/recentSearches.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/header.js"></script>

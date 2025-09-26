@@ -1,21 +1,28 @@
 package com.avengers.musinsa.viewController;
 
-import com.avengers.musinsa.domain.search.service.RecentSearchService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequiredArgsConstructor
-@RequestMapping("/search")
+@RequestMapping({"/search", "/main/search"})
 public class SearchViewController {
 
-    private final RecentSearchService recentSearchService;
+    @GetMapping({"", "/"})
+    public String searchEntry(@RequestParam(value = "fragment", required = false) Boolean fragment,
+                              Model model) {
+        if (Boolean.TRUE.equals(fragment)) {
+            model.addAttribute("forceFragment", true);
+            return "search/recentSearches";
+        }
+        return "redirect:/?openSearchOverlay=true";
+    }
 
-    @GetMapping("/recent/view")
-    public String recentSearchPage(){
-        return "seachr/recentSearches";
+    @GetMapping({"/overlay", "/recent/view"})
+    public String searchOverlay(Model model) {
+        model.addAttribute("forceFragment", true);
+        return "search/recentSearches";
     }
 }

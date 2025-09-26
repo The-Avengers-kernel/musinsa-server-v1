@@ -1,162 +1,87 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:set var="isFragment" value="${(param.fragment eq 'true') or (forceFragment eq true)}" />
+
+<c:if test="${not isFragment}">
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>최근 검색</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
-        .recent-searches-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .recent-searches-header {
-            /* [수정] 아래는 Java(Spring) 컨트롤러 코드이므로 CSS 파일에 있을 수 없습니다.
-              이 코드는 서버의 Java 파일에 위치해야 합니다. 따라서 삭제했습니다.
-              @RestController
-              @RequestMapping("/api/v1/search")
-              ...
-            */
-            padding: 20px;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .recent-searches-title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .delete-all-btn {
-            font-size: 13px;
-            color: #868e96;
-            cursor: pointer;
-        }
-        .recent-searches-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .recent-search-item {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #e9ecef;
-        }
-        .recent-search-item:last-child {
-            border-bottom: none;
-        }
-        .item-image {
-            width: 50px;
-            height: 50px;
-            border-radius: 4px;
-            margin-right: 15px;
-            object-fit: cover;
-            background-color: #f0f0f0; /* 이미지가 없을 경우를 대비한 배경색 */
-        }
-        .item-info {
-            flex-grow: 1;
-        }
-        .item-name {
-            font-size: 15px;
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-        .item-type {
-            font-size: 12px;
-            color: #868e96;
-        }
-        .delete-item-btn {
-            font-size: 18px;
-            color: #adb5bd;
-            cursor: pointer;
-        }
-    </style>
+    <title>MUSINSA - 검색</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/header.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="recent-searches-container">
-    <div class="recent-searches-header">
-        <h1 class="recent-searches-title">최근 검색</h1>
-        <span class="delete-all-btn">전체삭제</span>
+<%@ include file="../main/header.jsp" %>
+</c:if>
+
+<div id="searchOverlay" class="search-overlay" role="dialog" aria-modal="true" aria-labelledby="recentSearchTitle">
+    <div class="search-overlay-inner">
+        <div class="overlay-header">
+            <div class="search-input-container">
+                <input type="text" class="overlay-search-box" id="overlaySearchInput" placeholder="브랜드, 상품명 등을 입력하세요" aria-label="검색어 입력">
+                <button class="search-submit-btn" id="searchSubmitBtn" type="button" aria-label="검색 실행">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            <button class="close-overlay-btn" id="closeOverlayBtn" type="button" aria-label="검색창 닫기">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="overlay-content" id="recentOverlayContent">
+            <section class="search-section" id="recentSearchSection" aria-labelledby="recentSearchTitle">
+                <div class="search-section-header">
+                    <h3 id="recentSearchTitle">최근 검색어</h3>
+                    <button class="clear-all-btn" id="deleteAllRecentBtn" type="button">모두삭제</button>
+                </div>
+                <ul class="tag-list" id="recentSearchTags">
+                    <div class="loading-text">로딩 중...</div>
+                </ul>
+            </section>
+
+            <section class="search-section" id="recentBrandSection" aria-labelledby="recentBrandTitle">
+                <div class="search-section-header">
+                    <h3 id="recentBrandTitle">최근 방문한 브랜드</h3>
+                    <button class="clear-all-btn" id="deleteAllRecentBrandsBtn" type="button">모두삭제</button>
+                </div>
+                <ul class="brand-list" id="recentBrandTags">
+                    <div class="loading-text">로딩 중...</div>
+                </ul>
+            </section>
+
+            <section class="search-section" id="popularKeywordSection" aria-labelledby="popularKeywordTitle">
+                <div class="search-section-header">
+                    <h3 id="popularKeywordTitle">인기 검색어</h3>
+                    <span class="timestamp" id="popularTimestamp">로딩 중...</span>
+                </div>
+                <div class="ranked-lists-container">
+                    <ol class="ranked-list" id="popularRankList1"></ol>
+                    <ol class="ranked-list" start="6" id="popularRankList2"></ol>
+                </div>
+            </section>
+        </div>
+
+        <div class="search-results is-hidden" id="searchResultsContent" aria-live="polite">
+            <div class="search-results-header">
+                <button class="back-button" id="searchResultsBackBtn" type="button">최근 검색 보기</button>
+                <h3 class="search-results-title" id="searchResultsTitle"></h3>
+            </div>
+            <div class="search-results-body" id="searchResultsBody">
+                <div class="placeholder-text">검색어를 입력하면 결과가 표시됩니다.</div>
+            </div>
+        </div>
     </div>
-    <ul class="recent-searches-list" id="recentSearchesList">
-    </ul>
 </div>
 
-<script>
-
-    $(document).ready(function () {
-
-        // 화면 목록을 그려주는 함수
-        function renderRecentSearches(searches) {
-            const $list = $('#recentSearchesList'); // jQuery 셀렉터 사용
-            $list.empty(); // 기존 목록 초기화
-
-            if (!searches || searches.length === 0) {
-                $list.html('<li class="recent-search-item">최근 검색 기록이 없습니다.</li>');
-                return;
-            }
-
-            $.each(searches, function(index, item) {
-                let imageUrl, name, typeText;
-
-                if (item.type === 'brand') {
-                    imageUrl = item.brandImageUrl;
-                    name = item.brandName;
-                    typeText = '브랜드';
-                } else if (item.type === 'product') {
-                    imageUrl = item.productImageUrl;
-                    name = item.productName;
-                    typeText = '상품';
-                }
-
-                // [수정] 백틱(``)을 사용한 템플릿 리터럴로 HTML 문자열을 더 깔끔하게 만듭니다.
-                const itemHtml = `
-                <li class="recent-search-item">
-                    <img src="${imageUrl}" alt="${name}" class="item-image">
-                    <div class="item-info">
-                        <div class="item-name">${name}</div>
-                        <div class="item-type">${typeText}</div>
-                    </div>
-                    <span class="delete-item-btn">×</span>
-                </li>
-            `;
-                $list.append(itemHtml);
-            });
-        }
-
-
-        $.ajax({
-            url: '/api/v1/search/recent', // API 엔드포인트 URL
-            method: 'GET',
-            data: { userId: 123 }, // 서버에 전달할 파라미터. 실제로는 동적으로 userId를 전달해야 함
-            dataType: 'json',
-            success: function(response) {
-
-                if (response && response.result && response.result.recentSearches) {
-                    renderRecentSearches(response.result.recentSearches);
-                } else {
-                    // 서버가 배열만 바로 반환하는 경우
-                    renderRecentSearches(response);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('최근 검색어 로딩 중 오류 발생:', error);
-                $('#recentSearchesList').html('<li class="recent-search-item">목록을 불러오는 데 실패했습니다.</li>');
-            }
-        });
-    });
-</script>
-
+<c:if test="${not isFragment}">
 </body>
 </html>
+</c:if>
