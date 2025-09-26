@@ -9,7 +9,7 @@ public class ViewController {
     @GetMapping("/cart")
     public String cartPage(Model model) {
         model.addAttribute("userId", 1L);
-        return "cart";
+        return "user/cart";
     }
 
 }
