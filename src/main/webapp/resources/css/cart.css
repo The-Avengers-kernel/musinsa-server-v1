@@ -376,3 +376,19 @@ body {
     cursor: not-allowed;
     background: #f8f9fa;
 }
+
+.paymentBtn {
+    display: block;
+    width: 100%; /* 패널의 내용 영역 너비를 꽉 채움 */
+    height: 56px; /* 원하는 높이 (48~56 추천) */
+    margin-top: 12px; /* 위 여백만 주고 좌우는 0 */
+    padding: 0 16px; /* 텍스트 좌우 여백 */
+    font-size: 18px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px; /* 패널 스타일에 맞춰 둥글게 */
+    background: #212529; /* 컬러는 취향대로 */
+    color: #fff;
+    cursor: pointer;
+    box-sizing: border-box;
+}

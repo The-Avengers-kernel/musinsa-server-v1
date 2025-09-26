@@ -534,7 +534,7 @@
             }
 
             msg = String(msg).replace(/^[A-Z_]+\d+/, '').trim();
-            
+
             $('#opt-error').text(msg).show();
             $('#opt-qty').focus();
         });
@@ -547,6 +547,42 @@
         if (n === 'material' || n === '소재') return 3;
         return 0; // 서버가 무시해도 되는 기본값
     }
+
+    // ========= 결제 ============
+    function getSelectedCartItemIds() {
+        var ids = [];
+        for (var i = 0; i < state.raw.length; i++) {
+            // productId -> cartItemIds로  바꿔야함.
+            var it = state.raw[i];
+            if (state.selected.has(it.productId)) {
+                ids.push(it.cartItemId || it.productId);
+            }
+        }
+        return ids;
+    }
+
+    // 폼 제출 시 hidden input 채우기
+    $(document)
+        .off('submit.order')
+        .on('submit', '#order-form', function (e) {
+            var ids = getSelectedCartItemIds();
+            if (ids.length === 0) {
+                e.preventDefault();
+                alert('주문할 상품을 선택하세요.');
+                return;
+            }
+
+            var $wrap = $('#order-form-ids').empty();
+            ids.forEach(function (id) {
+                $('<input>', {
+                    type: 'hidden',
+                    name: 'cartItemIds',
+                    value: String(id)
+                }).appendTo($wrap);
+            })
+
+
+        })
 
 
     // ===== XSS 방지용 이스케이프 =====

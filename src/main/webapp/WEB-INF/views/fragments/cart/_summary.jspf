@@ -58,3 +58,10 @@
 <div class="banner">
     <div class="help">인기 아우터 3000원 장바구니 쿠폰 • 지금 구매 시 장바구니 즉시 적용!</div>
 </div>
+
+<form id="order-form" method="post" action="<c:url value='/orders/orders-page'/>">
+    <input type="hidden" name="type" value="FROM_CART"/>
+    <%--    여기 안에 JS 가 cartItemIds hidden input들을 채워 넣음     --%>
+    <div id="order-form-ids"></div>
+    <button type="submit" id="btn-checkout" class="paymentBtn">결제하기</button>
+</form>
