@@ -1,276 +1,80 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
-<!DOCTYPE html>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %><!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MUSINSA - 무신사</title>
+    <%@ include file="../main/header.jsp" %>
+    <%@ page import="jakarta.servlet.http.Cookie" %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/header.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
     <style>
-        /* General Body & Main Content Styles */
         body {
-            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Noto Sans KR', sans-serif;
             background-color: #f8f9fa;
             margin: 0;
             padding: 0;
         }
+        /* 배너를 컨테이너 밖으로 확장하여 양옆 공백 제거 */
+        .section-banner {
+            margin: -20px -20px 0 -20px; /* 컨테이너의 padding을 상쇄 */
+        }
 
-        /* Sidebar */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .banner-swiper {
             width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            z-index: 2000;
-            display: none;
-        }
-        .sidebar-overlay.show {
-            display: block;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            width: 600px;
-            max-width: 90vw;
-            height: 500px;
-            max-height: 80vh;
-            background-color: white;
-            z-index: 2001;
-            transition: transform 0.3s ease;
-            overflow-y: auto;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .sidebar.open {
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .sidebar-header {
-            background-color: #f8f9fa;
-            padding: 15px 20px;
-            border-bottom: 1px solid #dee2e6;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .sidebar-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: #666;
-        }
-
-        .tab-buttons {
-            display: flex;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 15px 20px;
-            background: none;
-            border: none;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            color: #666;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active {
-            color: #333;
-            border-bottom-color: #007bff;
-            background-color: white;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 20px;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* 상품 카테고리 스타일 */
-        .category-section {
             margin-bottom: 30px;
+            position: relative;
         }
 
-        .category-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .category-item {
-            text-align: center;
-            cursor: pointer;
-            padding: 15px 10px;
-            border-radius: 8px;
-            transition: background-color 0.2s;
-        }
-
-        .category-item:hover {
-            background-color: #f8f9fa;
-        }
-
-        .category-icon {
-            width: 50px;
-            height: 50px;
-            background-color: #e9ecef;
-            border-radius: 50%;
-            margin: 0 auto 10px;
+        .banner-swiper .swiper-slide {
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 24px;
-            color: #666;
+            align-items: center;
+            padding: 0 !important;
+            margin: 0 !important;
+            position: relative;
         }
 
-        .category-name {
-            font-size: 12px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        /* 브랜드 리스트 스타일 */
-        .brand-search {
-            margin-bottom: 20px;
-        }
-
-        .brand-search input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .brand-alphabet {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .alphabet-btn {
-            width: 30px;
-            height: 30px;
-            background: none;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            color: #666;
-            transition: all 0.2s;
-        }
-
-        .alphabet-btn:hover,
-        .alphabet-btn.active {
-            background-color: #007bff;
+        .banner-text {
+            position: absolute;
+            bottom: 45px;
+            left: 6px;
             color: white;
-            border-color: #007bff;
-        }
-
-        .brand-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .brand-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #f8f9fa;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .brand-item:hover {
-            background-color: #f8f9fa;
-            margin: 0 -20px;
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-
-        .brand-logo {
-            width: 40px;
-            height: 40px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
+            font-size: 17px;
             font-weight: bold;
-            color: #666;
+            z-index: 10;
         }
-
-        .brand-info {
-            flex: 1;
-        }
-
-        .brand-name {
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 2px;
-        }
-
-        .brand-name-eng {
+        .banner-brand {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
             font-size: 11px;
-            color: #999;
-            text-transform: uppercase;
+            font-weight: bold;
+            z-index: 10;
         }
 
-        .like-btn {
+        .banner-swiper img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 0;
+            display: block;
+        }
+
+        /* 배너 네비게이션 버튼 */
+        .banner-prev, .banner-next {
+            color: #000000;
             width: 30px;
             height: 30px;
-            background: none;
-            border: 1px solid #dee2e6;
-            border-radius: 50%;
-            cursor: pointer;
-            color: #ccc;
-            transition: all 0.2s;
         }
+        .banner-prev { left: 10px; }
+        .banner-next { right: 10px; }
 
-        .like-btn:hover {
-            color: #e74c3c;
-            border-color: #e74c3c;
-        }
-
-        /* Main Content */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -281,566 +85,399 @@
             margin-bottom: 50px;
             background: white;
             border-radius: 8px;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .section-title {
             font-size: 20px;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-top: 0px;
+            margin-bottom: 5px;
             color: #333;
         }
 
         .section-subtitle {
             font-size: 14px;
             color: #666;
-            margin-bottom: 25px;
+            margin-top: 5px;
+            margin-bottom: 15px;
         }
 
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 25px;
+        .sub-title-woman{
+            margin-top: 70px;
+        }
+
+        /* 공통 스와이퍼 스타일 - men-swiper, women-swiper 모두 적용 */
+        .swiper,
+        .men-swiper,
+        .women-swiper {
+            width: 100%;
+            height: auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .swiper-wrapper {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .swiper-slide {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
+        /* 모든 nth-child 마진 완전 제거 */
+        .swiper-slide:nth-child(n) {
+            margin-right: 0 !important;
+            margin-left: 0 !important;
+            padding-right: 0 !important;
+            padding-left: 0 !important;
         }
 
         .product-card {
             cursor: pointer;
+            margin: 0;
+            padding: 0;
+            border: none;
+            margin-bottom: 20px;
+        }
+
+        .product-card:hover {
+            transform: none;
         }
 
         .product-image {
             width: 100%;
-            height: 250px;
+            height: 240px;
             background-color: #e9ecef;
-            border-radius: 8px;
-            margin-bottom: 12px;
+            margin: 0 0 8px 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #666;
+            color: #e9ecef;
             font-size: 14px;
+            overflow: hidden;
+            position: relative;
+            border: none;
+            border-radius: 0;
+        }
+
+        .product-image img {
+            margin-top: 0px;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .product-image.placeholder {
+            background-color: #f0f0f0;
         }
 
         .product-brand {
-            font-size: 12px;
+            font-size: 11px;
             color: #666;
             margin-bottom: 4px;
         }
 
         .product-name {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
-            margin-bottom: 8px;
+            margin-bottom: 2px;
+            margin-right: 6px;
             line-height: 1.3;
-            height: 36px;
-            overflow: hidden;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
         }
 
         .product-price {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
         .discount-rate {
             color: #e74c3c;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .current-price {
             font-weight: bold;
-            font-size: 14px;
+            font-size: 12px;
         }
 
-        /* Responsive */
+        .original-price {
+            font-size: 10px;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        /* Navigation 버튼 스타일 - 모든 스와이퍼에 적용 */
+        .men-swiper .swiper-button-next,
+        .men-swiper .swiper-button-prev,
+        .women-swiper .swiper-button-next,
+        .women-swiper .swiper-button-prev {
+            color: #000000;
+            width: 30px;
+            height: 30px;
+        }
+
+        /* 반응형 - 5.5개 상품 기준으로 조정 */
+        @media (max-width: 1200px) {
+            .swiper-slide {
+                width: 22.22% !important; /* 4.5개 상품 */
+            }
+        }
+
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                left: -100%;
+            .swiper-slide {
+                width: 45% !important; /* 2.2개 상품 */
+            }
+            .product-image {
+                height: 180px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .swiper-slide {
+                width: 90% !important; /* 1.1개 상품 */
+            }
+            .product-image {
+                height: 160px;
             }
         }
     </style>
+
 </head>
 <body>
-
-<%@ include file="header.jsp" %>
-
-<!-- Sidebar Overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <div class="sidebar-title">카테고리</div>
-        <button class="close-btn" id="closeSidebar">✕</button>
-    </div>
-
-    <div class="tab-buttons">
-        <button class="tab-btn active" data-tab="products">상품</button>
-        <button class="tab-btn" data-tab="brands">브랜드</button>
-    </div>
-
-    <div class="sidebar-content">
-        <!-- 상품 탭 -->
-        <div class="tab-content active" id="products-tab">
-            <div class="category-section">
-                <div class="category-title">상의</div>
-                <div class="category-grid">
-                    <div class="category-item">
-                        <div class="category-icon">👕</div>
-                        <div class="category-name">맨투맨/스웨트</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🧥</div>
-                        <div class="category-name">후드 티셔츠</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">👔</div>
-                        <div class="category-name">셔츠/블라우스</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">👔</div>
-                        <div class="category-name">긴소매 티셔츠</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">👕</div>
-                        <div class="category-name">민소매 티셔츠</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🧥</div>
-                        <div class="category-name">피케/카라 티셔츠</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🧥</div>
-                        <div class="category-name">니트/스웨터</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">👕</div>
-                        <div class="category-name">민소매 티셔츠</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">👔</div>
-                        <div class="category-name">기타 상의</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="category-section">
-                <div class="category-title">아우터</div>
-                <div class="category-grid">
-                    <div class="category-item">
-                        <div class="category-icon">🧥</div>
-                        <div class="category-name">후드 집업</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🧥</div>
-                        <div class="category-name">블루종/MA-1</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🧥</div>
-                        <div class="category-name">레더/라이더스 재킷</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🧥</div>
-                        <div class="category-name">카디건</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🧥</div>
-                        <div class="category-name">트러커 재킷</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">🧥</div>
-                        <div class="category-name">수트/블레이져 재킷</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 브랜드 탭 -->
-        <div class="tab-content" id="brands-tab">
-            <div class="brand-search">
-                <input type="text" placeholder="브랜드를 검색해보세요" id="brandSearchInput">
-            </div>
-
-            <div class="brand-alphabet">
-                <button class="alphabet-btn">전체</button>
-                <button class="alphabet-btn active">ㄱ</button>
-                <button class="alphabet-btn">ㄴ</button>
-                <button class="alphabet-btn">ㄷ</button>
-                <button class="alphabet-btn">ㄹ</button>
-                <button class="alphabet-btn">ㅁ</button>
-                <button class="alphabet-btn">ㅂ</button>
-                <button class="alphabet-btn">ㅅ</button>
-                <button class="alphabet-btn">ㅇ</button>
-                <button class="alphabet-btn">ㅈ</button>
-                <button class="alphabet-btn">A</button>
-                <button class="alphabet-btn">B</button>
-                <button class="alphabet-btn">C</button>
-                <button class="alphabet-btn">D</button>
-                <button class="alphabet-btn">E</button>
-                <button class="alphabet-btn">기타</button>
-            </div>
-
-            <div class="brand-list" id="brandList">
-                <div class="brand-item">
-                    <div class="brand-logo">AD</div>
-                    <div class="brand-info">
-                        <div class="brand-name">아디다스</div>
-                        <div class="brand-name-eng">ADIDAS</div>
-                    </div>
-                    <button class="like-btn">♡</button>
-                </div>
-                <div class="brand-item">
-                    <div class="brand-logo">NK</div>
-                    <div class="brand-info">
-                        <div class="brand-name">나이키</div>
-                        <div class="brand-name-eng">NIKE</div>
-                    </div>
-                    <button class="like-btn">♡</button>
-                </div>
-                <div class="brand-item">
-                    <div class="brand-logo">PM</div>
-                    <div class="brand-info">
-                        <div class="brand-name">푸마</div>
-                        <div class="brand-name-eng">PUMA</div>
-                    </div>
-                    <button class="like-btn">♡</button>
-                </div>
-                <div class="brand-item">
-                    <div class="brand-logo">NF</div>
-                    <div class="brand-info">
-                        <div class="brand-name">노스페이스</div>
-                        <div class="brand-name-eng">THE NORTH FACE</div>
-                    </div>
-                    <button class="like-btn">♡</button>
-                </div>
-                <div class="brand-item">
-                    <div class="brand-logo">MK</div>
-                    <div class="brand-info">
-                        <div class="brand-name">마틴킴</div>
-                        <div class="brand-name-eng">MARTIN KIM</div>
-                    </div>
-                    <button class="like-btn">♡</button>
-                </div>
-                <div class="brand-item">
-                    <div class="brand-logo">NB</div>
-                    <div class="brand-info">
-                        <div class="brand-name">뉴발란스</div>
-                        <div class="brand-name-eng">NEW BALANCE</div>
-                    </div>
-                    <button class="like-btn">♡</button>
-                </div>
-                <div class="brand-item">
-                    <div class="brand-logo">AS</div>
-                    <div class="brand-info">
-                        <div class="brand-name">아식스</div>
-                        <div class="brand-name-eng">ASICS</div>
-                    </div>
-                    <button class="like-btn">♡</button>
-                </div>
-                <div class="brand-item">
-                    <div class="brand-logo">DM</div>
-                    <div class="brand-info">
-                        <div class="brand-name">닥터마틴</div>
-                        <div class="brand-name-eng">DR.MARTENS</div>
-                    </div>
-                    <button class="like-btn">♡</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Main Content -->
 <main class="container">
-    <!-- 남성 아이템 추천 섹션 (순서 변경) -->
     <section class="section">
-        <h2 class="section-title">남성 아이템 추천</h2>
-        <p class="section-subtitle">스타일리시한 남성 패션</p>
-        <div class="product-grid">
-            <c:forEach var="product" items="${menProducts}" varStatus="status">
-                <div class="product-card" onclick="location.href='/product/${product.id}'">
-                    <img src="${product.imageUrl}" alt="${product.name}" class="product-image">
-                    <div class="product-brand">${product.brandName}</div>
-                    <div class="product-name">${product.name}</div>
-                    <div class="product-price">
-                        <c:if test="${product.discountRate > 0}">
-                            <span class="discount-rate">${product.discountRate}%</span>
-                        </c:if>
-                        <span class="current-price">
-                                <fmt:formatNumber value="${product.currentPrice}" pattern="#,###"/>원
-                            </span>
-                        <c:if test="${product.originalPrice > product.currentPrice}">
-                                <span class="original-price">
-                                    <fmt:formatNumber value="${product.originalPrice}" pattern="#,###"/>원
-                                </span>
-                        </c:if>
-                    </div>
-                </div>
-            </c:forEach>
+        <section class = section-banner>
+            <div class="swiper banner-swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/24/e3fdccde17774155863f22d1f2e42ae9.jpg" alt="배너1">
+                        <div class="banner-text">품절 대란<br>인기 경량 패딩 </div>
+                        <div class="banner-brand">무신사 스탠사드, 스파오 외</div>
 
-            <!-- 샘플 데이터 (백엔드 연동 전까지) -->
-            <c:if test="${empty menProducts}">
-                <div class="product-card">
-                    <div class="product-image">이미지</div>
-                    <div class="product-brand">모던</div>
-                    <div class="product-name">화이트 다트 진즈 (WASHED BLUE BLACK)</div>
-                    <div class="product-price">
-                        <span class="discount-rate">30%</span>
-                        <span class="current-price">34,300원</span>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/25/07fa8436dca44704b24ab045746893c2.jpg" alt="배너2">
+                        <div class="banner-text">인기 백팩<br>20% 쿠폰 증정 </div>
+                        <div class="banner-brand">잔스포츠 외</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/24/687ffbe6e14842029cab5585daada692.jpg" alt="배너3" >
+                        <div class="banner-text">라이브 특가<br>09.26 22시</div>
+                        <div class="banner-brand">펜필드</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/25/7fe42e21285a4ea38aff44523636fe30.jpg" alt="배너4">
+                        <div class="banner-text">풍성한 추석 빅세일<br>최대 55% 할인</div>
+                        <div class="banner-brand">무신사 스탠다드 스포츠</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/25/1aad2910df144acc81c80355503915ad.jpg" alt="배너5">
+                        <div class="banner-text">가을 슈즈 신상<br>최대 20% 쿠폰</div>
+                        <div class="banner-brand">살라몬 리복 외</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/24/0b24d1c9e4164602a9c47d7d0d240ef8.jpg" alt="배너6" >
+                        <div class="banner-text">무탠다드 총출동<br>최대 80% 할인</div>
+                        <div class="banner-brand">무신사 스탠다드 외</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/24/e09ba08c86f140b1831e277e01d4c2d4.jpg" alt="배너7" >
+                        <div class="banner-text">50주년 기념<br>로스트 가든 에디션</div>
+                        <div class="banner-brand">펜필드</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/24/f7a5493dcb494cf28827e8baf9c36f85.jpg" alt="배너8" >
+                        <div class="banner-text">시그니처 특가<br>최대 30% 할인</div>
+                        <div class="banner-brand">시그니처, 르아르 외</div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://image.msscdn.net/display/images/2025/09/24/31555606f2de4339837cf8c9a4548204.jpg" alt="배너9" >
+                        <div class="banner-text">명절 선물로 제격<br>추석 빅세일</div>
+                        <div class="banner-brand">수아레, 제로 외</div>
                     </div>
                 </div>
-                <div class="product-card">
-                    <div class="product-image">이미지</div>
-                    <div class="product-brand">마일스</div>
-                    <div class="product-name">Mid Rise Wide Jeans DCPT027C/Brown</div>
-                    <div class="product-price">
-                        <span class="discount-rate">10%</span>
-                        <span class="current-price">55,800원</span>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">이미지</div>
-                    <div class="product-brand">펠트오스</div>
-                    <div class="product-name">던디직 와이드 다리 진즈 데님-(미디엄) 팬츠</div>
-                    <div class="product-price">
-                        <span class="discount-rate">43%</span>
-                        <span class="current-price">29,900원</span>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">이미지</div>
-                    <div class="product-brand">우익</div>
-                    <div class="product-name">우크로냐 와이드 크럽 팬츠 - 3 COLOR</div>
-                    <div class="product-price">
-                        <span class="discount-rate">36%</span>
-                        <span class="current-price">45,300원</span>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">이미지</div>
-                    <div class="product-brand">어텐업드</div>
-                    <div class="product-name">Snow Cargo Denim BLACK</div>
-                    <div class="product-price">
-                        <span class="discount-rate">48%</span>
-                        <span class="current-price">42,120원</span>
-                    </div>
-                </div>
-            </c:if>
+                <!-- 좌우 버튼 -->
+                <div class="swiper-button-prev banner-prev"></div>
+                <div class="swiper-button-next banner-next"></div>
+            </div>
+        </section>
+
+
         </div>
-    </section>
-
-    <!-- 여성 아이템 추천 섹션 (순서 변경) -->
-    <section class="section">
-        <h2 class="section-title">여성 아이템 추천</h2>
-        <p class="section-subtitle">트렌디한 여성 패션</p>
-        <div class="product-grid">
-            <c:forEach var="product" items="${womenProducts}" varStatus="status">
-                <div class="product-card" onclick="location.href='/product/${product.id}'">
-                    <img src="${product.imageUrl}" alt="${product.name}" class="product-image">
-                    <div class="product-brand">${product.brandName}</div>
-                    <div class="product-name">${product.name}</div>
-                    <div class="product-price">
-                        <c:if test="${product.discountRate > 0}">
-                            <span class="discount-rate">${product.discountRate}%</span>
-                        </c:if>
-                        <span class="current-price">
-                                <fmt:formatNumber value="${product.currentPrice}" pattern="#,###"/>원
-                            </span>
-                        <c:if test="${product.originalPrice > product.currentPrice}">
-                                <span class="original-price">
-                                    <fmt:formatNumber value="${product.originalPrice}" pattern="#,###"/>원
+        <!-- 남성 아이템 -->
+        <h3 class="sub-title">남성 아이템 추천</h3>
+        <div class="swiper men-swiper">
+            <div class="swiper-wrapper">
+                <c:forEach var="product" items="${menProducts}">
+                    <div class="swiper-slide">
+                        <div class="product-card" onclick="location.href='/product/${product.id}'">
+                            <div class="product-image">
+                                <c:choose>
+                                    <c:when test="${not empty product.imageUrl}">
+                                        <img src="${product.imageUrl}" alt="${product.name}">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="placeholder">이미지 없음</div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <div class="product-brand">${product.brandName}</div>
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-price">
+                                <c:if test="${product.discountRate > 0}">
+                                    <span class="discount-rate">${product.discountRate}%</span>
+                                </c:if>
+                                <span class="current-price">
+                                    <fmt:formatNumber value="${product.currentPrice}" pattern="#,###"/>원
                                 </span>
-                        </c:if>
+                                <c:if test="${product.originalPrice > product.currentPrice}">
+                                    <span class="original-price">
+                                        <fmt:formatNumber value="${product.originalPrice}" pattern="#,###"/>원
+                                    </span>
+                                </c:if>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </c:forEach>
+                </c:forEach>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
 
-            <!-- 샘플 데이터 (백엔드 연동 전까지) -->
-            <c:if test="${empty womenProducts}">
-                <div class="product-card">
-                    <div class="product-image">이미지</div>
-                    <div class="product-brand">디펜드파리</div>
-                    <div class="product-name">ASI 베이직 체크 카드숏 다잔 폴조 반팔티 셔츠</div>
-                    <div class="product-price">
-                        <span class="discount-rate">23%</span>
-                        <span class="current-price">29,900원</span>
+        <!-- 여성 아이템 -->
+        <h3 class="sub-title-woman">여성 아이템 추천</h3>
+        <div class="swiper women-swiper">
+            <div class="swiper-wrapper">
+                <c:forEach var="product" items="${womenProducts}">
+                    <div class="swiper-slide">
+                        <div class="product-card" onclick="location.href='/product/${product.id}'">
+                            <div class="product-image">
+                                <c:choose>
+                                    <c:when test="${not empty product.imageUrl}">
+                                        <img src="${product.imageUrl}" alt="${product.name}">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="placeholder">이미지 없음</div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            <div class="product-brand">${product.brandName}</div>
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-price">
+                                <c:if test="${product.discountRate > 0}">
+                                    <span class="discount-rate">${product.discountRate}%</span>
+                                </c:if>
+                                <span class="current-price">
+                                    <fmt:formatNumber value="${product.currentPrice}" pattern="#,###"/>원
+                                </span>
+                                <c:if test="${product.originalPrice > product.currentPrice}">
+                                    <span class="original-price">
+                                        <fmt:formatNumber value="${product.originalPrice}" pattern="#,###"/>원
+                                    </span>
+                                </c:if>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">이미지</div>
-                    <div class="product-brand">브랜드명</div>
-                    <div class="product-name">WIDE DENIM SWEAT PANTS [BRUSHED BLACK]</div>
-                    <div class="product-price">
-                        <span class="discount-rate">25%</span>
-                        <span class="current-price">75,000원</span>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">이미지</div>
-                    <div class="product-brand">드로우</div>
-                    <div class="product-name">가벼운 데님 바지 블랙</div>
-                    <div class="product-price">
-                        <span class="discount-rate">43%</span>
-                        <span class="current-price">54,000원</span>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">이미지</div>
-                    <div class="product-brand">우익</div>
-                    <div class="product-name">리넨소 세미 와이드 진 (업라디)</div>
-                    <div class="product-price">
-                        <span class="discount-rate">10%</span>
-                        <span class="current-price">144,000원</span>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-image">이미지</div>
-                    <div class="product-brand">브로우스</div>
-                    <div class="product-name">우수 실시 아이는 다 진 팩츠 (BLUE)</div>
-                    <div class="product-price">
-                        <span class="discount-rate">10%</span>
-                        <span class="current-price">54,000원</span>
-                    </div>
-                </div>
-            </c:if>
+                </c:forEach>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
         </div>
     </section>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
-    // 사이드바 관련 변수
-    const menuBtn = document.getElementById('menuBtn');
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-    const closeSidebar = document.getElementById('closeSidebar');
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const tabContents = document.querySelectorAll('.tab-content');
+    // 공통 스와이퍼 설정
+    const swiperConfig = {
+        slidesPerView: 5.5,   // 한 줄에 5.5개
+        slidesPerGroup: 4,    // 슬라이드할 때 4개씩 이동
+        spaceBetween: 0,
+        speed: 600,
+        loop: false,
 
-    // 햄버거 메뉴 버튼 클릭
-    if (menuBtn) {
-        menuBtn.addEventListener('click', function() {
-            openSidebar();
-        });
-    }
+        grid: {
+            rows: 2,          // 2줄로 배치
+            fill: 'row'
+        },
 
-    // 사이드바 닫기 버튼 클릭
-    if(closeSidebar) {
-        closeSidebar.addEventListener('click', function() {
-            closeSidebarFunc();
-        });
-    }
-
-    // 오버레이 클릭시 사이드바 닫기
-    if(sidebarOverlay) {
-        sidebarOverlay.addEventListener('click', function() {
-            closeSidebarFunc();
-        });
-    }
-
-    // 사이드바 열기
-    function openSidebar() {
-        sidebar.classList.add('open');
-        sidebarOverlay.classList.add('show');
-        sidebarOverlay.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-    }
-
-    // 사이드바 닫기
-    function closeSidebarFunc() {
-        sidebar.classList.remove('open');
-        sidebarOverlay.classList.remove('show');
-        setTimeout(() => {
-            sidebarOverlay.style.display = 'none';
-        }, 300);
-        document.body.style.overflow = 'auto';
-    }
-
-    // 탭 버튼 클릭 이벤트
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const tabName = this.getAttribute('data-tab');
-
-            // 모든 탭 버튼 비활성화
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            // 클릭된 탭 버튼 활성화
-            this.classList.add('active');
-
-            // 모든 탭 콘텐츠 숨기기
-            tabContents.forEach(content => content.classList.remove('active'));
-            // 선택된 탭 콘텐츠 보이기
-            document.getElementById(tabName + '-tab').classList.add('active');
-        });
-    });
-
-    // 알파벳 버튼 클릭 이벤트
-    const alphabetButtons = document.querySelectorAll('.alphabet-btn');
-    alphabetButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            alphabetButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            console.log('선택된 초성:', this.textContent);
-        });
-    });
-
-    // 브랜드 검색 기능
-    const brandSearchInput = document.getElementById('brandSearchInput');
-    if (brandSearchInput) {
-        brandSearchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const brandItems = document.querySelectorAll('.brand-item');
-
-            brandItems.forEach(item => {
-                const brandName = item.querySelector('.brand-name').textContent.toLowerCase();
-                const brandNameEng = item.querySelector('.brand-name-eng').textContent.toLowerCase();
-
-                if (brandName.includes(searchTerm) || brandNameEng.includes(searchTerm)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
-    }
-
-    // 좋아요 버튼 클릭 이벤트
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('like-btn')) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            if (e.target.textContent === '♡') {
-                e.target.textContent = '♥';
-                e.target.style.color = '#e74c3c';
-            } else {
-                e.target.textContent = '♡';
-                e.target.style.color = '#ccc';
+        breakpoints: {
+            320: {
+                slidesPerView: 1.1,
+                slidesPerGroup: 2,
+                grid: { rows: 2 }
+            },
+            480: {
+                slidesPerView: 2.2,
+                slidesPerGroup: 2,
+                grid: { rows: 2 }
+            },
+            768: {
+                slidesPerView: 3.2,
+                slidesPerGroup: 3,
+                grid: { rows: 2 }
+            },
+            1024: {
+                slidesPerView: 4.5,
+                slidesPerGroup: 4,
+                grid: { rows: 2 }
+            },
+            1200: {
+                slidesPerView: 5.5,
+                slidesPerGroup: 4,
+                grid: { rows: 2 }
             }
         }
-    });
+    };
 
-    // 카테고리 아이템 클릭 이벤트
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.category-item')) {
-            const categoryName = e.target.closest('.category-item').querySelector('.category-name').textContent;
-            alert('선택된 카테고리: ' + categoryName);
-            closeSidebarFunc();
-        }
-
-        if (e.target.closest('.brand-item') && !e.target.classList.contains('like-btn')) {
-            const brandName = e.target.closest('.brand-item').querySelector('.brand-name').textContent;
-            alert('선택된 브랜드: ' + brandName);
-            closeSidebarFunc();
+    // 남성 스와이퍼 초기화
+    const menSwiper = new Swiper('.men-swiper', {
+        ...swiperConfig,
+        navigation: {
+            nextEl: '.men-swiper .swiper-button-next',
+            prevEl: '.men-swiper .swiper-button-prev',
         }
     });
 
-    // ESC 키로 사이드바 닫기
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && sidebar.classList.contains('open')) {
-            closeSidebarFunc();
+    // 여성 스와이퍼 초기화
+    const womenSwiper = new Swiper('.women-swiper', {
+        ...swiperConfig,
+        navigation: {
+            nextEl: '.women-swiper .swiper-button-next',
+            prevEl: '.women-swiper .swiper-button-prev',
         }
+    });
+
+    const bannerSwiper = new Swiper('.banner-swiper', {
+        slidesPerView: 3,      // 한 번에 보이는 배너 3개
+        slidesPerGroup: 3,     // 슬라이드 이동 시 3개 단위
+        spaceBetween: 0,      // 배너 간 간격
+        loop: true,            // 무한 루프
+        autoplay: {
+            delay: 3000,       // 3초마다 자동 슬라이드
+            disableOnInteraction: false,
+        },
+        navigation: {
+            nextEl: '.banner-next',
+            prevEl: '.banner-prev',
+        },
+        speed: 600
     });
 </script>
+
 </body>
 </html>

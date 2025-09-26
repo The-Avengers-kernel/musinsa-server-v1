@@ -1,5 +1,23 @@
 <%@ page pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%
+    // Authorization 쿠키 확인
+    String authToken = null;
+    boolean isLoggedIn = false;
+
+    if (request.getCookies() != null) {
+        for (Cookie cookie : request.getCookies()) {
+            if ("Authorization".equals(cookie.getName())) {
+                authToken = cookie.getValue();
+                if (authToken != null && !authToken.trim().isEmpty()) {
+                    isLoggedIn = true;
+                }
+                break;
+            }
+        }
+    }
+%>
+
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <header class="musinsa-header">
@@ -37,7 +55,7 @@
             <ul class="user-menu">
                 <li><a href="#">오프라인스토어</a></li>
                 <li class="separator">|</li>
-                <li><a href="${pageContext.request.contextPath}/search"><i class="fas fa-search"></i>검색</a></li>
+                <li><a href="${pageContext.request.contextPath}/main/search"><i class="fas fa-search"></i>검색</a></li>
                 <li class="separator">|</li>
                 <li><a href="#"><i class="far fa-heart"></i>좋아요</a></li>
                 <li class="separator">|</li>
@@ -45,13 +63,27 @@
                 <li class="separator">|</li>
                 <li><a href="${pageContext.request.contextPath}/cart"><i class="fas fa-shopping-cart"></i>장바구니</a></li>
                 <li class="separator">|</li>
-                <c:if test="${empty sessionScope.loginUser}">
-                    <li class="btn-outline-dark"><a href="${pageContext.request.contextPath}/login">로그인</a></li>
-                </c:if>
-                <c:if test="${not empty sessionScope.loginUser}">
-                    <li class="btn-outline-dark"><a href="${pageContext.request.contextPath}/logout">로그아웃</a></li>
-                </c:if>
+                <%-- 쿠키 기반 로그인/로그아웃 처리 --%>
+                <% if (!isLoggedIn) { %>
+                <li class="btn-outline-dark"><a href="${pageContext.request.contextPath}/login">로그인</a></li>
+                <% } else { %>
+                <li class="btn-outline-dark">
+                    <a href="#" onclick="logout(); return false;">로그아웃</a>
+                </li>
+                <% } %>
             </ul>
         </div>
     </div>
 </header>
+
+<script>
+    function logout() {
+        if (confirm('로그아웃 하시겠습니까?')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '${pageContext.request.contextPath}/custom-logout';
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>

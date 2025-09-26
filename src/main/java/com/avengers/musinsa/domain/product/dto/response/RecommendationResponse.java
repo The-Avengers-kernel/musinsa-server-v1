@@ -13,4 +13,5 @@ public class RecommendationResponse {
     private String productBrand;
     private Integer productPrice;
     private String productImage;
+    private Integer discountRate;
 }
