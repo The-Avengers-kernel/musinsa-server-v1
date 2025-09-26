@@ -193,6 +193,7 @@ public class ProductServiceImpl implements ProductService {
     public SearchResponse searchProducts(String keyword, Long userId) {
 
         String processedKeyword = preprocessKeyword(keyword);
+        searchLogService.saveSearchKeywordLog(keyword, userId);
         System.out.println("검색어 : " + processedKeyword);
 
         // 브랜드 검색 먼저 시도
@@ -204,7 +205,7 @@ public class ProductServiceImpl implements ProductService {
             BrandResponse brand = brandList.getFirst();
 
             // 브랜드 검석 기록 저장
-            searchLogService.saveSearchBrandLog(brand, userId);
+//            searchLogService.saveSearchBrandLog(brand, userId);
 
             // 브랜드 상품 불러오기
             List<SearchResponse.ProductInfo> brandProducts =
@@ -226,7 +227,7 @@ public class ProductServiceImpl implements ProductService {
                     .build();
         } else {
             // 상품 검색인 경우, 키워드 저장
-            searchLogService.saveSearchKeywordLog(keyword, userId);
+//            searchLogService.saveSearchKeywordLog(keyword, userId);
             String[] keywords = keyword.trim().split("\\s+");
             for (String key : keywords) {
                 System.out.println("키워드 = " + key);
