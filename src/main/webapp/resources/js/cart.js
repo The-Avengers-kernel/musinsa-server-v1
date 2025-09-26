@@ -389,13 +389,13 @@
 
         // 수량 버튼
         $('#qty-dec').off('click').on('click', function () {
-            var v = Math.max(1, Number($('#opt-qty').var() || 1) - 1);
-            $('#opt-qty').var(v);
+            var v = Math.max(1, Number($('#opt-qty').val() || 1) - 1);
+            $('#opt-qty').val(v);
             updateOptionPricePreview();
         });
         $('#qty-inc').off('click').on('click', function () {
-            var v = Math.max(1, Number($('#opt-qty').var() || 1) + 1);
-            $('#opt-qty').var(v);
+            var v = Math.max(1, Number($('#opt-qty').val() || 1) + 1);
+            $('#opt-qty').val(v);
             updateOptionPricePreview();
         });
 
