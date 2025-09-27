@@ -560,29 +560,39 @@
         }
         return ids;
     }
+    $('#btn-checkout').off('click').on('click', function(e) {
+        e.preventDefault();
 
-    // 폼 제출 시 hidden input 채우기
-    $(document)
-        .off('submit.order')
-        .on('submit', '#order-form', function (e) {
-            var ids = getSelectedCartItemIds();
-            if (ids.length === 0) {
-                e.preventDefault();
-                alert('주문할 상품을 선택하세요.');
-                return;
+        var ids = getSelectedCartItemIds();
+        if (ids.length === 0) {
+            alert('주문할 상품을 선택하세요.');
+            return;
+        }
+
+        var orderData = {
+            type: 'FROM_CART',
+            cartItemIds: ids
+        };
+
+        $.ajax({
+            url: BASE + '/orders/orders-page',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(orderData),
+            success: function(response) {
+                if (response.success) {
+                    // 성공 시 주문 페이지로 이동
+                    window.location.href = BASE + response.redirectUrl;
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('주문 처리 실패:', error);
+                alert('주문 처리 중 오류가 발생했습니다.');
             }
-
-            var $wrap = $('#order-form-ids').empty();
-
-            ids.forEach(function (id) {
-                $('<input>', {
-                    type: 'hidden',
-                    name: 'cartItemIds',
-                    value: String(id)
-                }).appendTo($wrap);
-            })
-        })
-
+        });
+    });
 
     // ===== XSS 방지용 이스케이프 =====
     function escapeHtml(str) {

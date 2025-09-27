@@ -1,0 +1,693 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%@ include file="../main/header.jsp" %>
+    <link rel="stylesheet" href="<c:url value='/resources/css/header.css'/>">
+    <title>주문서 - MUSINSA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .left-section {
+            flex: 2;
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+        }
+
+        .right-section {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .buyer-info, .recipient-info {
+            margin-bottom: 30px;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            width: 100px;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .info-value {
+            flex: 1;
+            color: #333;
+        }
+
+        .product-section {
+            margin-bottom: 30px;
+        }
+
+        .product-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .brand-name {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .product-option {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .price-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .discount-rate {
+            color: #e74c3c;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .summary-section {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .summary-row.total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        .points-section {
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .points-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .points-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .points-input button {
+            padding: 10px 15px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .points-input button:hover {
+            background-color: #555;
+        }
+
+        .points-input button.cancel {
+            background-color: #e74c3c;
+        }
+
+        .points-input button.cancel:hover {
+            background-color: #c0392b;
+        }
+
+        .order-button {
+            width: 100%;
+            padding: 15px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .order-button:hover {
+            background-color: #555;
+        }
+
+        .discount-price {
+            color: #e74c3c;
+        }
+
+        .coupon-section {
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .coupon-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .payment-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 15px;
+            line-height: 1.4;
+        }
+
+        .delivery-date {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .coupon-btn {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .divider {
+            border-top: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+
+        .divider-thin {
+            border-top: 1px solid #f0f0f0;
+            margin: 15px 0;
+        }
+
+        /* 결제 수단 스타일 */
+        .payment-method-section {
+            margin: 20px 0;
+        }
+
+        .payment-option {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .payment-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .payment-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            cursor: pointer;
+            padding: 6px 0;
+        }
+
+        .payment-icon-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .payment-icon {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .payment-name {
+            font-size: 16px;
+            font-weight: 400;
+            color: #333;
+        }
+
+        .payment-benefits {
+            display: flex;
+            align-items: center;
+        }
+
+        .benefit-tag {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 400;
+            background-color: transparent;
+            color: #4285f4;
+            border: 1px solid #e0e0e0;
+        }
+
+        .payment-description {
+            margin-left: 35px;
+            padding: 12px 16px;
+            background-color: #f0f7ff;
+            font-size: 13px;
+            color: #333;
+            border-radius: 6px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .payment-option input[type="radio"]:checked ~ .payment-description {
+            display: block;
+        }
+
+        .payment-action {
+            margin-top: 12px;
+        }
+
+        .payment-register-btn {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .payment-register-btn:hover {
+            background-color: #3367d6;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 왼쪽 섹션: 주문자/수령자 정보 및 상품 목록 -->
+    <div class="left-section">
+        <!-- 수령자 정보 -->
+        <div class="buyer-info">
+            <div class="section-title">수령인</div>
+            <div class="info-row">
+                <span class="info-label">받는 사람</span>
+                <span class="info-value">${buyerRecipientInfoAdapter.recipientName}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">연락처</span>
+                <span class="info-value">${buyerRecipientInfoAdapter.recipientPhone}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">주소</span>
+                <span class="info-value">
+                    (${buyerRecipientInfoAdapter.recipientPostCode})
+                    ${buyerRecipientInfoAdapter.recipientAddress}
+                    ${buyerRecipientInfoAdapter.recipientDetailAddress}
+                </span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 상품 목록 -->
+        <div class="product-section">
+            <div class="section-title">
+                주문 상품 <c:out value="${orderProductAdapters.size()}"/>개
+            </div>
+
+            <c:forEach var="product" items="${orderProductAdapters}">
+                <div class="product-item">
+                    <img src="${product.productImage}" alt="${product.productName}" class="product-image">
+                    <div class="product-details">
+                        <div class="brand-name">${product.brandName}</div>
+                        <div class="product-name">${product.productName}</div>
+                        <div class="product-option">${product.optionName} / ${product.quantity}개</div>
+                        <div class="product-price">
+                            <div class="price-info">
+                                <c:if test="${product.discountRate > 0}">
+                                    <span class="original-price">
+                                         <!-- 개당 원래 가격 * 수량 -->
+                                        <fmt:formatNumber value="${product.originalPrice * product.quantity}" type="number"/>원
+                                    </span>
+                                    <span class="discount-rate">${product.discountRate}%</span>
+                                </c:if>
+                                <span>
+                                    <!-- 개당 할인 가격 * 수량 -->
+                                    <fmt:formatNumber value="${product.finalPrice * product.quantity}" type="number"/>원
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+        </div>
+
+        <div class="divider-thin"></div>
+
+        <div class="divider-thin"></div>
+
+        <!-- 보유 적립금 사용 -->
+        <div class="points-section">
+            <div class="section-title">보유 적립금 사용</div>
+            <div class="points-input">
+                <input type="number" id="pointsInput" placeholder="0" min="0" max="" readonly>
+                <button type="button" id="pointsToggleBtn" onclick="togglePoints()">최대 사용</button>
+            </div>
+            <div class="payment-info">
+                적립 한도(7%) <span id="pointsLimit"></span>원 / 보유 <fmt:formatNumber value="${buyerRecipientInfoAdapter.mileage}" type="number"/>원
+            </div>
+        </div>
+
+        <div class="divider-thin"></div>
+
+        <!-- 결제 수단 -->
+        <div class="payment-method-section">
+            <div class="section-title">결제 수단</div>
+
+            <!-- 농협페이 -->
+            <div class="payment-option">
+                <input type="radio" id="NHPay" name="paymentMethod" value="NHPay" checked>
+                <label for="NHPay" class="payment-label">
+                    <div class="payment-icon-wrapper">
+                        <img src="https://image.msscdn.net/musinsaUI/store/order/finance/28x28/logo-finance-nh.png" alt="농협페이" class="payment-icon">
+                        <span class="payment-name">농협페이</span>
+                    </div>
+                    <div class="payment-benefits">
+                        <span class="benefit-tag">혜택</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- 토스페이 -->
+            <div class="payment-option">
+                <input type="radio" id="tossPay" name="paymentMethod" value="tossPay">
+                <label for="tossPay" class="payment-label">
+                    <div class="payment-icon-wrapper">
+                        <img src="https://image.msscdn.net/musinsaUI/store/order/finance/logo-finance-toss.png" alt="토스페이" class="payment-icon">
+                        <span class="payment-name">토스페이</span>
+                    </div>
+                    <div class="payment-benefits">
+                        <span class="benefit-tag">혜택</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- 카카오페이 -->
+            <div class="payment-option">
+                <input type="radio" id="kakaoPay" name="paymentMethod" value="kakaoPay">
+                <label for="kakaoPay" class="payment-label">
+                    <div class="payment-icon-wrapper">
+                        <img src="https://image.msscdn.net/musinsaUI/store/order/finance/logo-finance-kakaopay.png" alt="카카오페이" class="payment-icon">
+                        <span class="payment-name">카카오페이</span>
+                    </div>
+                    <div class="payment-benefits">
+                        <span class="benefit-tag">혜택</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- 페이코 -->
+            <div class="payment-option">
+                <input type="radio" id="payco" name="paymentMethod" value="payco">
+                <label for="payco" class="payment-label">
+                    <div class="payment-icon-wrapper">
+                        <img src="https://image.msscdn.net/musinsaUI/store/order/finance/logo-finance-payco.png" alt="페이코" class="payment-icon">
+                        <span class="payment-name">페이코</span>
+                    </div>
+                    <div class="payment-benefits">
+                        <span class="benefit-tag">혜택</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="divider-thin"></div>
+
+        <!-- 구매 적립/선할인 -->
+        <div class="coupon-section">
+            <div class="section-title">구매 적립/선할인</div>
+            <div class="payment-info">구매 적립</div>
+        </div>
+    </div>
+
+    <!-- 오른쪽 섹션: 결제 금액 -->
+    <div class="right-section">
+        <div class="section-title">결제 금액</div>
+
+        <div class="summary-section">
+            <!-- 가격 계산 -->
+            <c:set var="totalOriginalProductPrice" value="0" />
+            <c:set var="totalDiscount" value="0" />
+            <c:set var="totalOrderPrice" value="0" />
+
+            <c:forEach var="product" items="${orderProductAdapters}">
+                <!-- 상품가격 -->
+                <c:set var="totalOriginalProductPrice" value="${totalOriginalProductPrice + (product.originalPrice*product.quantity)}" />
+                <!-- 각 제품의 할인된 총 가격 = finalPrice * quantity -->
+                <c:set var="totalDiscount" value="${totalDiscount + (product.originalPrice * product.quantity - product.totalPrice)}" />
+            </c:forEach>
+
+            <c:set var="totalOrderPrice" value="${totalOriginalProductPrice - totalDiscount}" />
+
+            <div class="summary-row">
+                <%--모든 상품의 원래 가격 (원래 가격 * 갯수)의 합--%>
+                <span>상품 금액</span>
+                <span id="originalPrice">
+                    <fmt:formatNumber value="${totalOriginalProductPrice}" type="number"/>원
+                </span>
+            </div>
+            <div class="summary-row">
+                <span>할인 금액</span>
+                <span class="discount-price" id="discountAmount">
+                    -<fmt:formatNumber value="${totalDiscount}" type="number"/>원
+                </span>
+            </div>
+            <div class="summary-row">
+                <span>적립금 사용</span>
+                <span class="discount-price" id="pointsUsed">
+                    -<span id="pointsAmount">0</span>원
+                </span>
+            </div>
+            <div class="summary-row">
+                <span>배송비</span>
+                <span id="shippingCost">무료배송</span>
+            </div>
+
+            <div class="summary-row total">
+                <span>총 결제 금액</span>
+                <span id="totalPrice">
+                    <span id="finalAmount"><fmt:formatNumber value="${totalOrderPrice}" type="number"/>원</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- 적립 혜택 -->
+        <div class="points-section">
+            <div class="section-title">적립 혜택</div>
+            <c:set var="earnedPoints" value="${totalOrderPrice * 0.015}" />
+            <c:set var="maxReviewPoints" value="2500" />
+            <c:set var="totalEarnedPoints" value="${earnedPoints + maxReviewPoints}" />
+
+            <div class="summary-row">
+                <span>LV5 실버 · 1.5% 적립</span>
+                <span><fmt:formatNumber value="${earnedPoints}" maxFractionDigits="0"/>원</span>
+            </div>
+            <div class="summary-row">
+                <span>후기 적립</span>
+                <span>최대 <fmt:formatNumber value="${maxReviewPoints}" type="number"/>원</span>
+            </div>
+            <div class="summary-row total">
+                <span>총 적립 금액</span>
+                <span><fmt:formatNumber value="${totalEarnedPoints}" maxFractionDigits="0"/>원</span>
+            </div>
+        </div>
+
+        <div class="payment-info">
+            주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.<br>
+            회원님의 개인정보는 안전하게 관리됩니다.<br><br>
+            무신사는 통신판매중개자로, 연체 배송 상품의 상품정보/상품취소/<br>
+            거래 등에 대한 책임은 무신사가 아닌 판매업체에 있습니다.
+        </div>
+
+        <div class="summary-row" style="margin-top: 20px;">
+            <span>이번 주문으로 받을 혜택</span>
+            <span style="color: #2196F3; font-weight: bold;">
+                <fmt:formatNumber value="${totalEarnedPoints}" maxFractionDigits="0"/>원
+            </span>
+        </div>
+
+        <button class="order-button" onclick="processOrder()">
+            <span id="orderButtonAmount"><fmt:formatNumber value="${totalOrderPrice}" type="number"/>원</span> 결제하기
+        </button>
+    </div>
+</div>
+
+<script>
+    // 전역 변수
+    let totalProductPrice = ${totalOrderPrice}; // 할인 후 상품 금액
+    let maxPoints = ${buyerRecipientInfoAdapter.mileage}; // 보유 적립금
+    let maxUsablePoints = Math.floor(totalProductPrice * 0.07); // 적립금 사용 한도 (상품금액의 7%)
+    let currentPointsUsed = 0;
+    let isPointsUsed = false; // 적립금 사용 상태
+
+    // 실제 사용 가능한 적립금 계산 (보유 적립금과 7% 한도 중 적은 값)
+    let actualMaxUsable = Math.min(maxPoints, maxUsablePoints);
+
+    // 페이지 로드 시 초기화
+    document.addEventListener('DOMContentLoaded', function() {
+        // 적립금 한도 표시
+        document.getElementById('pointsLimit').textContent = maxUsablePoints.toLocaleString();
+
+        // input의 max 속성 설정
+        document.getElementById('pointsInput').setAttribute('max', actualMaxUsable);
+
+        // 초기 가격 표시 업데이트
+        updatePriceDisplay();
+    });
+
+    // 적립금 사용 토글
+    function togglePoints() {
+        const pointsInput = document.getElementById('pointsInput');
+        const toggleBtn = document.getElementById('pointsToggleBtn');
+
+        if (!isPointsUsed) {
+            // 적립금 사용
+            currentPointsUsed = actualMaxUsable;
+            pointsInput.value = actualMaxUsable;
+            toggleBtn.textContent = '사용 취소';
+            toggleBtn.classList.add('cancel');
+            isPointsUsed = true;
+        } else {
+            // 적립금 사용 취소
+            currentPointsUsed = 0;
+            pointsInput.value = 0;
+            toggleBtn.textContent = '최대 사용';
+            toggleBtn.classList.remove('cancel');
+            isPointsUsed = false;
+        }
+
+        // 화면 업데이트
+        updatePriceDisplay();
+    }
+
+    // 가격 표시 업데이트
+    function updatePriceDisplay() {
+        const finalPrice = totalProductPrice - currentPointsUsed;
+
+        // 적립금 사용 표시 업데이트
+        document.getElementById('pointsAmount').textContent =
+            currentPointsUsed.toLocaleString();
+
+        // 총 결제 금액 업데이트
+        document.getElementById('finalAmount').textContent =
+            finalPrice.toLocaleString() + '원';
+
+        // 결제 버튼 금액 업데이트
+        document.getElementById('orderButtonAmount').textContent =
+            finalPrice.toLocaleString() + '원';
+    }
+
+    // 주문 처리
+    function processOrder() {
+        const finalAmount = totalProductPrice - currentPointsUsed;
+        if (confirm(finalAmount.toLocaleString() + '원을 결제하시겠습니까?')) {
+            alert('주문이 완료되었습니다!');
+        }
+    }
+</script>
+</body>
+</html>

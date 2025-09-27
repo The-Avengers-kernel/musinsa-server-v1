@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-public class MainPageController {
+public class MainPageViewController {
 
     private final ProductService productService;
 
