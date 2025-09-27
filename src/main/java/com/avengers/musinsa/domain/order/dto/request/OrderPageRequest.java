@@ -1,14 +1,14 @@
 package com.avengers.musinsa.domain.order.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
+@Setter
 
 public class OrderPageRequest {
     private String type; // "FROM_CART" | "DIRECT_PURCHASE"
