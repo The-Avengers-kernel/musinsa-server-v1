@@ -55,7 +55,7 @@
             <ul class="user-menu">
                 <li><a href="#">오프라인스토어</a></li>
                 <li class="separator">|</li>
-                <li><a href="${pageContext.request.contextPath}/main/search"><i class="fas fa-search"></i>검색</a></li>
+                <li><a href="${pageContext.request.contextPath}/main/search" id="searchBtn"><i class="fas fa-search"></i>검색</a></li>
                 <li class="separator">|</li>
                 <li><a href="#"><i class="far fa-heart"></i>좋아요</a></li>
                 <li class="separator">|</li>
@@ -87,3 +87,18 @@
         }
     }
 </script>
+
+<div id="searchOverlayContainer" data-overlay-container="recent"></div>
+
+<script>
+    window.appContextPath = window.appContextPath || '${pageContext.request.contextPath}';
+    window.userIsLoggedIn = false;
+    window.musinsaUserId = null;
+    <c:if test="${not empty sessionScope.loginUser}">
+    window.userIsLoggedIn = true;
+    window.musinsaUserId = '<c:out value="${sessionScope.loginUser.userId}"/>';
+    </c:if>
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/recentSearches.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/header.js"></script>
