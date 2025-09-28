@@ -9,10 +9,14 @@
     <title>MUSINSA - 무신사</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <%--헤더, 카테고리 연결--%>
+    <%@ include file="header.jsp" %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/header.css">
+    <%@ include file="category.jsp" %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/category.css">
+
     <style>
-        /* General Body & Main Content Styles */
         body {
             font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: #f8f9fa;
@@ -115,9 +119,6 @@
     </style>
 </head>
 <body>
-
-<%@ include file="header.jsp" %>
-<%@ include file="category.jsp" %>
 
 <!-- Main Content -->
 <main class="container">

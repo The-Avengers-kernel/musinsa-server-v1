@@ -1,29 +1,34 @@
 /* 팝업 메뉴 통합 스타일 */
 
-/* 전체 오버레이 (배경 포함) */
+/*
+ * ----------------------------------------------------
+ * 1. 오버레이 및 메뉴 컨테이너 (모달 공통)
+ * ----------------------------------------------------
+ */
+
+/* 전체 오버레이 (배경 포함) - 팝업 배경 및 중앙 정렬 담당 */
 .category-dropdown-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* 반투명 검은 배경 */
     z-index: 2000;
-    display: none; /* 초기에는 숨김 */
-    align-items: center;
-    justify-content: center;
+    display: none;              /* 초기에는 숨김 */
+    align-items: center;        /* 수직 중앙 정렬 */
+    justify-content: center;    /* 수평 중앙 정렬 */
     opacity: 0;
     transition: opacity 0.3s ease-out;
 }
 
+/* JS로 .active 클래스가 추가되면 팝업을 표시 */
 .category-dropdown-overlay.active {
-    display: flex; /* 활성화 시 flex로 변경하여 중앙 정렬 */
+    display: flex;
     opacity: 1;
 }
 
 /* 실제 메뉴 컨테이너 */
 .category-dropdown-menu {
-    width: 600px; /* 전체 너비를 늘려 브랜드/카테고리 상세를 수용 */
+    width: 600px;
     max-width: 90vw;
     height: 700px;
     max-height: 90vh;
@@ -33,25 +38,33 @@
     position: relative;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
-    transform: scale(0.9);
+    flex-direction: column;     /* 헤더와 콘텐츠를 수직 배열 */
+    transform: scale(0.9);      /* 등장 애니메이션을 위한 초기 크기 설정 */
     transition: transform 0.3s ease-out;
 }
 
+/* 메뉴 활성화 시 크기 애니메이션 적용 */
 .category-dropdown-overlay.active .category-dropdown-menu {
     transform: scale(1);
 }
+
+/*
+ * ----------------------------------------------------
+ * 2. 메뉴 헤더 (탭) 및 콘텐츠 컨테이너
+ * ----------------------------------------------------
+ */
 
 /* 드롭다운 상단 탭 (카테고리/브랜드) */
 .dropdown-header {
     padding-left: 10px;
     border-bottom: 1px solid #eee;
     background-color: #f8f9fa;
-    flex-shrink: 0;
+    flex-shrink: 0;             /* 크기가 고정되도록 설정 */
     display: flex;
     position: relative;
 }
 
+/* 탭 항목 스타일 */
 .dropdown-header a {
     font-size: 14px;
     font-weight: 500;
@@ -62,48 +75,55 @@
     cursor: pointer;
 }
 
+/* 현재 활성화된 탭 항목 */
 .dropdown-header a.active {
     color: #000;
-    border-bottom-color: #000;
+    border-bottom-color: #000; /* 활성화 시 밑줄 표시 */
 }
 
-/* 탭 내용 컨테이너 */
+/* 탭 내용 컨테이너 - 탭 콘텐츠를 담는 부모 영역 (absolute 배치 기준점) */
 .dropdown-content-container {
-    flex-grow: 1;
+    flex-grow: 1;               /* 남은 공간 모두 차지 */
     position: relative;
     overflow: hidden;
 }
 
+/* 각 탭 내용 (product/brand) */
 .tab-content {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
+    width: 100%; height: 100%;
+    position: absolute;         /* 부모 내에서 겹쳐지도록 배치 */
+    top: 0; left: 0;
     opacity: 0;
-    visibility: hidden;
+    visibility: hidden;         /* 비활성 상태에는 숨김 */
     transition: opacity 0.2s, visibility 0.2s;
     background-color: #fff;
 }
 
+/* 현재 활성화된 탭 내용 (JS에서 .active 클래스 추가) */
 .tab-content.active {
     opacity: 1;
     visibility: visible;
 }
 
-/* --- 공통 콘텐츠 스타일 (좌우 분할) --- */
+/*
+ * ----------------------------------------------------
+ * 3. 공통 콘텐츠 스타일 (좌우 분할)
+ * ----------------------------------------------------
+ */
+
+/* 카테고리/브랜드 탭의 좌우 분할 구조 */
 .dropdown-content {
     display: flex;
     width: 100%;
     height: 100%;
 }
 
-/* 왼쪽 카테고리 목록 */
+/* 왼쪽 카테고리/브랜드 카테고리 목록 (주메뉴) */
 .category-list {
     width: 110px;
     background-color: #f7f7f7;
     padding: 0 0 15px 0;
-    overflow-y: auto;
+    overflow-y: auto;           /* 내용이 길어지면 스크롤 가능 */
     flex-shrink: 0;
 }
 
@@ -116,26 +136,26 @@
     font-family: Pretendard, Apple SD Gothic Neo, sans-serif;
 }
 
+/* 현재 활성화된 왼쪽 메뉴 항목 */
 .category-list ul li a.active {
     color: black;
     background-color: #fff;
     font-weight: 700;
 }
 
-/* 오른쪽 상세 내용 (상품 탭) */
+/* 오른쪽 상세 내용 (서브 카테고리/상품 목록) */
 .category-details {
-    flex-grow: 1;
+    flex-grow: 1;               /* 남은 공간을 모두 차지 */
     padding: 20px 15px;
     overflow-y: auto;
 }
 
-/* 상세 헤더 */
+/* 상세 섹션 (예: '상의', '바지') */
 .detail-section {
     margin-bottom: 40px;
     padding-bottom: 15px;
     position: relative;
 }
-.detail-section:first-of-type { border-bottom: none; }
 
 .detail-header {
     display: flex;
@@ -147,35 +167,32 @@
 .detail-section h4 {
     font-size: 14px;
     font-weight: 700;
-    margin: 0;
-    padding: 0;
+    margin: 0; padding: 0;
     line-height: 1;
     flex-shrink: 0;
-    flex-grow: 0;
 }
 
+/* '전체 보기' 링크 */
 .detail-section .view-all {
-    position: static;
     font-size: 12px;
     color: #999;
     line-height: 1;
-    flex-shrink: 0;
-    flex-grow: 0;
     text-decoration: underline;
 }
 
-/* 상세 아이템 (이미지 + 텍스트) */
+/* 상세 아이템 목록 컨테이너 */
 .detail-items {
     display: flex;
     flex-wrap: wrap;
     gap: 25px;
 }
 
+/* 개별 상세 아이템 (3열 레이아웃) */
 .detail-items .item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: calc(33.333% - 17px);
+    width: calc(33.333% - 17px); /* 3개씩 배치되도록 너비 계산 */
     text-align: center;
     font-size: 13px;
     font-weight: 500;
@@ -189,64 +206,55 @@
 }
 
 
-/* --- 브랜드 탭 (Brand Tab) 스타일 --- */
-
-/* 1. 전체 레이아웃을 Flex로 설정 (좌우 분할) */
-.brand-layout-content {
-    display: flex;
-    width: 100%;
-    height: 100%;
-}
+/*
+ * ----------------------------------------------------
+ * 4. 브랜드 탭 (Brand Tab) 상세 스타일
+ * ----------------------------------------------------
+ */
 
 /* 3. 오른쪽 브랜드 상세 내용 컨테이너 */
 .brand-details-container {
     flex-grow: 1;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* 초성 목록과 브랜드 리스트를 수직 배열 */
     padding: 10px 15px;
     overflow: hidden;
 }
 
-/* --- 한글/알파벳 목록 및 버튼 스타일 (수정 반영) --- */
+/* 초성 목록 및 버튼 영역 wrapper */
 .brand-initial-list-wrapper {
     flex-shrink: 0;
     padding:5px 5px;
     border-bottom: 1px solid #eee;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     position: relative;
 }
 
-/* 초성 목록을 감싸는 스크롤 가능한 컨테이너 (핵심) */
+/* 초성 목록을 감싸는 스크롤 가능한 컨테이너 */
 .initial-list-scroll-container {
     flex-grow: 1;
-    overflow-x: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    overflow-x: auto; /* 가로 스크롤 가능 */
+    -ms-overflow-style: none; scrollbar-width: none; /* 스크롤바 숨김 (IE/Firefox) */
     white-space: nowrap;
-
-    max-width: calc(100% - 100px);
-    padding-bottom: 0; /* 스크롤바 공간 제거 */
+    max-width: calc(100% - 100px); /* 토글 버튼 공간 확보 */
 }
 .initial-list-scroll-container::-webkit-scrollbar {
-    display: none;
+    display: none; /* 스크롤바 숨김 (Chrome/Safari) */
 }
 
 
 .initial-list {
-    display: none; /* 기본 숨김 */
+    display: none; /* JS에 의해 active 토글 시 표시 */
     flex-wrap: nowrap;
     gap: 0 15px;
-
-    /* height/opacity/visibility 대신 display 속성으로 전환 */
-    padding: 3px 0; /* 초성 링크의 상하 여백을 여기서 부여 */
+    padding: 3px 0;
 }
 
+/* 활성화 시 가로 목록으로 표시 */
 .initial-list.active {
-    display: inline-flex; /* 활성화 시 가로 목록으로 표시 */
+    display: inline-flex;
 }
 
 /* 초성 목록 항목 스타일 */
@@ -258,21 +266,21 @@
     font-weight: 500;
 }
 
-/* 🌟 활성화 시 스타일 (볼드체) 🌟 */
+/* 활성화 시 스타일 (JS에 의해 .active 토글) */
 .initial-list a.active {
     color: #000;
     font-weight: 700;
 }
 
 
-/* 🌟 목록 전환 버튼 스타일 (무신사 스타일 교체 버튼) 🌟 */
+/* 목록 전환 버튼 스타일 (가나다순 ⇌ ABC순) */
 .sort-toggle-btn {
-    position: absolute;
+    position: absolute; /* .brand-initial-list-wrapper 기준 절대 위치 */
     right: 15px;
     top: 50%;
     transform: translateY(-50%);
 
-    display: none; /* 기본 숨김 */
+    display: none; /* JS에 의해 active 토글 시 표시 */
     align-items: center;
 
     font-weight: 700;
@@ -283,8 +291,9 @@
     cursor: pointer;
 }
 
+/* active 시 표시 (JS에 의해 토글) */
 .sort-toggle-btn.active {
-    display: flex; /* active 시 표시 */
+    display: flex;
 }
 
 .sort-toggle-btn i {
@@ -293,28 +302,14 @@
 }
 
 
-/* 4. 브랜드 스크롤 리스트 (수정 반영) */
+/* 브랜드 스크롤 리스트 영역 */
 .brand-scroll-list {
     flex-grow: 1;
     overflow-y: auto;
-    /* 🌟 상단 패딩 제거 🌟 */
     padding-top: 0;
 }
 
-.brand-list-title {
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 15px;
-}
-
-.brand-list-title .brand-count {
-    font-size: 13px;
-    font-weight: 400;
-    color: #999;
-    margin-left: 5px;
-}
-
-/* 개별 브랜드 아이템 */
+/* 브랜드 항목 목록 */
 .brand-item-list {
     list-style: none;
     padding: 0;
@@ -359,9 +354,4 @@
     color: #999;
     margin: 0;
     text-transform: uppercase;
-}
-
-/* --- 서비스 탭 --- */
-.service-content {
-    padding: 30px;
 }

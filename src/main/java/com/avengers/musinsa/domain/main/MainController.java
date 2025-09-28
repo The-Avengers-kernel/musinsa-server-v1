@@ -48,6 +48,4 @@ public class MainController {
 
         return "user/cart";
     }
-
-
 }
