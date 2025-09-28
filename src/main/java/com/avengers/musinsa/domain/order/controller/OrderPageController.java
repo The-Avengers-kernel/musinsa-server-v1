@@ -22,7 +22,7 @@ public class OrderPageController {
     /**
      * 주문 페이지 정보 조회
      */
-    @PostMapping("/order-page")
+    @GetMapping("/order-page")
     public ResponseEntity<OrderPageResponse> getOrderPageInfo(
             @RequestBody OrderPageRequest request,
             @CookieValue(value = "Authorization") String authorization) {
