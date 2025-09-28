@@ -2,8 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/category.js"></script>
+
 
 <div class="category-dropdown-overlay" id="categoryDropdownOverlay">
     <div class="category-dropdown-menu">
