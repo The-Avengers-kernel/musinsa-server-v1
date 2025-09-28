@@ -421,29 +421,33 @@
             saveLocalRecentKeyword(keyword);
             renderRecentKeywords(getLocalRecentKeywords());
         }
-        fetchSearchResults(keyword);
+        //메인 상품 리스트 페이지로 이동
+        win.location.href = contextPath + '/search?keyword=' + encodeURIComponent(keyword);
     }
 
-    function fetchSearchResults(keyword) {
-        ensureOverlayMarkup()
-            .then(function () {
-                switchToResultsView();
-                showResultsLoading();
+    /*
+        // function fetchSearchResults(keyword) {
+    //     ensureOverlayMarkup()
+    //         .then(function () {
+    //             switchToResultsView();
+    //             showResultsLoading();
+    //
+    //             const url = new URL(contextPath + '/search', win.location.origin);
+    //             url.searchParams.set('keyword', keyword);
+    //
+    //             return fetch(url, { credentials: 'include' });
+    //         })
+    //         .then(handleJsonResponse)
+    //         .then(function (data) {
+    //             renderSearchResults(data);
+    //         })
+    //         .catch(function (error) {
+    //             console.error(error);
+    //             renderSearchResults(null);
+    //         });
+    // }
+     */
 
-                const url = new URL(contextPath + '/api/v1/products/search', win.location.origin);
-                url.searchParams.set('keyword', keyword);
-
-                return fetch(url, { credentials: 'include' });
-            })
-            .then(handleJsonResponse)
-            .then(function (data) {
-                renderSearchResults(data);
-            })
-            .catch(function (error) {
-                console.error(error);
-                renderSearchResults(null);
-            });
-    }
 
     function renderSearchResults(data) {
         if (!state.resultsBody || !state.resultsTitle) {

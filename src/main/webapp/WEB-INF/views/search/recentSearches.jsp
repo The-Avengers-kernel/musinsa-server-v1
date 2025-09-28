@@ -21,14 +21,20 @@
 <div id="searchOverlay" class="search-overlay" role="dialog" aria-modal="true" aria-labelledby="recentSearchTitle">
     <div class="search-overlay-inner">
         <div class="overlay-header">
-            <div class="search-input-container">
-                <input type="text" class="overlay-search-box" id="overlaySearchInput" placeholder="브랜드, 상품명 등을 입력하세요" aria-label="검색어 입력">
-                <button class="search-submit-btn" id="searchSubmitBtn" type="button" aria-label="검색 실행">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            </div>
+            <!-- ✅ form 추가 -->
+            <form action="${pageContext.request.contextPath}/search" method="get" style="flex:1; display:flex; gap:8px;">
+                <div class="search-input-container">
+                    <input type="text" name="keyword" class="overlay-search-box" id="overlaySearchInput"
+                           placeholder="브랜드, 상품명 등을 입력하세요" aria-label="검색어 입력" required>
+                    <button class="search-submit-btn" type="submit" aria-label="검색 실행">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z"
+                                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+            <!-- 닫기 버튼은 그대로 유지 -->
             <button class="close-overlay-btn" id="closeOverlayBtn" type="button" aria-label="검색창 닫기">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
