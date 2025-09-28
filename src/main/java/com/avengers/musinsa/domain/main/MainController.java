@@ -1,16 +1,22 @@
 package com.avengers.musinsa.domain.main;
 
+import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
+import com.avengers.musinsa.domain.product.service.ProductService;
 import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
 public class MainController {
     private final TokenProviderService tokenProviderService;
+
+    private final ProductService productService;
 //    @GetMapping("/")
 //    public String getMainHompage(
 //            @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
@@ -32,11 +38,13 @@ public class MainController {
 
         return "product/productDetail";
     }
+
     @GetMapping("/product/likeProducts")
     public String getlikeProducts() {
 
         return "product/likeProducts";
     }
+
     @GetMapping("/product/product")
     public String getProduct() {
 
@@ -49,5 +57,26 @@ public class MainController {
         return "user/cart";
     }
 
+    // /search?keyword=...  또는 /search/?keyword=...
+    @GetMapping({"/search", "/search/"})
+    public String searchPage(
+            @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
+            @CookieValue(value = "Authorization", required = false) String authorization,
+            Model model
+    ) {
+        Long userId = null;
+        if (authorization != null && !authorization.isBlank()) {
+            try {
+                userId = tokenProviderService.getUserIdFromToken(authorization);
+            } catch (Exception ignore) { /* 비로그인/만료 등은 null 로 */ }
+        }
 
+        SearchResponse result = productService.searchProducts(keyword, userId);
+
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("result", result);
+        // JSP에서 ${result} 사용
+        return "product/searchProducts"; // JSP 뷰 경로
+    }
 }
+
