@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avengers.musinsa.mapper.MyPageMapper">
+    <select id="findUserProfileId" parameterType="Long" resultType="com.avengers.musinsa.domain.user.dto.MyPageDto">
+        select
+            u.user_id as userId,
+            u.name as name,
+            u.username as username,
+            u.mobile as mobile,
+            u.user_mileage as userMileage,
+            upi.profile_image_url as profileImage,
+            ug.grade_name as gradeName
+        from users u
+        left join user_profile_images upi on u.user_id = upi.user_id
+        left join user_grades ug on u.user_id = ug.user_id
+        where u.user_id = #{userId}
+    </select>
+
+    <select id="findUserProfileByUserName" parameterType="String" resultType="com.avengers.musinsa.domain.user.dto.MyPageDto">
+
+        select
+            u.user_id as userId,
+            u.name as name,
+            u.username as username,
+            u.mobile as mobile,
+            u.user_mileage as userMileage,
+            upi.profile_image_url as profileImage,
+            ug.grade_name as gradeName
+        from users u
+        left join user_profile_images upi on u.user_id = upi.user_id
+        left join user_grades ug on u.user_id = ug.user_id
+        where u.username = #{username}
+
+    </select>
+
+
+</mapper>
+
+
