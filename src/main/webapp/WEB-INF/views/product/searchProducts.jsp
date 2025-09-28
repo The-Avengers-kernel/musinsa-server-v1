@@ -16,13 +16,13 @@
 <main class="container">
     <section class="section">
 
-        <!-- 검색바 -->
-        <form class="search-header" action="<c:url value='/search'/>" method="get">
-            <input class="search-input" type="text" name="keyword"
-                   placeholder="브랜드/상품/카테고리 검색"
-                   value="${keyword != null ? keyword : result.searchKeyword}"/>
-            <button class="search-btn" type="submit">검색</button>
-        </form>
+        <%--        <!-- 검색바 -->--%>
+        <%--        <form class="search-header" action="<c:url value='/search'/>" method="get">--%>
+        <%--            <input class="search-input" type="text" name="keyword"--%>
+        <%--                   placeholder="브랜드/상품/카테고리 검색"--%>
+        <%--                   value="${keyword != null ? keyword : result.searchKeyword}"/>--%>
+        <%--            <button class="search-btn" type="submit">검색</button>--%>
+        <%--        </form>--%>
 
         <!-- 키워드/결과 수 -->
         <div class="headline">
