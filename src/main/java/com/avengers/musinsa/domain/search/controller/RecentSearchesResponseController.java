@@ -1,7 +1,7 @@
 package com.avengers.musinsa.domain.search.controller;
 
 import com.avengers.musinsa.domain.search.response.SearchKeywordResponseDTO;
-import com.avengers.musinsa.domain.search.service.RecentSearchService;
+import com.avengers.musinsa.domain.search.service.RecentSearchServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/api/v1/search")
 @RequiredArgsConstructor
 public class RecentSearchesResponseController {
-    private final RecentSearchService recentSearchService;
+    private final RecentSearchServiceImpl recentSearchService;
 
     @GetMapping("/recent")
     public List<SearchKeywordResponseDTO> recentSearches(@RequestParam Long userId) {
