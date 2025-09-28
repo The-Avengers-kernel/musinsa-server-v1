@@ -517,11 +517,6 @@
 
         <div class="divider-thin"></div>
 
-        <!-- 구매 적립/선할인 -->
-        <div class="coupon-section">
-            <div class="section-title">구매 적립/선할인</div>
-            <div class="payment-info">구매 적립</div>
-        </div>
     </div>
 
     <!-- 오른쪽 섹션: 결제 금액 -->
