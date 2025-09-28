@@ -253,17 +253,6 @@
                 console.log(selectedColor, selectedSize, productVariants);
                 return;
             }
-            $('#decrease-qty').on('click', function () {
-                let currentVal = parseInt($('#quantity-input').val()) || 1;
-                if (currentVal > 1) {
-                    $('#quantity-input').val(currentVal - 1);
-                }
-            });
-
-            $('#increase-qty').on('click', function () {
-                let currentVal = parseInt($('#quantity-input').val()) || 1;
-                $('#quantity-input').val(currentVal + 1);
-            });
             const cartData = {
                 productId: productId,
                 quantity: quantity,
@@ -286,6 +275,88 @@
                 }
             });
         });
+
+        // 구매하기 버튼 클릭 이벤트
+        $('.buy-now').on('click', function(){
+            const productId = parseInt($('#productId').text());
+            const selectedColor = $('#color-select').val();
+            const selectedSize = $('#size-select').val();
+            const quantity = parseInt($('#quantity-input').val());
+
+            // 유효성 검사
+            if(!productId){
+                alert('상품 ID를 찾을 수 없습니다.');
+                return;
+            }
+            if(!selectedColor){
+                alert('색상을 선택해주세요.');
+                return;
+            }
+            if(!selectedSize){
+                alert('사이즈를 선택해주세요.');
+                return;
+            }
+            if(!quantity || quantity < 1){
+                alert('수량을 확인해주세요.');
+                return;
+            }
+
+            // 선택된 상품 옵션 찾기
+            const selectedVariant = productVariants.find(v =>
+                v.productColor === selectedColor && v.productsSize === selectedSize
+            );
+
+            if(!selectedVariant){
+                alert('해당 옵션의 상품을 찾을 수 없습니다.');
+                return;
+            }
+
+            // 옵션명 생성 (색상/사이즈/소재 형태로)
+            const optionName = `${selectedColor}/${selectedSize}`;
+
+            // 구매 요청 데이터
+            const purchaseData = {
+                type: "DIRECT_PURCHASE",
+                productId: productId,
+                quantity: quantity,
+                productVariantId: selectedVariant.productVariantId,
+                optionName: selectedVariant.variantName
+            };
+
+            console.log('구매 요청 데이터:', purchaseData);
+
+            // API 요청 전송
+            $.ajax({
+                url: '/api/v1/orders/products',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(purchaseData),
+                success: function(response) {
+                    console.log('구매 요청 성공:', response);
+                    alert('구매 페이지로 이동합니다.');
+                    // 필요시 구매 페이지로 리다이렉트
+                    // window.location.href = '/order/checkout';
+                },
+                error: function(xhr, status, error) {
+                    console.error('구매 요청 실패:', error);
+                    alert('구매 요청에 실패했습니다. 잠시 후 다시 시도해주세요.');
+                }
+            });
+        });
+
+        // 수량 증감 버튼 이벤트 (document ready에서 한 번만 등록)
+        $('#decrease-qty').on('click', function () {
+            let currentVal = parseInt($('#quantity-input').val()) || 1;
+            if (currentVal > 1) {
+                $('#quantity-input').val(currentVal - 1);
+            }
+        });
+
+        $('#increase-qty').on('click', function () {
+            let currentVal = parseInt($('#quantity-input').val()) || 1;
+            $('#quantity-input').val(currentVal + 1);
+        });
+
     });
 </script>
 
@@ -515,5 +586,9 @@
         });
     });
 </script>
+
+
+
+
 </body>
 </html>
