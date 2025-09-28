@@ -15,7 +15,10 @@ public interface ProductService {
 
     ProductDetailResponse getProductById(Long productId);
 
-    ProductVariantsResponse getProductVariants(Long productId);
+    //ProductVariantsResponse getProductVariants(Long productId);
+
+    // productId로 productVariantId 찾기
+    List<ProductVariantDetailDto> getProductVariants(Long productId);
 
     List<RecommendationResponse> getRecommendationProductList(Gender gender);
 

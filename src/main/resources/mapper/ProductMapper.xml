@@ -364,4 +364,17 @@
             END
         WHERE user_id = #{userId} AND PRODUCT_ID = #{productId}
     </update>
+
+<!--    상품Id로 상품 옵션 찾기-->
+    <select id = "findVariantDetailsByProductId" resultType="com.avengers.musinsa.domain.product.dto.response.ProductVariantDetailDto">
+        SELECT
+            pv.PRODUCT_VARIANT_ID AS productVariantId,
+            pv.COLOR_VALUE AS productColor,
+            pv.SIZE_VALUE AS productsSize,
+            pv.VARIANT_NAME AS variantName
+        FROM
+            PRODUCT_VARIANTS pv
+        WHERE
+            pv.PRODUCT_ID = #{productId}
+    </select>
 </mapper>

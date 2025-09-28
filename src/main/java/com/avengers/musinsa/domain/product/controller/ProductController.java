@@ -26,7 +26,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}/options")
-    public ProductVariantsResponse getProductVariants(@PathVariable Long productId) {
+    public List<ProductVariantDetailDto> getProductVariants(@PathVariable Long productId) {
         return productService.getProductVariants(productId);
     }
 

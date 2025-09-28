@@ -53,7 +53,7 @@ public interface ProductMapper {
 
     List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId);
 
-    List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords);
+    List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords);
 
     void saveSearchKeywordLog(String keyword);
 
@@ -72,4 +72,6 @@ public interface ProductMapper {
     void switchProductLike(Long userId, Long productId);
     //products 테이블의 좋아요 수 -1
     void minusProductLikeCnt(Long productId);
+
+    List<ProductVariantDetailDto> findVariantDetailsByProductId(Long productId);
 }

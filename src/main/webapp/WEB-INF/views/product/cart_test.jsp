@@ -30,9 +30,6 @@
                 <span class="product-title" id="productName"></span>
             </div>
 
-            <div id="categoryName" class="product-categories"></div>
-
-
             <div class="price-section">
                 <span class="original-price" id="productPrice"></span>
                 <button class="coupon-btn">쿠폰받기</button>
@@ -65,21 +62,17 @@
             </div>
 
             <div class="options-section">
-                <label for="color-select"></label>
+                <label for="color-select">색상</label>
                 <select id="color-select" class="color-select">
                     <option value="">색상 선택</option>
                 </select>
 
-                <label for="size-select" style="margin-left: 10px;"></label>
+                <label for="size-select" style="margin-left: 10px;">사이즈</label>
                 <select id="size-select" class="size-select">
                     <option value="">사이즈 선택</option>
                 </select>
-            </div>
 
-            <div class="quantity-wrapper" style="display: inline-flex; align-items: center; margin-left: 10px;">
-                <button type="button" class="quantity-btn" id="decrease-qty">-</button>
-                <input type="number" id="quantity-input" value="1" min="1" style="width: 50px; text-align: center;">
-                <button type="button" class="quantity-btn" id="increase-qty">+</button>
+
             </div>
 
             <div class="bottom-action-buttons">
@@ -104,22 +97,23 @@
     <hr>
 
     <div class="product-description-area">
+        <div class="tabs">
+            <a href="#" class="active">제품 정보</a>
+            <a href="#">리뷰</a>
+            <a href="#">Q&A</a>
+            <a href="#">교환/반품</a>
+        </div>
+
         <div class="product-specs">
-            <h2 class="description-heading"></h2>
+            <h2 class="description-heading">제품 상세 정보</h2>
 
             <div class="full-description-image">
             </div>
         </div>
     </div>
 </div>
-<div id="detailDescription" class="product-description-url"></div>
-
 <div id="detailSizeImage" class="product-detailSizeImage-url"></div>
-<div id="productDetailSizeList" class="product-detail-size-list"></div>
-
-<div id="productsReviews" class="product-reviews"></div>
 <script>
-    let productVariants = [];
     // --------------------------------- 제품 상세 정보 및 옵션 AJAX ---------------------------------
     $(document).ready(function () {
         $.ajax({
@@ -172,7 +166,6 @@
                         dataType: 'json',
                         success: function (variants) {
                             console.log('서버에서 받은 상품 조합 목록:', variants);
-                            productVariants = variants;
 
                             // 올바른 필드명으로 수정
                             const colors = [...new Set(variants.map(v => v.productColor))];
@@ -218,77 +211,10 @@
                 console.error('제품 정보 로드 오류:', error);
             }
         });
-
-        // 장바구니 담기
-        $('.add-to-cart-btn').on('click', function(){
-            const productId = parseInt($('#productId').text());
-            const selectedColor = $('#color-select').val();
-            const selectedSize = $('#size-select').val();
-            const quantity = parseInt($('#quantity-input').val());
-
-            const userId = 1;
-
-            if(!productId){
-                alert('상품 ID를 찾을 수 없다');
-                return;
-            }
-            if(!selectedColor){
-                alert('색상을 선택해주세요');
-                return;
-            }
-            if(!selectedSize){
-                alert('사이즈를 선택해주세요');
-                return;
-            }
-
-            if(!quantity || quantity <1 ){
-                alert('수량을 확인해주세요.');
-                return;
-            }
-
-            const selectedVariant = productVariants.find(v=> v.productColor === selectedColor && v.productsSize === selectedSize);
-
-            if(!selectedVariant){
-                alert('해당 옵션의 상품을 찾을 수 없습니다.');
-                console.log(selectedColor, selectedSize, productVariants);
-                return;
-            }
-            $('#decrease-qty').on('click', function () {
-                let currentVal = parseInt($('#quantity-input').val()) || 1;
-                if (currentVal > 1) {
-                    $('#quantity-input').val(currentVal - 1);
-                }
-            });
-
-            $('#increase-qty').on('click', function () {
-                let currentVal = parseInt($('#quantity-input').val()) || 1;
-                $('#quantity-input').val(currentVal + 1);
-            });
-            const cartData = {
-                productId: productId,
-                quantity: quantity,
-                productVariantId: selectedVariant.productVariantId,
-                variantName: selectedVariant.variantName
-            };
-
-            $.ajax({
-                url: '/api/v1/1/carts',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(cartData),
-                success: function (response){
-                    alert('장바구니에 상품을 추가했습니다.');
-                    console.log('장바구니 추가 성공:', response);
-                },
-                error: function (xhr, status, error){
-                    alert('장바구니 추가에 실패했습니다.');
-                    console.error('장바구니 추가 실패:', error);
-                }
-            });
-        });
     });
 </script>
 
+<div id="categoryName" class="product-categories"></div>
 <script>
     $(document).ready(function () {
         $.ajax({
@@ -322,6 +248,7 @@
     });
 </script>
 
+<div id="detailDescription" class="product-description-url"></div>
 <script>
     $(document).ready(function () {
         $.ajax({
@@ -346,6 +273,9 @@
 </script>
 
 
+<div id="productDetailSizeList" class="product-detail-size-list">
+    <!-- 사이즈 표가 여기에 동적으로 생성됩니다. -->
+</div>
 <script>
     $(document).ready(function () {
         $.ajax({
@@ -435,6 +365,9 @@
     });
 </script>
 
+<div id="productsReviews" class="product-reviews">
+    <!-- 리뷰 목록이 여기에 동적으로 생성됩니다. -->
+</div>
 <script>
     $(document).ready(function () {
         $.ajax({

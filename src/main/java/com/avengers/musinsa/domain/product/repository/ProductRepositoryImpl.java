@@ -174,4 +174,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     public void minusProductLikeCnt(Long productId) {
         productMapper.minusProductLikeCnt(productId);
     }
+
+    // productId로 productVariantId 찾기
+    @Override
+    public List<ProductVariantDetailDto> findVariantDetailsByProductId(Long productId){
+        return productMapper.findVariantDetailsByProductId(productId);
+    }
 }

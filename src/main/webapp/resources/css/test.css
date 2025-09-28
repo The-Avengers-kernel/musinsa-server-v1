@@ -237,7 +237,18 @@ body {
     align-items: center;
     padding: 10px 0;
 }
+.options-section .quantity-wrapper {
+    display: flex;
+    flex-direction: column;  /* 세로 배치 */
+    align-items: flex-start; /* 왼쪽 정렬 (가운데 정렬 원하면 center) */
+    gap: 5px;
+    margin-top: 10px;
+}
 
+.options-section label {
+    display: block; /* 라벨도 위아래로 나오게 */
+    margin-bottom: 5px;
+}
 .wishlist-icon {
     width: 60px; /* 찜 아이콘 크기 고정 */
     height: 50px;

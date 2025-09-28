@@ -36,17 +36,21 @@ public class ProductServiceImpl implements ProductService {
         return productInfo;
     }
 
+//    @Override
+//    public ProductVariantsResponse getProductVariants(Long productId) {
+//        List<String> colors = productRepository.findProductOptionColors(productId);
+//        List<String> materials = productRepository.findProductOptionMaterials(productId);
+//        List<String> sizes = productRepository.findProductOptionSizes(productId);
+//
+//        return ProductVariantsResponse.builder()
+//                .productOptionColor(colors)
+//                .productOptionMaterial(materials)
+//                .productOptionSize(sizes)
+//                .build();
+//    }
     @Override
-    public ProductVariantsResponse getProductVariants(Long productId) {
-        List<String> colors = productRepository.findProductOptionColors(productId);
-        List<String> materials = productRepository.findProductOptionMaterials(productId);
-        List<String> sizes = productRepository.findProductOptionSizes(productId);
-
-        return ProductVariantsResponse.builder()
-                .productOptionColor(colors)
-                .productOptionMaterial(materials)
-                .productOptionSize(sizes)
-                .build();
+    public List<ProductVariantDetailDto> getProductVariants(Long productId){
+        return productRepository.findVariantDetailsByProductId(productId);
     }
 
 
