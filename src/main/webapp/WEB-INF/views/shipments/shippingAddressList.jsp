@@ -224,6 +224,7 @@
                 <span class="isDefault" data-default=""></span> </div>
 
             <div class="address-info">
+                <span class="postalCode"></span><br>
                 <span class="recipientAddress"></span><br>
                 <span class="recipientPhone"></span>
             </div>
@@ -238,7 +239,7 @@
 </div>
 
 <div class="change-button">
-    <button onclick="alert('배송지 변경 기능 구현 필요');">변경하기</button>
+    <button onclick="changeAddress()">배송지 변경하기</button>
 </div>
 
 <script>
@@ -249,7 +250,7 @@
 
         $.ajax({
             // 실제 API URL로 수정해야 합니다. 현재는 예시 '/api/v1/orders/address-list/1'
-            url: '/api/v1/orders/address-list/1',
+            url: '/api/v1/orders/address-list',
             method: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -317,6 +318,35 @@
             }
         });
     });
+
+    // 배송지 변경 기능
+    function changeAddress() {
+        const selectedRadio = $('input[name="shippingAddress"]:checked');
+
+        if (selectedRadio.length === 0) {
+            alert('변경할 배송지를 선택해주세요.');
+            return;
+        }
+
+        const selectedItem = selectedRadio.closest('.address-item');
+
+        // 선택된 배송지의 정보를 수집
+        const addressData = {
+            shippingAddressId: selectedRadio.val(),
+            recipientName: selectedItem.find('.recipientName').text(),
+            recipientPhone: selectedItem.find('.recipientPhone').text(),
+            postalCode: selectedItem.find('.postalCode').text(),
+            recipientAddress: selectedItem.find('.recipientAddress').text(),
+            recipientDetailAddress: '' // 필요시 추가 데이터 처리
+        };
+
+        // 부모 창에 배송지 정보 전달
+        if (window.opener && window.opener.updateAddressFromPopup) {
+            window.opener.updateAddressFromPopup(addressData);
+        } else {
+            alert('부모 창과의 연결에 문제가 있습니다.');
+        }
+    }
 </script>
 
 </body>

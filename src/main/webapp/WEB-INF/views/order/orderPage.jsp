@@ -52,6 +52,25 @@
             font-weight: bold;
             margin-bottom: 20px;
             color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .change-address-btn {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .change-address-btn:hover {
+            background-color: #f5f5f5;
+            border-color: #999;
         }
 
         .buyer-info, .recipient-info {
@@ -382,21 +401,24 @@
     <div class="left-section">
         <!-- 수령자 정보 -->
         <div class="buyer-info">
-            <div class="section-title">수령인</div>
+            <div class="section-title">
+                수령인
+                <button type="button" class="change-address-btn" onclick="openAddressPopup()">배송지 변경</button>
+            </div>
             <div class="info-row">
                 <span class="info-label">받는 사람</span>
-                <span class="info-value">${buyerRecipientInfoAdapter.recipientName}</span>
+                <span class="info-value" id="recipient-name">${buyerRecipientInfoAdapter.recipientName}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">연락처</span>
-                <span class="info-value">${buyerRecipientInfoAdapter.recipientPhone}</span>
+                <span class="info-value" id="recipient-phone">${buyerRecipientInfoAdapter.recipientPhone}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">주소</span>
-                <span class="info-value">
-                    (${buyerRecipientInfoAdapter.recipientPostCode})
-                    ${buyerRecipientInfoAdapter.recipientAddress}
-                    ${buyerRecipientInfoAdapter.recipientDetailAddress}
+                <span class="info-value" id="recipient-address">
+                    (<span id="recipient-postcode">${buyerRecipientInfoAdapter.recipientPostCode}</span>)
+                    <span id="recipient-full-address">${buyerRecipientInfoAdapter.recipientAddress}
+                    ${buyerRecipientInfoAdapter.recipientDetailAddress}</span>
                 </span>
             </div>
         </div>
@@ -682,6 +704,24 @@
         if (confirm(finalAmount.toLocaleString() + '원을 결제하시겠습니까?')) {
             alert('주문이 완료되었습니다!');
         }
+    }
+
+    // 배송지 변경 팝업 열기
+    function openAddressPopup() {
+        const popup = window.open('/shipping-address-popup', 'addressPopup',
+            'width=600,height=700,scrollbars=yes,resizable=yes');
+
+        // 팝업에서 배송지 정보를 받는 함수를 전역으로 정의
+        window.updateAddressFromPopup = function(addressData) {
+            // 수령인 정보 업데이트
+            document.getElementById('recipient-name').textContent = addressData.recipientName;
+            document.getElementById('recipient-phone').textContent = addressData.recipientPhone;
+            document.getElementById('recipient-postcode').textContent = addressData.postalCode;
+            document.getElementById('recipient-full-address').textContent = addressData.recipientAddress;
+
+            console.log('배송지 정보가 업데이트되었습니다:', addressData);
+            popup.close();
+        };
     }
 </script>
 </body>

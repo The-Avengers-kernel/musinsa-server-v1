@@ -54,9 +54,11 @@ public class OrderController {
         return ResponseEntity.ok(orderSummaryInfo);
     }
 
-    //배송지 목록 조회
-    @GetMapping("/address-list/{userId}")
-    public ResponseEntity<List<ShippingAddressOrderDTO>> getShippingAddressesUserId(@PathVariable Long userId) {
+    @GetMapping("/address-list")
+    public ResponseEntity<List<ShippingAddressOrderDTO>> getShippingAddressesUserId(
+            @CookieValue(value = "Authorization", required = false) String authorization
+            ) {
+        Long userId = tokenProviderService.getUserIdFromToken(authorization);
         List<ShippingAddressOrderDTO> shippingAddresses = orderService.getShippingAddressesUserId(userId);
 
         return ResponseEntity.ok(shippingAddresses);
