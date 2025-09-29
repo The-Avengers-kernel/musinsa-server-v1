@@ -17,7 +17,7 @@ public interface BrandService {
     List<BrandDto> getRecentVisitBrands(Long userId);
 
     //카테고리 - 초성(ㄱ, A)로 브랜드 조회
-    List<BrandResponse> getCategoryBrandsByFirstLetter(char brandFirstLetter);
+    List<BrandResponse> getCategoryBrandsByFirstLetter(String brandFirstLetter);
 
     List<BrandResponse> findByBrandName(String brandName);
 

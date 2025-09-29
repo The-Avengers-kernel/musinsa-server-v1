@@ -30,10 +30,26 @@ $(document).ready(() => {
         $brandItemList.html(items);
     }
 
-    function loadBrands(categoryId) {
-        const url = categoryId === "all"
-            ? "/api/v1/categories/brands"
-            : `/api/v1/categories/${categoryId}/brands`;
+    // 현재 선택된 카테고리와 초성을 저장하는 변수
+    let currentCategoryId = "all";
+    let currentInitial = "popular";
+
+    function loadBrands(categoryId, initial = "popular") {
+        currentCategoryId = categoryId;
+        currentInitial = initial;
+
+        let url;
+
+        // 초성이 선택된 경우 (인기 제외)
+        if (initial !== "popular") {
+            url = `/api/v1/categories/letter/${initial}/brands`;
+        }
+        // 카테고리별 조회
+        else if (categoryId === "all") {
+            url = "/api/v1/categories/brands";
+        } else {
+            url = `/api/v1/categories/${categoryId}/brands`;
+        }
 
         $.ajax({
             url: url,
@@ -42,7 +58,8 @@ $(document).ready(() => {
             success: function(data) {
                 renderBrands(data);
             },
-            error: function() {
+            error: function(xhr, status, error) {
+                console.error("브랜드 로딩 실패:", error);
                 if ($brandItemList.length) {
                     $brandItemList.html("<li>브랜드 정보를 불러오지 못했습니다.</li>");
                 }
@@ -155,7 +172,14 @@ $(document).ready(() => {
         $(this).siblings().removeClass("active");
         $(this).addClass("active");
 
-        // TODO: 클릭된 초성에 맞는 브랜드 목록 필터링 로직 추가
+        const initialValue = $(this).data("initial") || $(this).text().trim();
+
+        // 초성에 따른 브랜드 목록 로드
+        if (initialValue === "인기" || initialValue === "Popular") {
+            loadBrands(currentCategoryId, "popular");
+        } else {
+            loadBrands(currentCategoryId, initialValue);
+        }
     });
 
     // --------------------------------------------------------

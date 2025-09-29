@@ -42,13 +42,15 @@ public class BrandServiceImpl implements BrandService{
 
     //카테고리 - 초성(ㄱ, A)로 브랜드 조회
     @Override
-    public List<BrandResponse> getCategoryBrandsByFirstLetter(char brandFirstLetter){
-        //(A~Z): 영어 초성일 때
-        if((brandFirstLetter >= 'A' && brandFirstLetter <= 'Z') || (brandFirstLetter >= 'a' && brandFirstLetter <= 'z')) {
-            return brandRepository.findBrandsByEnglishFirstLetter(brandFirstLetter);
+    public List<BrandResponse> getCategoryBrandsByFirstLetter(String brandFirstLetter){
+        if (brandFirstLetter == null || brandFirstLetter.isEmpty()) {
+            return List.of();
         }
-        //(ㄱ~ㅎ): 한글 초성일 때
-        else{
+
+        // 영어인지 한글인지 판단
+        if (brandFirstLetter.matches("[A-Za-z]")) {
+            return brandRepository.findBrandsByEnglishFirstLetter(brandFirstLetter);
+        } else {
             return brandRepository.findBrandsByKoreanFirstLetter(brandFirstLetter);
         }
     }

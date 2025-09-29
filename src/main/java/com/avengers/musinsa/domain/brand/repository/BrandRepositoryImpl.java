@@ -25,12 +25,12 @@ public class BrandRepositoryImpl implements BrandRepository {
     }
 
     @Override
-    public List<BrandResponse> findBrandsByEnglishFirstLetter(char brandFirstLetter) {
+    public List<BrandResponse> findBrandsByEnglishFirstLetter(String brandFirstLetter) {
         return this.brandMapper.findBrandsByEnglishFirstLetter(brandFirstLetter);
     }
 
     @Override
-    public List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter) {
+    public List<BrandResponse> findBrandsByKoreanFirstLetter(String brandFirstLetter) {
         return this.brandMapper.findBrandsByKoreanFirstLetter(brandFirstLetter);
     }
     @Override

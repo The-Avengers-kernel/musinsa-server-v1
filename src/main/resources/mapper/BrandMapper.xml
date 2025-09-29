@@ -44,7 +44,8 @@
         SELECT brand_id as brandId,
                brand_name_kr as brandNameKr,
                brand_name_eng as brandNameEn,
-               brand_image as brandImage
+               brand_image as brandImage,
+               brand_likes as brandLikes
         FROM brands
         WHERE brand_name_eng LIKE CONCAT(#{brandFirstLetter}, '%')
         ORDER BY brand_name_eng
@@ -55,7 +56,8 @@
         SELECT brand_id as brandId,
                brand_name_kr as brandNameKr,
                brand_name_eng as brandNameEn,
-               brand_image as brandImage
+               brand_image as brandImage,
+               brand_likes as brandLikes
         FROM brands
         WHERE brand_first_letter_kr = #{brandFirstLetter}
         ORDER BY brand_name_kr

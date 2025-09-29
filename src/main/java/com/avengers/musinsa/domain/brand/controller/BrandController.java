@@ -22,9 +22,9 @@ public class BrandController {
         return brandService.getBrandList();
     }
 
-    @GetMapping("/{brand-first-letter}/brands")
+    @GetMapping("/letter/{brand-first-letter}/brands")
     public List<BrandResponse> getCategoryBrandsByFirstLetter(
-            @PathVariable("brand-first-letter") char brandFirstLetter) {
+            @PathVariable("brand-first-letter") String brandFirstLetter) {
         return brandService.getCategoryBrandsByFirstLetter(brandFirstLetter);
     }
 

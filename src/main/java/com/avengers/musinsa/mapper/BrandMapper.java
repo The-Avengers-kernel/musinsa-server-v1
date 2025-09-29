@@ -16,9 +16,9 @@ public interface BrandMapper {
 
     List<BrandResponse> getBrandList();
 
-    List<BrandResponse> findBrandsByEnglishFirstLetter(char brandFirstLetter);
-  
-    List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter);
+    List<BrandResponse> findBrandsByEnglishFirstLetter(String brandFirstLetter);
+
+    List<BrandResponse> findBrandsByKoreanFirstLetter(String brandFirstLetter);
 
     //브랜드 좋아요 토글
     UserBrandStatus getUserBrandStatus(Long userId, Long brandId);

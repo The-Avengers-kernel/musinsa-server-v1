@@ -12,9 +12,9 @@ public interface BrandRepository {
 
     List<BrandDto> selectRecentVisitedBrands(Long userId);
 
-    List<BrandResponse> findBrandsByEnglishFirstLetter(char brandFirstLetter);
+    List<BrandResponse> findBrandsByEnglishFirstLetter(String brandFirstLetter);
 
-    List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter);
+    List<BrandResponse> findBrandsByKoreanFirstLetter(String brandFirstLetter);
 
     void insertUserBrandLike(Long userId, Long brandId);
 
