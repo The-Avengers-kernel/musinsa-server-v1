@@ -128,19 +128,6 @@ public class OrderPageViewController {
         public Integer getOriginalPrice(){return productInfo.getOriginalPrice();}
     }
 
-    @PostMapping("/orders")
-    public String create(@RequestBody Long orderId) {
-        return "redirect:/order-complete/" + orderId; // GET 렌더
-    }
 
-    @GetMapping("/order-complete/{orderId}")
-    public String complete(@PathVariable Long orderId,
-                           @CookieValue(value = "Authorization", required = false) String auth,
-                           Model model) {
-        Long userId = tokenProviderService.getUserIdFromToken(auth);
-        OrderSummaryResponse.OrderSummaryDto response = orderService.getCompletionOrderSummary(orderId, userId);
-        model.addAttribute("orderData", response);
-        return "order/orderCompletePage";
-    }
 }
 

@@ -2,6 +2,7 @@ package com.avengers.musinsa.viewController;
 
 import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest;
 import com.avengers.musinsa.domain.order.dto.response.OrderCreateResponse;
+import com.avengers.musinsa.domain.order.dto.response.OrderSummaryResponse;
 import com.avengers.musinsa.domain.order.service.OrderService;
 import com.avengers.musinsa.domain.product.dto.response.ProductVariantDto;
 import com.avengers.musinsa.domain.product.service.ProductVariantService;
@@ -26,7 +27,7 @@ public class OrderViewController {
     private final ProductVariantService productVariantService;
 
     @PostMapping("/completion-order")
-    public String createOrder(@RequestBody OrderCreateRequest request,
+    public ResponseEntity<OrderCreateResponse> createOrder(@RequestBody OrderCreateRequest request,
                                                            @CookieValue(value = "Authorization", required = false) String authorization,
                                                            Model model){
         Long userId = tokenProviderService.getUserIdFromToken(authorization);
@@ -56,11 +57,23 @@ public class OrderViewController {
         }
 
         OrderCreateResponse orderCreateResponse = orderService.createOrder(userId, request);
-        System.out.println(orderCreateResponse.getOrderId());
+        System.out.println("생성된 주문 ID: " + orderCreateResponse.getOrderId());
+        System.out.println("응답 객체: " + orderCreateResponse);
+
+        return ResponseEntity.ok(orderCreateResponse);
+
+    }
 
 
-        return "orders/order-complete/"+orderCreateResponse.getOrderId();
-
+    @GetMapping("/order-complete/{orderId}")
+    public String complete(@PathVariable Long orderId,
+                           @CookieValue(value = "Authorization", required = false) String auth,
+                           Model model) {
+        System.out.println("리다이랙트가 됨");
+        Long userId = tokenProviderService.getUserIdFromToken(auth);
+        OrderSummaryResponse.OrderSummaryDto response = orderService.getCompletionOrderSummary(orderId, userId);
+        model.addAttribute("orderData", response);
+        return "order/orderCompletePage";
     }
 
 

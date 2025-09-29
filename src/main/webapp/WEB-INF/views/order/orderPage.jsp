@@ -732,12 +732,19 @@
             contentType: 'application/json',
             data: JSON.stringify(orderData),
             success: function(response) {
-                console.log('주문 완료:', response);
-                alert('주문이 완료되었습니다!');
+
+
+                // orderId 값 확인 후 리다이렉트
+                if (response && response.orderId) {
+                    window.location.href = '/order/order-complete/' + response.orderId;
+                } else {
+                    console.error('응답에서 orderId를 찾을 수 없습니다:', response);
+                    alert('주문이 완료되었지만 주문 완료 페이지로 이동할 수 없습니다.');
+                }
             },
             error: function(xhr, status, error) {
                 console.error('주문 실패:', error);
-                alert('주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+                alert('주문 처리 중 오류가 발생했습니다.');
             }
         });
     }
