@@ -18,148 +18,79 @@
                 <div class="dropdown-content">
                     <div class="category-list">
                         <ul>
-                            <%-- data-target 속성 추가 --%>
-                            <li><a href="#" class="list-item-link" data-target="tops">상의</a></li>
-                            <li><a href="#" class="list-item-link" data-target="pants">바지</a></li>
-                            <li><a href="#" class="list-item-link" data-target="outers">아우터</a></li>
-                            <li><a href="#" class="list-item-link" data-target="skirts">스커트</a></li>
-                            <li><a href="#" class="list-item-link" data-target="dresses">원피스</a></li>
-                            <li><a href="#" class="list-item-link" data-target="bags">가방</a></li>
-                            <li><a href="#" class="list-item-link" data-target="shoes">신발</a></li>
-                            <li><a href="#" class="list-item-link" data-target="underwear">속옷/홈웨어</a></li>
-                            <li><a href="#" class="list-item-link" data-target="accessories">패션잡화</a></li>
+                            <%-- data-target과 data-category-id 속성 추가 --%>
+                            <li><a href="#" class="list-item-link" data-target="tops" data-category-id="1">상의</a></li>
+                            <li><a href="#" class="list-item-link" data-target="outers" data-category-id="2">아우터</a></li>
+                            <li><a href="#" class="list-item-link" data-target="pants" data-category-id="3">바지</a></li>
+                            <li><a href="#" class="list-item-link" data-target="dresses" data-category-id="4">원피스/스커트</a></li>
+                            <li><a href="#" class="list-item-link" data-target="bags" data-category-id="5">가방</a></li>
+                            <li><a href="#" class="list-item-link" data-target="accessories" data-category-id="6">패션소품</a></li>
+                            <li><a href="#" class="list-item-link" data-target="underwear" data-category-id="7">속옷/홈웨어</a></li>
                         </ul>
                     </div>
                     <div class="category-details">
-                        <%-- 각 섹션에 id 추가 --%>
+                        <%-- 각 섹션에 id 추가 - 동적으로 채워질 예정 --%>
                         <div id="tops" class="detail-section">
                             <div class="detail-header">
                                 <h4>상의</h4>
                                 <a href="#" class="view-all">전체 보기</a>
                             </div>
-                            <div id="cloth-top" class="detail-items">
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20241204/4650135/4650135_17333179596171_big.jpg?w=1200" alt="맨투맨/스웨트">
-                                    <span>맨투맨/스웨트</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20240227/3907161/3907161_17090356777279_big.jpg?w=1200" alt="후드 티셔츠">
-                                    <span>후드 티셔츠</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20250114/4719967/4719967_17555876557604_big.jpg?w=1200" alt="셔츠/블라우스">
-                                    <span>셔츠/블라우스</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20240105/3779386/3779386_17206852651191_big.jpg?w=1200" alt="긴소매 티셔츠">
-                                    <span>긴소매 티셔츠</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20250625/5207049/5207049_17509210153820_big.jpg?w=1200" alt="반소매 티셔츠">
-                                    <span>반소매 티셔츠</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20241219/4673051/4673051_17378042247619_big.jpg?w=1200" alt="피케/카라 티셔츠">
-                                    <span>피케/카라 티셔츠</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20240924/4459886/4459886_17276894385546_big.jpg?w=1200" alt="니트/스웨터">
-                                    <span>니트/스웨터</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20250422/5050163/5050163_17452892785039_big.jpg?w=1200" alt="민소매 티셔츠">
-                                    <span>민소매 티셔츠</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20220120/2318468/2318468_16788454797925_big.jpg?w=1200" alt="기타 상의">
-                                    <span>기타 상의</span>
-                                </a>
-                            </div>
-                        </div>
-                        <%-- 바지 섹션 --%>
-                        <div id="pants" class="detail-section">
-                            <div class="detail-header">
-                                <h4>바지</h4>
-                                <a href="#" class="view-all">전체 보기</a>
-                            </div>
                             <div class="detail-items">
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20241204/4650135/4650135_17333179596171_big.jpg?w=1200" alt="데님 팬츠">
-                                    <span>데님 팬츠</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20240227/3907161/3907161_17090356777279_big.jpg?w=1200" alt="트레이닝/조거 팬츠">
-                                    <span>트레이닝/조거 팬츠</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20250114/4719967/4719967_17555876557604_big.jpg?w=1200" alt="코튼 팬츠">
-                                    <span>코튼 팬츠</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20240105/3779386/3779386_17206852651191_big.jpg?w=1200" alt="슈트 팬츠/슬랙스">
-                                    <span>슈트 팬츠/슬랙스</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20250625/5207049/5207049_17509210153820_big.jpg?w=1200" alt="숏 팬츠">
-                                    <span>숏 팬츠</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20241219/4673051/4673051_17378042247619_big.jpg?w=1200" alt="레깅스">
-                                    <span>레깅스</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20240924/4459886/4459886_17276894385546_big.jpg?w=1200" alt="점프 슈트/오버올">
-                                    <span>점프 슈트/오버올</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20250422/5050163/5050163_17452892785039_big.jpg?w=1200" alt="기타 하의">
-                                    <span>기타 하의</span>
-                                </a>
+                                <%-- JavaScript에서 동적으로 채워짐 --%>
                             </div>
                         </div>
-                        <%-- 아우터 섹션 --%>
                         <div id="outers" class="detail-section">
                             <div class="detail-header">
                                 <h4>아우터</h4>
                                 <a href="#" class="view-all">전체 보기</a>
                             </div>
                             <div class="detail-items">
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20241204/4650135/4650135_17333179596171_big.jpg?w=1200" alt="후드 집업">
-                                    <span>후드 집업</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20240227/3907161/3907161_17090356777279_big.jpg?w=1200" alt="블루종/MA-1">
-                                    <span>블루종/MA-1</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20250114/4719967/4719967_17555876557604_big.jpg?w=1200" alt="레더/라이더스 재킷">
-                                    <span>레더/라이더스 재킷</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20240105/3779386/3779386_17206852651191_big.jpg?w=1200" alt="카디건">
-                                    <span>카디건</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20250625/5207049/5207049_17509210153820_big.jpg?w=1200" alt="트러커 재킷">
-                                    <span>트러커 재킷</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20241219/4673051/4673051_17378042247619_big.jpg?w=1200" alt="슈트/블레이저 재킷">
-                                    <span>슈트/블레이저 재킷</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20240924/4459886/4459886_17276894385546_big.jpg?w=1200" alt="스타디움 재킷">
-                                    <span>스타디움 재킷</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20250422/5050163/5050163_17452892785039_big.jpg?w=1200" alt="나일론/코치 재킷">
-                                    <span>나일론/코치 재킷</span>
-                                </a>
-                                <a href="#" class="item">
-                                    <img src="https://image.msscdn.net/thumbnails/images/goods_img/20250422/5050163/5050163_17452892785039_big.jpg?w=1200" alt="아노락 재킷">
-                                    <span>아노락 재킷</span>
-                                </a>
+                                <%-- JavaScript에서 동적으로 채워짐 --%>
+                            </div>
+                        </div>
+                        <div id="pants" class="detail-section">
+                            <div class="detail-header">
+                                <h4>바지</h4>
+                                <a href="#" class="view-all">전체 보기</a>
+                            </div>
+                            <div class="detail-items">
+                                <%-- JavaScript에서 동적으로 채워짐 --%>
+                            </div>
+                        </div>
+                        <div id="dresses" class="detail-section">
+                            <div class="detail-header">
+                                <h4>원피스/스커트</h4>
+                                <a href="#" class="view-all">전체 보기</a>
+                            </div>
+                            <div class="detail-items">
+                                <%-- JavaScript에서 동적으로 채워짐 --%>
+                            </div>
+                        </div>
+                        <div id="bags" class="detail-section">
+                            <div class="detail-header">
+                                <h4>가방</h4>
+                                <a href="#" class="view-all">전체 보기</a>
+                            </div>
+                            <div class="detail-items">
+                                <%-- JavaScript에서 동적으로 채워짐 --%>
+                            </div>
+                        </div>
+                        <div id="accessories" class="detail-section">
+                            <div class="detail-header">
+                                <h4>패션소품</h4>
+                                <a href="#" class="view-all">전체 보기</a>
+                            </div>
+                            <div class="detail-items">
+                                <%-- JavaScript에서 동적으로 채워짐 --%>
+                            </div>
+                        </div>
+                        <div id="underwear" class="detail-section">
+                            <div class="detail-header">
+                                <h4>속옷/홈웨어</h4>
+                                <a href="#" class="view-all">전체 보기</a>
+                            </div>
+                            <div class="detail-items">
+                                <%-- JavaScript에서 동적으로 채워짐 --%>
                             </div>
                         </div>
                     </div>
@@ -260,21 +191,9 @@
                             </a>
                         </div>
 
-
                         <%-- 브랜드 리스트 (스크롤 영역) --%>
                         <div class="brand-scroll-list">
                             <ul class="brand-item-list" id="brandItemList">
-                                <%-- 여기에 나머지 브랜드 목록이 JSTL/데이터로 채워져야 합니다. --%>
-<%--                                <li>--%>
-<%--                                    <a href="#">--%>
-<%--                                        <div class="brand-info">--%>
-<%--                                            <img src="https://image.musinsa.com/images/brand/logo/MUSINS_STANDARD.png" alt="무신사 스탠다드 로고">--%>
-<%--                                            <div class="text-info">--%>
-<%--                                                <p class="kor-name">무신사 스탠다드<br><span class="eng-name">MUSINSA STANDARD</span></p>--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                    </a>--%>
-<%--                                </li>--%>
                             </ul>
                         </div>
                     </div>

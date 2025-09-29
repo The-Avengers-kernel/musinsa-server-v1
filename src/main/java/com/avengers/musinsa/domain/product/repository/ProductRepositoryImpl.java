@@ -79,10 +79,6 @@ public class ProductRepositoryImpl implements ProductRepository {
         return productMapper.findProductImageById(productId);
     }
 
-    @Override
-    public List<CategoryProductResponse> getCategoryProductList() {
-        return productMapper.getCategoryProductList();
-    }
 
     // 상품 리뷰 목록 조회
     @Override

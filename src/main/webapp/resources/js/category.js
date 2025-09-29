@@ -33,33 +33,22 @@ $(document).ready(() => {
     // 현재 선택된 카테고리와 초성을 저장하는 변수
     let currentCategoryId = "all";
     let currentInitial = "popular";
+    let allBrands = [];
 
-    function loadBrands(categoryId, initial = "popular") {
-        currentCategoryId = categoryId;
-        currentInitial = initial;
-
-        let url;
-
-        // 초성이 선택된 경우 (인기 제외)
-        if (initial !== "popular") {
-            url = `/api/v1/categories/letter/${initial}/brands`;
-        }
-        // 카테고리별 조회
-        else if (categoryId === "all") {
-            url = "/api/v1/categories/brands";
-        } else {
-            url = `/api/v1/categories/${categoryId}/brands`;
-        }
-
+    // 전체 브랜드 목록을 한 번에 불러오는 함수
+    function loadAllBrands() {
         $.ajax({
-            url: url,
+            url: "/api/v1/categories/brands",
             type: "GET",
             dataType: "json",
             success: function(data) {
-                renderBrands(data);
+                allBrands = data;
+                console.log("전체 브랜드 로드 완료", allBrands);
+                // 초기 로드 시 전체 브랜드 표시
+                filterAndRenderBrands(currentCategoryId, currentInitial);
             },
             error: function(xhr, status, error) {
-                console.error("브랜드 로딩 실패:", error);
+                console.error("전체 브랜드 로딩 실패:", error);
                 if ($brandItemList.length) {
                     $brandItemList.html("<li>브랜드 정보를 불러오지 못했습니다.</li>");
                 }
@@ -67,8 +56,143 @@ $(document).ready(() => {
         });
     }
 
-    loadBrands("all");
+    // 카테고리와 초성에 따라 브랜드를 필터링하고 렌더링하는 함수
+    function filterAndRenderBrands(categoryId, initial = "popular") {
+        currentCategoryId = categoryId;
+        currentInitial = initial;
 
+        let filteredBrands = [...allBrands];
+
+        // 카테고리별 필터링 (전체가 아닌 경우)
+        if (categoryId !== "all") {
+            // 여기서 브랜드와 카테고리의 연결 로직이 필요합니다
+            // 현재는 모든 브랜드를 보여주지만, 실제로는 카테고리별 필터링 로직 추가 필요
+            console.log(`카테고리 ${categoryId}로 필터링 - 현재는 모든 브랜드 표시`);
+        }
+
+        // 초성별 필터링
+        if (initial !== "popular") {
+            filteredBrands = filteredBrands.filter(brand => {
+                const brandName = brand.brandNameKr || brand.brandNameEn || '';
+                const firstChar = brandName.charAt(0);
+
+                // 한글 초성 체크
+                if (/[ㄱ-ㅎ]/.test(initial)) {
+                    const chosung = getChosung(firstChar);
+                    return chosung === initial;
+                }
+                // 영문 체크
+                else if (/[A-Z]/.test(initial)) {
+                    return firstChar.toUpperCase() === initial;
+                }
+                return false;
+            });
+        }
+
+        renderBrands(filteredBrands);
+    }
+
+    // 한글 초성 추출 함수
+    function getChosung(char) {
+        const chosungList = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+        const charCode = char.charCodeAt(0);
+        if (charCode >= 0xAC00 && charCode <= 0xD7A3) {
+            return chosungList[Math.floor((charCode - 0xAC00) / 588)];
+        }
+        return char;
+    }
+
+    loadAllBrands();
+
+    // --------------------------------------------------------
+    // 0.1 상품 카테고리 렌더링 함수 및 데이터 비동기 로딩
+    // --------------------------------------------------------
+    function renderSubCategories(parentCategoryId, subcategories) {
+        const targetSectionId = getCategoryTargetId(parentCategoryId);
+        const $targetSection = $(`#${targetSectionId}`);
+
+        console.log("렌더링 시작 - 타겟 섹션:", targetSectionId, "카테고리 개수:", subcategories?.length || 0);
+        console.log("타겟 섹션 DOM 찾음:", $targetSection.length > 0);
+
+        if (!$targetSection.length) {
+            console.error("타겟 섹션을 찾을 수 없음:", targetSectionId);
+            return;
+        }
+
+        if (!Array.isArray(subcategories)) {
+            console.error("subcategories가 배열이 아님:", subcategories);
+            return;
+        }
+
+        const items = subcategories.map(category => {
+            console.log("카테고리 아이템:", category.categoryName, "ID:", category.productCategoryId);
+            return `
+                <a href="#" class="item" data-category-id="${category.productCategoryId}">
+                    <img src="${category.categoryImage || 'https://image.msscdn.net/thumbnails/images/goods_img/default.jpg'}" alt="${category.categoryName}">
+                    <span>${category.categoryName}</span>
+                </a>
+            `;
+        }).join('');
+
+        console.log("생성된 HTML 길이:", items.length);
+
+        // .detail-items 영역만 업데이트
+        const $detailItems = $targetSection.find('.detail-items');
+        console.log("detail-items 영역 찾음:", $detailItems.length > 0);
+
+        if ($detailItems.length) {
+            $detailItems.html(items);
+            console.log("HTML 업데이트 완료");
+        } else {
+            console.error("detail-items 영역을 찾을 수 없음");
+        }
+    }
+
+    function getCategoryTargetId(categoryId) {
+        const mapping = {
+            1: 'tops',
+            2: 'outers',
+            3: 'pants',
+            4: 'dresses',
+            5: 'bags',
+            6: 'accessories',
+            7: 'underwear'
+        };
+        return mapping[categoryId] || 'tops';
+    }
+
+    function getCategoryName(categoryId) {
+        const mapping = {
+            1: '상의',
+            2: '아우터',
+            3: '바지',
+            4: '원피스/스커트',
+            5: '가방',
+            6: '패션소품',
+            7: '속옷/홈웨어'
+        };
+        return mapping[categoryId] || '상의';
+    }
+
+
+    function loadSubCategories(parentCategoryId) {
+        console.log("API 호출 시작 - 부모 카테고리 ID:", parentCategoryId);
+        $.ajax({
+            url: `/api/v1/categories/products?parentCategoryId=${parentCategoryId}`,
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                console.log("API 응답 성공:", data);
+                console.log("데이터 길이:", data ? data.length : 0);
+                renderSubCategories(parentCategoryId, data);
+            },
+            error: function(xhr, status, error) {
+                console.error(`중분류 카테고리 로딩 실패 (ID: ${parentCategoryId}):`, error);
+                console.error("HTTP 상태:", xhr.status);
+                console.error("응답 텍스트:", xhr.responseText);
+            }
+        });
+    }
     // --------------------------------------------------------
     // 1. DOM 요소 선택
     // --------------------------------------------------------
@@ -115,14 +239,21 @@ $(document).ready(() => {
     });
 
     // --------------------------------------------------------
-    // 4. 상품(Product) 탭: 왼쪽 목록 클릭 시 우측 상세 섹션으로 스크롤
+    // 4. 상품(Product) 탭: 왼쪽 목록 클릭 시 우측 상세 섹션으로 스크롤 및 API 호출
     // --------------------------------------------------------
     $("#product .category-list").on("click", ".list-item-link", function(e) {
         e.preventDefault();
         const targetSectionId = $(this).data("target");
+        const categoryId = $(this).data("category-id");
 
         $("#product .list-item-link").removeClass("active");
         $(this).addClass("active");
+
+        // 중분류 카테고리 데이터 로드
+        if (categoryId) {
+            console.log("카테고리 클릭됨 - categoryId:", categoryId);
+            loadSubCategories(categoryId);
+        }
 
         // "상의" 클릭 시 맨 위로 스크롤, 다른 카테고리는 해당 섹션으로 스크롤
         if (targetSectionId === "tops") {
@@ -151,8 +282,8 @@ $(document).ready(() => {
         $("#brand .category-list .list-item-link").removeClass("active");
         $(this).addClass("active");
 
-        // 해당 카테고리 ID로 브랜드 목록 로드
-        loadBrands(categoryId);
+        // 해당 카테고리 ID로 브랜드 목록 필터링
+        filterAndRenderBrands(categoryId);
 
         // 초성 목록 '인기'로 초기화
         $('.initial-list a').removeClass('active');
@@ -190,20 +321,32 @@ $(document).ready(() => {
 
         const initialValue = $(this).data("initial") || $(this).text().trim();
 
-        // 초성에 따른 브랜드 목록 로드
+        // 초성에 따른 브랜드 목록 필터링
         if (initialValue === "인기" || initialValue === "Popular") {
-            loadBrands(currentCategoryId, "popular");
+            filterAndRenderBrands(currentCategoryId, "popular");
         } else {
-            loadBrands(currentCategoryId, initialValue);
+            filterAndRenderBrands(currentCategoryId, initialValue);
         }
     });
 
     // --------------------------------------------------------
     // 8. 초기 활성화 설정
     // --------------------------------------------------------
+    // 초기 로드 시 모든 대분류의 중분류 카테고리를 로드하는 함수
+    function loadAllSubCategories() {
+        const parentCategoryIds = [1, 2, 3, 4, 5, 6, 7]; // 상의, 아우터, 바지, 원피스/스커트, 가방, 패션소품, 속옷/홈웨어
+
+        parentCategoryIds.forEach(categoryId => {
+            loadSubCategories(categoryId);
+        });
+    }
+
     function initialize() {
-        // 상품 카테고리 "상의"를 실제 클릭하여 모든 관련 로직 실행
-        $('#product .category-list a[data-target="tops"]').trigger('click');
+        // 초기 로드 시 모든 중분류 카테고리 로드
+        loadAllSubCategories();
+
+        // 상품 카테고리 "상의"를 활성화 (API 호출은 이미 위에서 함)
+        $('#product .category-list a[data-target="tops"]').addClass('active');
 
         // 브랜드 관련 초기 설정은 별도로 처리 (브랜드 탭이 비활성 상태이므로)
         $('#koreanInitialList a:first-child').addClass('active');

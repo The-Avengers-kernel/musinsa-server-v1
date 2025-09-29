@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.avengers.musinsa.mapper.CategoryMapper">
+
+<select id="getCategoryProductList"
+        resultType="com.avengers.musinsa.domain.category.dto.response.CategoryProductResponse">
+    SELECT pc.product_category_id        AS productCategoryId,
+    pc.parent_product_category_id AS parentProductCategoryId,
+    pc.category_name              AS categoryName,
+    pc.category_image             AS categoryImage,
+    pc.category_level             AS categoryLevel
+    FROM product_categories pc
+    <if test="parentCategoryId != null">
+        WHERE pc.parent_product_category_id = #{parentCategoryId}
+    </if>
+    ORDER BY product_category_id
+</select>
+</mapper>

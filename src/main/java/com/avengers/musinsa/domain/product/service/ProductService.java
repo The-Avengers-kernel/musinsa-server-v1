@@ -33,7 +33,6 @@ public interface ProductService {
 
     List<ProductByCategoryResponse> getProductsByCategory(Long categoryId);
 
-    List<CategoryProductResponse> getCategoryProductList();
 
     // 상품 상세 페이지 카테고리 조회
     ProductCategoryListResponse getProductCategories(Long productId);

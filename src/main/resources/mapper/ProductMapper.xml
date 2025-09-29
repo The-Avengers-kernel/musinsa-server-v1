@@ -157,17 +157,6 @@
         FETCH FIRST 50 ROWS ONLY
     </select>
 
-    <select id="getCategoryProductList"
-            resultType="com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse">
-        SELECT pc.product_category_id        AS productCategoryId,
-               pc.parent_product_category_id AS parentProductCategoryId,
-               pc.category_name              AS categoryName,
-               pc.category_image             AS categoryImage,
-               pc.category_level             AS categoryLevel
-        FROM product_categories pc
-        ORDER BY product_category_id
-    </select>
-
     <select id="getProductReviews"
             resultType="com.avengers.musinsa.domain.product.dto.response.ProductReviewsResponse">
         SELECT
