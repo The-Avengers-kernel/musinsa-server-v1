@@ -24,7 +24,7 @@
 
     // ===== API =====
     function fetchCart(onSuccess, onError) {
-        var url = BASE + '/api/v1/carts/' + userId;
+        var url = BASE + '/api/v1/carts';
         $.getJSON(url)
             .done(function (list) {
                 if (typeof onSuccess === 'function') onSuccess(list || []);
@@ -560,7 +560,8 @@
         }
         return ids;
     }
-    $('#btn-checkout').off('click').on('click', function(e) {
+
+    $('#btn-checkout').off('click').on('click', function (e) {
         e.preventDefault();
 
         var ids = getSelectedCartItemIds();
@@ -579,7 +580,7 @@
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(orderData),
-            success: function(response) {
+            success: function (response) {
                 if (response.success) {
                     // 성공 시 주문 페이지로 이동
                     window.location.href = BASE + response.redirectUrl;
@@ -587,7 +588,7 @@
                     alert(response.message);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('주문 처리 실패:', error);
                 alert('주문 처리 중 오류가 발생했습니다.');
             }
