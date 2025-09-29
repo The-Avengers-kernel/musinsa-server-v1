@@ -52,12 +52,6 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    // 대중소 카테고리 가져오기
-    @GetMapping("/categories/products")
-    public List<CategoryProductResponse> categoryProducts() {
-        return productService.getCategoryProductList();
-    }
-
     // 상품 리뷰 목록 조회
     @GetMapping("{productId}/reviews")
     public List<ProductReviewsResponse> getProductReviews(@PathVariable Long productId) {
