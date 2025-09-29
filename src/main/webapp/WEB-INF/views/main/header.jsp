@@ -61,7 +61,14 @@
                 <li class="separator">|</li>
                 <li><a href="${pageContext.request.contextPath}/mypage"><i class="far fa-user"></i>마이</a></li>
                 <li class="separator">|</li>
-                <li><a href="${pageContext.request.contextPath}/cart"><i class="fas fa-shopping-cart"></i>장바구니</a></li>
+                <li class="cart-item">
+                    <a href="${pageContext.request.contextPath}/cart">
+                        <i class="fas fa-shopping-cart"></i>장바구니
+                        <% if (isLoggedIn) { %>
+                        <span class="cart-badge" id="cartBadge" style="display: flex;">3</span>
+                        <% } %>
+                    </a>
+                </li>
                 <li class="separator">|</li>
                 <%-- 쿠키 기반 로그인/로그아웃 처리 --%>
                 <% if (!isLoggedIn) { %>
@@ -98,6 +105,46 @@
     window.userIsLoggedIn = true;
     window.musinsaUserId = '<c:out value="${sessionScope.loginUser.userId}"/>';
     </c:if>
+
+    // 장바구니 개수 업데이트 함수
+    function updateCartBadge() {
+        if (!window.userIsLoggedIn) return;
+
+        const cartBadge = document.getElementById('cartBadge');
+        if (!cartBadge) return;
+
+        fetch(window.appContextPath + '/api/v1/cart/count', {
+            method: 'GET',
+            credentials: 'include'
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('장바구니 개수 조회 실패');
+        })
+        .then(data => {
+            const count = data.count || 0;
+            if (count > 0) {
+                cartBadge.textContent = count > 99 ? '99+' : count;
+                cartBadge.style.display = 'flex';
+            } else {
+                cartBadge.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.log('장바구니 개수 조회 중 오류:', error);
+            cartBadge.style.display = 'none';
+        });
+    }
+
+    // 페이지 로드 시 장바구니 개수 조회
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartBadge();
+    });
+
+    // 전역에서 호출 가능하도록 설정
+    window.updateCartBadge = updateCartBadge;
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/recentSearches.js"></script>
