@@ -19,7 +19,7 @@
                     <div class="category-list">
                         <ul>
                             <%-- data-target 속성 추가 --%>
-                            <li><a href="#" class="list-item-link active" data-target="tops">상의</a></li>
+                            <li><a href="#" class="list-item-link" data-target="tops">상의</a></li>
                             <li><a href="#" class="list-item-link" data-target="pants">바지</a></li>
                             <li><a href="#" class="list-item-link" data-target="outers">아우터</a></li>
                             <li><a href="#" class="list-item-link" data-target="skirts">스커트</a></li>
@@ -174,7 +174,7 @@
                     <div class="category-list">
                         <ul>
                             <%-- data-id 속성 추가 --%>
-                            <li><a href="#" class="list-item-link active" data-id="all">전체</a></li>
+                            <li><a href="#" class="list-item-link" data-id="all">전체</a></li>
                             <li><a href="#" class="list-item-link" data-id="1">의류</a></li>
                             <li><a href="#" class="list-item-link" data-id="2">뷰티</a></li>
                             <li><a href="#" class="list-item-link" data-id="3">신발</a></li>

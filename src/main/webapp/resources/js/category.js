@@ -104,8 +104,14 @@ $(document).ready(() => {
         $tabContents.removeClass("active");
         $(`#${targetId}`).addClass("active");
 
-        // 탭 전환 시 해당 탭의 첫 번째 목록 아이템을 클릭하여 상태 초기화
-        $(`#${targetId} .category-list a:first-child`).trigger('click');
+        // 탭 전환 시 기본 카테고리로 초기화
+        if (targetId === 'product') {
+            // 상품 탭: "상의" 선택
+            $('#product .category-list a[data-target="tops"]').trigger('click');
+        } else if (targetId === 'brand') {
+            // 브랜드 탭: "전체" 선택
+            $('#brand .category-list a[data-id="all"]').trigger('click');
+        }
     });
 
     // --------------------------------------------------------
@@ -118,9 +124,19 @@ $(document).ready(() => {
         $("#product .list-item-link").removeClass("active");
         $(this).addClass("active");
 
-        const $targetSection = $(`#${targetSectionId}`);
-        if ($targetSection.length) {
-            $targetSection[0].scrollIntoView({ behavior: "smooth", block: "start" });
+        // "상의" 클릭 시 맨 위로 스크롤, 다른 카테고리는 해당 섹션으로 스크롤
+        if (targetSectionId === "tops") {
+            // 상의는 카테고리 상세 영역의 맨 위로 스크롤
+            const $categoryDetails = $('.category-details');
+            if ($categoryDetails.length) {
+                $categoryDetails[0].scrollTo({ top: 0, behavior: "smooth" });
+            }
+        } else {
+            // 다른 카테고리는 해당 섹션으로 스크롤
+            const $targetSection = $(`#${targetSectionId}`);
+            if ($targetSection.length) {
+                $targetSection[0].scrollIntoView({ behavior: "smooth", block: "start" });
+            }
         }
     });
 
@@ -186,15 +202,54 @@ $(document).ready(() => {
     // 8. 초기 활성화 설정
     // --------------------------------------------------------
     function initialize() {
-        $('#product .category-list a:first-child').addClass('active');
-        $('#brand .category-list a:first-child').addClass('active');
+        // 상품 카테고리 "상의"를 실제 클릭하여 모든 관련 로직 실행
+        $('#product .category-list a[data-target="tops"]').trigger('click');
 
+        // 브랜드 관련 초기 설정은 별도로 처리 (브랜드 탭이 비활성 상태이므로)
         $('#koreanInitialList a:first-child').addClass('active');
         $('#englishInitialList a:first-child').addClass('active');
-
         $toggleToKoreanBtn.addClass('active');
         $toggleToEnglishBtn.removeClass('active');
     }
 
+    // --------------------------------------------------------
+    // 9. 스크롤 시 카테고리 탭 자동 변경 (Intersection Observer)
+    // --------------------------------------------------------
+    function setupScrollSpy() {
+        const sections = document.querySelectorAll('#product .detail-section');
+        const navLinks = document.querySelectorAll('#product .list-item-link');
+
+        if (sections.length === 0) return;
+
+        const observerOptions = {
+            root: document.querySelector('.category-details'),
+            rootMargin: '-20% 0px -60% 0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const targetId = entry.target.id;
+
+                    // 모든 카테고리 링크에서 active 클래스 제거
+                    navLinks.forEach(link => link.classList.remove('active'));
+
+                    // 해당 섹션에 맞는 카테고리 링크에 active 클래스 추가
+                    const correspondingLink = document.querySelector(`#product .list-item-link[data-target="${targetId}"]`);
+                    if (correspondingLink) {
+                        correspondingLink.classList.add('active');
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // 모든 섹션을 관찰 대상으로 등록
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    }
+
     initialize();
+    setupScrollSpy();
 });
