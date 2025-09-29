@@ -1,379 +1,379 @@
+// cart.js (refactored)
 (function () {
-    // ===== 상수/도우미 =====
+    "use strict";
+
+    // ===== Constants / Utils =====
     var DISCOUNT_RATE = 0.08;
+    var POINT_RATE = 0.047;
+
+    var BASE = (window.__CTX__ && window.__CTX__.base) || "";
+    var $doc = $(document);
+    var $root = $("#brand-lists");
+    var $selectAll = $("#select-all");
+    var $removeSelected = $("#btn-remove-selected");
+    var $checkout = $("#btn-checkout");
+    var $soldoutNote = $("#soldout-note");
+    var $cartCount = $("#cart-count");
 
     function toCurrency(n) {
-        n = n || 0;
-        return n.toLocaleString('ko-KR') + '원';
+        n = Number(n) || 0;
+        return n.toLocaleString("ko-KR") + "원";
     }
 
-    // 컨텍스트/유저
-    var BASE = (window.__CTX__ && window.__CTX__.base) || '';
-    var userId = (window.__CTX__ && window.__CTX__.userId) || '';
+    function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, function (s) {
+            return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[s];
+        });
+    }
 
-    var $container = $('.container');
+    function escapeAttr(str) {
+        return String(str).replace(/["&<>]/g, function (s) {
+            return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[s];
+        });
+    }
 
-    // 전역 상태
+    function by(arr, key) {
+        var m = new Map();
+        (arr || []).forEach(function (it) {
+            m.set(it[key], it);
+        });
+        return m;
+    }
+
+    // ===== State =====
+    /**
+     * raw: 서버에서 내려온 원본 배열
+     * indexByProductId / indexByCartId: 빠른 조회용 맵
+     * groups: {brand: CartItem[]}
+     * order: brand 표시 순서
+     * selected: Set<userCartId>  ← ★ 선택 기준을 cartId로 통일
+     * soldoutExists: Boolean
+     */
     var state = {
         raw: [],
+        indexByProductId: new Map(),
+        indexByCartId: new Map(),
         groups: {},
         order: [],
         selected: new Set(),
-        soldoutExists: false
+        soldoutExists: false,
     };
 
-    // ===== API =====
-    function fetchCart(onSuccess, onError) {
-        var url = BASE + '/api/v1/carts';
-        $.getJSON(url)
-            .done(function (list) {
-                if (typeof onSuccess === 'function') onSuccess(list || []);
-            })
-            .fail(function () {
-                if (typeof onError === 'function') onError();
+    // ===== API Layer =====
+    var api = {
+        fetchCart: function () {
+            return $.getJSON(BASE + "/api/v1/carts");
+        },
+        patchCartItem: function (productId, payload) {
+            return $.ajax({
+                url: BASE + "/api/v1/carts/" + encodeURIComponent(productId),
+                type: "PATCH",
+                contentType: "application/json",
+                data: JSON.stringify(payload),
             });
+        },
+        createOrderFromCart: function (cartItemIds) {
+            return $.ajax({
+                url: BASE + "/orders/orders-page",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({type: "FROM_CART", cartItemIds: cartItemIds}),
+            });
+        },
+    };
+
+    // ===== Group / Index =====
+    function rebuildIndexes() {
+        state.indexByProductId = by(state.raw, "productId");
+        state.indexByCartId = by(state.raw, "userCartId");
     }
 
-    // ===== 그룹화 =====
-    function buildGroups(list) {
-        var groups = {};
+    function groupByBrand(list) {
+        var g = {};
         var order = [];
-
-        for (var i = 0; i < list.length; i++) {
-            var item = list[i];
-            var brand = item.productBrand || '기타';
-            if (!groups[brand]) {
-                groups[brand] = [];
-                order.push(brand);
+        (list || []).forEach(function (it) {
+            var b = it.productBrand || "기타";
+            if (!g[b]) {
+                g[b] = [];
+                order.push(b);
             }
-            groups[brand].push(item);
-        }
-        return {g: groups, order: order};
+            g[b].push(it);
+        });
+        state.groups = g;
+        state.order = order;
     }
 
-    function recalcGroupsFromRaw() {
-        var gb = buildGroups(state.raw);
-        state.groups = gb.g;
-        state.order = gb.order;
+    function recalc() {
+        rebuildIndexes();
+        groupByBrand(state.raw);
+        syncSelectionsWithExistingRows();
     }
 
-    // ===== 렌더링 =====
-    function clearRoot() {
-        var $root = $('#brand-lists');
-        $root.empty();
-        return $root;
+    // 서버 재조회나 데이터 대체 시, 존재하지 않는 선택값 정리
+    function syncSelectionsWithExistingRows() {
+        var next = new Set();
+        state.selected.forEach(function (cid) {
+            if (state.indexByCartId.has(cid)) next.add(cid);
+        });
+        state.selected = next;
     }
 
-    function renderBrandHeader(brand) {
-        var html = ''
-            + '<div class="brand-row">'
-            + '  <label class="checkbox"><input type="checkbox" class="brand-check"></label>'
-            + '  <div class="brand-name">' + escapeHtml(brand) + '</div>'
-            + '  <span class="chip badge-free">무료배송</span>'
-            + '  <span class="chip badge-fast">빠른배송</span>'
-            + '  <div style="margin-left:auto;">'
-            + '    <button class="btn-ghost small btn-clear-brand">브랜드삭제</button>'
-            + '  </div>'
-            + '</div>';
-        return $(html);
+    // ===== Render =====
+    function tplBrandHeader(brand) {
+        return (
+            '<div class="brand-row" data-brand="' +
+            escapeAttr(brand) +
+            '">' +
+            '  <label class="checkbox"><input type="checkbox" class="brand-check"></label>' +
+            '  <div class="brand-name">' +
+            escapeHtml(brand) +
+            "</div>" +
+            '  <span class="chip badge-free">무료배송</span>' +
+            '  <span class="chip badge-fast">빠른배송</span>' +
+            '  <div style="margin-left:auto;">' +
+            '    <button class="btn-ghost small btn-clear-brand">브랜드삭제</button>' +
+            "  </div>" +
+            "</div>"
+        );
     }
 
-    function renderItemRow(item, brand) {
-        var checkedAttr = state.selected.has(item.productId) ? ' checked' : '';
-        var img = item.imageUrl || '';
-        var name = item.productName || '';
-        var opt = item.optionName || '';
-        var qty = item.quantity || 0;
-        var price = item.totalPrice || 0;
+    function tplItemRow(item, brand) {
+        var checked = state.selected.has(item.userCartId) ? " checked" : "";
+        var img = item.imageUrl || "";
+        var name = item.productName || "";
+        var opt = item.optionName || "";
+        var qty = Number(item.quantity) || 0;
+        var price = Number(item.totalPrice) || 0;
 
-        var html = ''
-            + '<div class="item" data-id="' + Number(item.productId) + '" data-brand="' + escapeAttr(brand) + '">'
-            + '  <div class="checkbox"><input type="checkbox" class="row-check"' + checkedAttr + '></div>'
-            + '  <div class="thumb"><img src="' + escapeAttr(img) + '" alt=""></div>'
-            + '  <div>'
-            + '    <div class="name">' + escapeHtml(name) + '</div>'
-            + '    <div class="meta">' + escapeHtml(opt) + ' · 수량 ' + Number(qty) + '</div>'
-            + '    <div class="price">' + toCurrency(price) + '</div>'
-            + '  </div>'
-            + '  <div class="x-btn">✕</div>'
-            + '  <div class="row-ctrls">'
-            + '    <button class="btn-ghost ctrl btn-opt">옵션 변경</button>'
-            + '  </div>'
-            + '</div>';
-        return $(html);
+        return (
+            '<div class="item" ' +
+            'data-id="' + Number(item.productId) + '" ' +
+            'data-cart-id="' + Number(item.userCartId) + '" ' +
+            'data-brand="' + escapeAttr(brand) + '">' +
+            '  <div class="checkbox"><input type="checkbox" class="row-check"' + checked + "></div>" +
+            '  <div class="thumb"><img src="' + escapeAttr(img) + '" alt=""></div>' +
+            "  <div>" +
+            '    <div class="name">' + escapeHtml(name) + "</div>" +
+            '    <div class="meta">' + escapeHtml(opt) + " / " + qty + "개" + "</div>" +
+            '    <div class="price">' + toCurrency(price) + "</div>" +
+            "  </div>" +
+            '  <div class="x-btn" title="삭제">✕</div>' +
+            '  <div class="row-ctrls">' +
+            '    <button class="btn-ghost ctrl btn-opt">옵션 변경</button>' +
+            "  </div>" +
+            "</div>"
+        );
     }
 
     function render() {
-        var $root = clearRoot();
+        $root.empty();
 
         if (state.order.length === 0) {
             $root.hide();
-            $('#cart-count').text('전체 0');
+            $cartCount.text("전체 0");
             updateTotals();
+            syncTopBar();
             return;
         }
 
-        $('#cart-count').text('전체 ' + state.raw.length);
         $root.show();
+        $cartCount.text("전체 " + state.raw.length);
 
-        for (var i = 0; i < state.order.length; i++) {
-            var brand = state.order[i];
-            var items = state.groups[brand] || [];
-
-            var $brandRow = renderBrandHeader(brand);
-            var $itemsWrap = $('<div class="items"></div>');
-
-            for (var j = 0; j < items.length; j++) {
-                var $row = renderItemRow(items[j], brand);
-                $itemsWrap.append($row);
-            }
-
-            $root.append($brandRow);
-            $root.append($itemsWrap);
-        }
-
-        bindRowEvents();
-        syncBrandChecks();
-        syncSelectAll();
-        updateTotals();
-    }
-
-    // ===== 이벤트 =====
-    function bindRowEvents() {
-        // 개별 행 체크
-        $('.row-check').off('change').on('change', function () {
-            var $row = $(this).closest('.item');
-            var id = Number($row.data('id'));
-            if (this.checked) state.selected.add(id);
-            else state.selected.delete(id);
-            syncBrandChecks();
-            syncSelectAll();
-            updateTotals();
-        });
-
-        // 행 삭제
-        $('.item .x-btn').off('click').on('click', function () {
-            var $row = $(this).closest('.item');
-            var id = Number($row.data('id'));
-            removeItemById(id);
-            render();
-        });
-
-        // 브랜드 체크
-        $('.brand-check').off('change').on('change', function () {
-            var $brandRow = $(this).closest('.brand-row');
-            var brand = $brandRow.find('.brand-name').text();
-            var isOn = this.checked;
-
-            $('.item[data-brand="' + brand + '"] .row-check').each(function () {
-                var $row = $(this).closest('.item');
-                var id = Number($row.data('id'));
-                this.checked = isOn;
-                if (isOn) state.selected.add(id);
-                else state.selected.delete(id);
+        var html = [];
+        state.order.forEach(function (brand) {
+            html.push(tplBrandHeader(brand));
+            html.push('<div class="items">');
+            (state.groups[brand] || []).forEach(function (it) {
+                html.push(tplItemRow(it, brand));
             });
-            syncSelectAll();
-            updateTotals();
+            html.push("</div>");
         });
+        $root.html(html.join(""));
 
-        // 브랜드 삭제
-        $('.btn-clear-brand').off('click').on('click', function () {
-            var $brandRow = $(this).closest('.brand-row');
-            var brand = $brandRow.find('.brand-name').text();
-            removeBrand(brand);
-            render();
-        });
-
-        // 옵션 변경 (모달 사용 시)
-        $('.item .btn-opt').off('click').on('click', function () {
-            var $row = $(this).closest('.item');
-            var brand = $row.data('brand');
-            if ($('#option-modal').length === 0) return; // 모달 미사용 시 무시
-            optionUpdate(brand, $row);
-        });
-
-        // 모달 공통 닫기
-        $(document).off('click.cartModalClose').on('click.cartModalClose', '[data-close-modal]', closeModal);
-        $('#option-modal').off('click.cartModalBg').on('click.cartModalBg', function (e) {
-            if (e.target === this) closeModal();
-        });
-        $(document).off('keydown.cartEsc').on('keydown.cartEsc', function (e) {
-            if (e.key === 'Escape') closeModal();
-        });
-
-        // 미리보기
-        $('#opt-qty').off('input change').on('input change', updateOptionPricePreview);
-        $('#opt-save').off('click').on('click', applyOptionChange);
+        updateTotals();
+        syncBrandChecks();
+        syncSelectAllCheck();
+        syncTopBar();
     }
 
-    // ===== 삭제/변경 도우미 =====
-    function removeItemById(id) {
-        var newRaw = [];
-        for (var i = 0; i < state.raw.length; i++) {
-            var item = state.raw[i];
-            if (item.productId !== id) newRaw.push(item);
-        }
-        state.raw = newRaw;
-        state.selected.delete(id);
-        recalcGroupsFromRaw();
+    // ===== Selection / Sync =====
+    function setRowSelected($row, on) {
+        var cartId = Number($row.data("cart-id"));
+        var $check = $row.find(".row-check");
+        $check.prop("checked", on);
+        if (on) state.selected.add(cartId);
+        else state.selected.delete(cartId);
     }
 
-    function removeBrand(brand) {
-        var idsToRemove = [];
-        $('.item[data-brand="' + brand + '"]').each(function () {
-            idsToRemove.push(Number($(this).data('id')));
-        });
-
-        var newRaw = [];
-        for (var i = 0; i < state.raw.length; i++) {
-            var item = state.raw[i];
-            var rm = false;
-            for (var k = 0; k < idsToRemove.length; k++) {
-                if (item.productId === idsToRemove[k]) {
-                    rm = true;
-                    break;
-                }
-            }
-            if (!rm) newRaw.push(item);
-        }
-        state.raw = newRaw;
-        idsToRemove.forEach(function (id) {
-            state.selected.delete(id);
-        });
-        recalcGroupsFromRaw();
-    }
-
-    // ===== 체크박스 동기화 =====
     function syncBrandChecks() {
-        $('.brand-row').each(function () {
-            var $row = $(this);
-            var brand = $row.find('.brand-name').text();
+        $(".brand-row").each(function () {
+            var brand = $(this).data("brand");
             var $checks = $('.item[data-brand="' + brand + '"] .row-check');
             if ($checks.length === 0) {
-                $row.find('.brand-check').prop('checked', false);
+                $(this).find(".brand-check").prop("checked", false);
                 return;
             }
-            var all = true;
-            $checks.each(function () {
-                if (!this.checked) all = false;
-            });
-            $row.find('.brand-check').prop('checked', all);
+            var checkedCount = $checks.filter(":checked").length;
+            $(this).find(".brand-check").prop("checked", checkedCount === $checks.length);
         });
     }
 
-    function syncSelectAll() {
-        var $checks = $('.row-check');
+    function syncSelectAllCheck() {
+        var $checks = $(".row-check");
         if ($checks.length === 0) {
-            $('#select-all').prop('checked', false);
+            $selectAll.prop("checked", false);
             return;
         }
-        var all = true;
-        $checks.each(function () {
-            if (!this.checked) all = false;
-        });
-        $('#select-all').prop('checked', all);
+        $selectAll.prop("checked", $checks.filter(":checked").length === $checks.length);
     }
 
-    // ===== 합계 =====
+    function syncTopBar() {
+        var hasRows = state.raw.length > 0;
+        var hasSel = state.selected.size > 0;
+        $removeSelected.prop("disabled", !hasSel);
+        $checkout.prop("disabled", !hasSel);
+        $selectAll.prop("disabled", !hasRows);
+        $soldoutNote.toggle(!!state.soldoutExists);
+    }
+
+    // ===== Totals =====
     function updateTotals() {
+        // 선택된 cartId 기준으로 합산
         var sum = 0;
-        for (var i = 0; i < state.raw.length; i++) {
-            var it = state.raw[i];
-            if (state.selected.has(it.productId)) sum += (it.totalPrice || 0);
-        }
+        state.selected.forEach(function (cid) {
+            var it = state.indexByCartId.get(cid);
+            if (it) sum += Number(it.totalPrice) || 0;
+        });
+
         var disc = Math.floor(sum * DISCOUNT_RATE);
         var finalPay = sum - disc;
 
-        $('#sum-product').text(toCurrency(sum));
-        $('#sum-discount').text('-' + toCurrency(disc));
-        $('#sum-final').text(toCurrency(finalPay));
-        $('#disc-rate').text(sum > 0 ? ' 8%' : '');
-        $('#benefit-hint').text('적립혜택 예상 최대 ' + toCurrency(Math.floor(finalPay * 0.047)));
-        $('#soldout-note').toggle(state.soldoutExists);
+        $("#sum-product").text(toCurrency(sum));
+        $("#sum-discount").text("-" + toCurrency(disc));
+        $("#sum-final").text(toCurrency(finalPay));
+        $("#disc-rate").text(sum > 0 ? " 8%" : "");
+        $("#benefit-hint").text("적립혜택 예상 최대 " + toCurrency(Math.floor(finalPay * POINT_RATE)));
     }
 
-    // ===== 상단바 =====
-    $('#select-all').off('change').on('change', function () {
-        var on = this.checked;
-        $('.row-check').prop('checked', on);
-        if (on) {
-            for (var i = 0; i < state.raw.length; i++) state.selected.add(state.raw[i].productId);
-        } else {
-            state.selected.clear();
-        }
-        syncBrandChecks();
-        updateTotals();
-    });
+    // ===== Remove / Clear =====
+    function removeByCartIds(cartIds) {
+        if (!cartIds || cartIds.length === 0) return;
 
-    $('#btn-remove-selected').off('click').on('click', function () {
-        if (state.selected.size === 0) return;
-        var ids = [];
-        state.selected.forEach(function (id) {
-            ids.push(id);
+        var rmSet = new Set(cartIds.map(Number));
+        state.raw = state.raw.filter(function (it) {
+            return !rmSet.has(Number(it.userCartId));
         });
-        var newRaw = [];
-        for (var i = 0; i < state.raw.length; i++) {
-            var it = state.raw[i];
-            var rm = false;
-            for (var j = 0; j < ids.length; j++) {
-                if (it.productId === ids[j]) {
-                    rm = true;
-                    break;
-                }
-            }
-            if (!rm) newRaw.push(it);
-        }
-        state.raw = newRaw;
-        state.selected.clear();
-        recalcGroupsFromRaw();
-        render();
-    });
 
-    // ===== 모달 유틸 =====
+        // 선택도 정리
+        rmSet.forEach(function (cid) {
+            state.selected.delete(cid);
+        });
+
+        recalc();
+        render();
+    }
+
+    function removeBrand(brand) {
+        var ids = [];
+        $('.item[data-brand="' + brand + '"]').each(function () {
+            ids.push(Number($(this).data("cart-id")));
+        });
+        removeByCartIds(ids);
+    }
+
+    // ===== Option Modal =====
     function openModal() {
-        $('#option-modal').addClass('is-open').attr('aria-hidden', 'false');
-        $('body').css('overflow', 'hidden');
+        $("#option-modal").addClass("is-open").attr("aria-hidden", "false");
+        $("body").css("overflow", "hidden");
     }
 
     function closeModal() {
-        $('#option-modal').removeClass('is-open').attr('aria-hidden', 'true');
-        $('body').css('overflow', '');
+        $("#option-modal").removeClass("is-open").attr("aria-hidden", "true");
+        $("body").css("overflow", "");
+        $("#opt-error").hide().text("");
     }
 
     function parseSelectedFromOptionName(name) {
-        return (name || '').split('/').map(function (s) {
-            return s.trim();
-        }).filter(Boolean);
+        return (name || "")
+            .split("/")
+            .map(function (s) {
+                return s.trim();
+            })
+            .filter(Boolean);
     }
 
-    function optionUpdate(brand, $row) {
-        var id = Number($row.data('id'));
-        var name = $row.find('.name').text().trim();
+    function optionTypeIdOf(name) {
+        var n = (name || "").toLowerCase();
+        if (n === "color" || n === "색상") return 1;
+        if (n === "size" || n === "사이즈") return 2;
+        if (n === "material" || n === "소재") return 3;
+        return 0;
+    }
 
-        // 현재 행에 대응하는 상품 객체
-        var product = state.raw.find(function (it) {
-            return Number(it.productId) === id;
+    function renderOptionGroups(groups, selectedMap) {
+        var $wrap = $("#opt-groups");
+        if (!$wrap.length) return;
+        $wrap.empty();
+
+        if (!Array.isArray(groups) || groups.length === 0) return;
+
+        groups.forEach(function (g) {
+            if (!g) return;
+            var title = g.optionType || "";
+            var values = Array.isArray(g.optionValues) ? g.optionValues : [];
+            if (values.length === 0) return;
+
+            var $g = $('<div class="opt-group" style="margin-top:14px;"></div>');
+            $g.append('<div class="opt-group-title" style="font-weight:700;margin-bottom:8px;">' + escapeHtml(title) + "</div>");
+
+            var $list = $('<div class="opt-list" style="display:flex;flex-wrap:wrap;gap:8px;"></div>');
+            values.forEach(function (val) {
+                var $btn = $('<button type="button" class="opt-item btn-ghost small"></button>')
+                    .text(val)
+                    .css({borderRadius: "8px", padding: "6px 10px"});
+
+                if (selectedMap && selectedMap[title] === val) {
+                    $btn.addClass("is-selected").css({borderColor: "#111", fontWeight: 600});
+                }
+                $list.append($btn);
+            });
+
+            $g.append($list);
+            $wrap.append($g);
         });
+    }
 
+    function updateOptionPricePreview() {
+        var unit = Number($("#opt-save").data("unitPrice") || 0);
+        var qty = Math.max(1, Number($("#opt-qty").val() || 1));
+        var newTotal = unit * qty;
+        $("#opt-price-preview").text(
+            "변경 후 금액 미리보기: " + (newTotal ? newTotal.toLocaleString("ko-KR") + "원" : "-")
+        );
+    }
+
+    function startOptionUpdate($row) {
+        var productId = Number($row.data("id"));
+        var brand = String($row.data("brand"));
+        var product = state.indexByProductId.get(productId);
         if (!product) {
-            console.warn('[optionUpdate] product not found for id=', id);
+            console.warn("[optionUpdate] product not found:", productId);
             return;
         }
-        console.log(product);
 
-        // 단가 계산(미리보기용)
-        var q0 = Number(product.quantity || 1) || 1;
-        var unitPrice = (typeof product.unitPrice === 'number')
-            ? product.unitPrice
-            : (q0 > 0 ? Math.round((product.totalPrice || 0) / q0) : 0);
+        var name = $row.find(".name").text().trim();
+        var q0 = Math.max(1, Number(product.quantity) || 1);
+        var unitPrice =
+            typeof product.unitPrice === "number"
+                ? product.unitPrice
+                : Math.round((Number(product.totalPrice) || 0) / q0);
 
-        // 헤더 세팅
-        $('#opt-name').text(name);
-        $('#opt-brand-chip').text(brand);
-        $('#opt-qty').val(q0);
-        $('#opt-save').data('productId', id).data('unitPrice', unitPrice);
+        $("#opt-name").text(name);
+        $("#opt-brand-chip").text(brand);
+        $("#opt-qty").val(q0);
+        $("#opt-save").data("productId", productId).data("unitPrice", unitPrice);
 
-        // 초기 선택값(옵션명 -> 값만 뽑아서 실제 그룹 값과 매칭)
+        // 초기 선택 맵
         var picked = parseSelectedFromOptionName(product.optionName);
         var initialSelected = {};
         (product.optionGroups || []).forEach(function (g) {
@@ -382,243 +382,222 @@
                 return vals.indexOf(p) >= 0;
             });
             if (hit) initialSelected[g.optionType] = hit;
-        })
+        });
 
-        // 옵션 그룹 렌더
         renderOptionGroups(product.optionGroups || [], initialSelected);
-
-        // 수량 버튼
-        $('#qty-dec').off('click').on('click', function () {
-            var v = Math.max(1, Number($('#opt-qty').val() || 1) - 1);
-            $('#opt-qty').val(v);
-            updateOptionPricePreview();
-        });
-        $('#qty-inc').off('click').on('click', function () {
-            var v = Math.max(1, Number($('#opt-qty').val() || 1) + 1);
-            $('#opt-qty').val(v);
-            updateOptionPricePreview();
-        });
-
         updateOptionPricePreview();
         openModal();
-
-
     }
 
-
-    function updateOptionPricePreview() {
-        var unit = Number($('#opt-save').data('unitPrice') || 0);
-        var qty = Number($('#opt-qty').val() || 1);
-        if (qty < 1) qty = 1;
-        var newTotal = unit * qty;
-        $('#opt-price-preview').text('변경 후 금액 미리보기: ' + (newTotal ? newTotal.toLocaleString('ko-KR') + '원' : '-'));
-    }
-
-    function renderOptionGroups(groups, selectedMap) {
-        var $wrap = $('#opt-groups');
-        if ($wrap.length === 0) {
-            console.warn('[renderOptionGroups] #opt-groups not found');
-            return;
-        }
-        $wrap.empty();
-
-        if (!Array.isArray(groups) || groups.length === 0) {
-            // 옵션 그룹 자체가 없을 때는 아무 것도 렌더하지 않음
-            return;
-        }
-
-        groups.forEach(function (g) {
-            if (!g) return;
-            var title = g.optionType || '';
-            var values = Array.isArray(g.optionValues) ? g.optionValues : [];
-
-            // 값이 없으면 제목만 보여주지 말고 스킵 (원하면 안내 문구를 넣어도 됨)
-            if (values.length === 0) return;
-
-            var $g = $('<div class="opt-group" style="margin-top:14px;"></div>');
-            $g.append('<div class="opt-group-title" style="font-weight:700;margin-bottom:8px;">' + escapeHtml(title) + '</div>');
-
-            var $list = $('<div class="opt-list" style="display:flex;flex-wrap:wrap;gap:8px;"></div>');
-
-            values.forEach(function (val) {
-                var $item = $('<button type="button" class="opt-item btn-ghost small"></button>')
-                    .text(val)
-                    .css({borderRadius: '8px', padding: '6px 10px'});
-
-                if (selectedMap && selectedMap[title] === val) $item.addClass('is-selected').css({
-                    borderColor: '#111',
-                    fontWeight: 600
-                });
-
-                $item.on('click', function () {
-                    $list.find('.opt-item').removeClass('is-selected').css({borderColor: '#ddd', fontWeight: 400});
-                    $item.addClass('is-selected').css({borderColor: '#111', fontWeight: 600});
-                    updateOptionPricePreview();
-                });
-
-                $list.append($item);
-            });
-
-            $g.append($list);
-            $wrap.append($g);
-        });
-    }
-
-
-    function applyOptionChange() {
-        var productId = Number($(this).data('productId'));
-        var unit = Number($('#opt-save').data('unitPrice') || 0);
-        var newQty = Math.max(1, Number($('#opt-qty').val() || 1));
-
-        // 현재 모달에서 선택된 옵션 수집
+    function collectModalSelections() {
         var optionGroups = [];
-        $('#opt-groups .opt-group').each(function () {
-                var title = $(this).find('.opt-group-title').text().trim();
-                var sel = $(this).find('.opt-item.is-selected').text().trim();
-                if (title && sel) {
-                    optionGroups.push({
-                        optionTypeId: optionTypeIdOf(title),
-                        optionValue: sel
-                    });
-                }
-
+        $("#opt-groups .opt-group").each(function () {
+            var title = $(this).find(".opt-group-title").text().trim();
+            var sel = $(this).find(".opt-item.is-selected").text().trim();
+            if (title && sel) {
+                optionGroups.push({
+                    optionTypeId: optionTypeIdOf(title),
+                    optionValue: sel,
+                });
             }
-        );
+        });
+        return optionGroups;
+    }
 
-        // 모든 그룹이 선택됐는지 간단하게 체크(원하면 제거 가능)
-        var required = $('#opt-groups .opt-group').length;
+    function tryApplyOptionChange() {
+        var productId = Number($("#opt-save").data("productId"));
+        var unit = Number($("#opt-save").data("unitPrice") || 0);
+        var newQty = Math.max(1, Number($("#opt-qty").val() || 1));
+        var optionGroups = collectModalSelections();
+
+        var required = $("#opt-groups .opt-group").length;
         if (required > 0 && optionGroups.length < required) {
-            alert('옵션을 모두 선택해주세요');
+            alert("옵션을 모두 선택해주세요");
             return;
         }
 
-        var payload = {
-            optionGroups: optionGroups, quantity: newQty
-        };
+        var payload = {optionGroups: optionGroups, quantity: newQty};
 
-        $.ajax({
-            url: BASE + '/api/v1/carts/' + encodeURIComponent(productId),
-            type: 'PATCH',
-            contentType: 'application/json',
-            data: JSON.stringify(payload)
-        }).done(function (res) {
-            // 컨트롤러가 List<ProductsInCartInfoResponse> 반환.
-            // 혹시 래퍼가 있으면(result.productList)도 처리.
-            var list = Array.isArray(res) ? res
-                : (res && res.result && Array.isArray(res.result.productList) ? res.result.productList : []);
-            state.raw = list || [];
-            state.selected.clear();
-            for (var i = 0; i < state.raw.length; i++) {
-                state.selected.add(state.raw[i].productId);
-            }
-            recalcGroupsFromRaw();
-            render();
-            closeModal();
-        }).fail(function (xhr) {
-            // 기본 문구
-            var msg = '옵션 변경에 실패했습니다.';
+        api
+            .patchCartItem(productId, payload)
+            .done(function (res) {
+                // 컨트롤러가 List<ProductsInCartInfoResponse> 반환 or wrapper(result.productList)
+                var list = Array.isArray(res)
+                    ? res
+                    : res && res.result && Array.isArray(res.result.productList)
+                        ? res.result.productList
+                        : [];
 
-            // 응답 객체 추출
-            var data = xhr.responseJSON;
-            if (!data && xhr.responseText) {
-                try {
-                    data = JSON.parse(xhr.responseText);
-                } catch (e) {
+                state.raw = list || [];
+                // 기본값: 전체 선택(UX 유지) — 필요 시 정책 변경 가능
+                state.selected = new Set(state.raw.map(function (it) {
+                    return it.userCartId;
+                }));
+                recalc();
+                render();
+                closeModal();
+            })
+            .fail(function (xhr) {
+                var msg = "옵션 변경에 실패했습니다.";
+                var data = xhr.responseJSON;
+                if (!data && xhr.responseText) {
+                    try {
+                        data = JSON.parse(xhr.responseText);
+                    } catch (e) {
+                    }
                 }
-            }
+                if (data) msg = data.detail || data.message || data.error_description || data.error || msg;
+                else if (xhr.responseText) msg = xhr.responseText || msg;
 
-            if (data) {
-                msg = data.detail || data.message || data.error_description || data.error || msg;
-            } else if (xhr.responseText) {
-                msg = xhr.responseText || msg;
-            }
-
-            msg = String(msg).replace(/^[A-Z_]+\d+/, '').trim();
-
-            $('#opt-error').text(msg).show();
-            $('#opt-qty').focus();
-        });
+                msg = String(msg).replace(/^[A-Z_]+\d+/, "").trim();
+                $("#opt-error").text(msg).show();
+                $("#opt-qty").focus();
+            });
     }
 
-    function optionTypeIdOf(name) {
-        var n = (name || '').toLowerCase();
-        if (n === 'color' || n === '색상') return 1;
-        if (n === 'size' || n === '사이즈') return 2;
-        if (n === 'material' || n === '소재') return 3;
-        return 0; // 서버가 무시해도 되는 기본값
-    }
-
-    // ========= 결제 ============
-    function getSelectedCartItemIds() {
-        var ids = [];
-        for (var i = 0; i < state.raw.length; i++) {
-            // productId -> cartItemIds로  바꿔야함.
-            var it = state.raw[i];
-            if (state.selected.has(it.productId)) {
-                ids.push(it.userCartId);
-            }
-        }
-        return ids;
-    }
-
-    $('#btn-checkout').off('click').on('click', function (e) {
-        e.preventDefault();
-
-        var ids = getSelectedCartItemIds();
-        if (ids.length === 0) {
-            alert('주문할 상품을 선택하세요.');
-            return;
-        }
-
-        var orderData = {
-            type: 'FROM_CART',
-            cartItemIds: ids
-        };
-
-        $.ajax({
-            url: BASE + '/orders/orders-page',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(orderData),
-            success: function (response) {
-                if (response.success) {
-                    // 성공 시 주문 페이지로 이동
-                    window.location.href = BASE + response.redirectUrl;
-                } else {
-                    alert(response.message);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('주문 처리 실패:', error);
-                alert('주문 처리 중 오류가 발생했습니다.');
-            }
-        });
+    // ===== Events (Delegation) =====
+    // 개별 행 체크
+    $root.on("change", ".row-check", function () {
+        var $row = $(this).closest(".item");
+        setRowSelected($row, this.checked);
+        syncBrandChecks();
+        syncSelectAllCheck();
+        updateTotals();
+        syncTopBar();
     });
 
-    // ===== XSS 방지용 이스케이프 =====
-    function escapeHtml(str) {
-        return String(str).replace(/[&<>"']/g, function (s) {
-            return ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[s]);
-        });
-    }
+    // 행 삭제
+    $root.on("click", ".item .x-btn", function () {
+        var $row = $(this).closest(".item");
+        var cartId = Number($row.data("cart-id"));
+        removeByCartIds([cartId]);
+    });
 
-    function escapeAttr(str) {
-        // 속성값 전용 (쌍따옴표 기준)
-        return String(str).replace(/["&<>]/g, function (s) {
-            return ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[s]);
-        });
-    }
+    // 브랜드 체크
+    $root.on("change", ".brand-check", function () {
+        var $brand = $(this).closest(".brand-row");
+        var brand = String($brand.data("brand"));
+        var on = this.checked;
 
-    // ===== 시작 =====
+        var $rows = $('.item[data-brand="' + brand + '"]');
+        $rows.each(function () {
+            setRowSelected($(this), on);
+            $(this).find(".row-check").prop("checked", on);
+        });
+
+        syncBrandChecks();
+        syncSelectAllCheck();
+        updateTotals();
+        syncTopBar();
+    });
+
+    // 브랜드 삭제
+    $root.on("click", ".btn-clear-brand", function () {
+        var brand = String($(this).closest(".brand-row").data("brand"));
+        removeBrand(brand);
+    });
+
+    // 옵션 변경
+    $root.on("click", ".btn-opt", function () {
+        var $row = $(this).closest(".item");
+        if ($("#option-modal").length === 0) return;
+        startOptionUpdate($row);
+    });
+
+    // 모달 공통 닫기
+    $doc.on("click", "[data-close-modal]", closeModal);
+    $("#option-modal").on("click", function (e) {
+        if (e.target === this) closeModal();
+    });
+    $doc.on("keydown", function (e) {
+        if (e.key === "Escape") closeModal();
+    });
+
+    // 모달 내부
+    $("#qty-dec").on("click", function () {
+        var v = Math.max(1, Number($("#opt-qty").val() || 1) - 1);
+        $("#opt-qty").val(v);
+        updateOptionPricePreview();
+    });
+    $("#qty-inc").on("click", function () {
+        var v = Math.max(1, Number($("#opt-qty").val() || 1) + 1);
+        $("#opt-qty").val(v);
+        updateOptionPricePreview();
+    });
+    $("#opt-qty").on("input change", updateOptionPricePreview);
+
+    $("#opt-groups").on("click", ".opt-item", function () {
+        var $list = $(this).closest(".opt-list");
+        $list.find(".opt-item").removeClass("is-selected").css({borderColor: "#ddd", fontWeight: 400});
+        $(this).addClass("is-selected").css({borderColor: "#111", fontWeight: 600});
+        updateOptionPricePreview();
+    });
+
+    $("#opt-save").on("click", tryApplyOptionChange);
+
+    // 상단 전체 선택
+    $selectAll.on("change", function () {
+        var on = this.checked;
+        var $rows = $(".item");
+        $rows.each(function () {
+            setRowSelected($(this), on);
+            $(this).find(".row-check").prop("checked", on);
+        });
+        syncBrandChecks();
+        updateTotals();
+        syncTopBar();
+    });
+
+    // 선택 삭제
+    $removeSelected.on("click", function () {
+        if (state.selected.size === 0) return;
+        removeByCartIds(Array.from(state.selected));
+    });
+
+    // 결제
+    $checkout.on("click", function (e) {
+        e.preventDefault();
+        if (state.selected.size === 0) {
+            alert("주문할 상품을 선택하세요.");
+            return;
+        }
+        var ids = Array.from(state.selected);
+        api
+            .createOrderFromCart(ids)
+            .done(function (response) {
+                if (response && response.success) {
+                    window.location.href = BASE + response.redirectUrl;
+                } else {
+                    alert((response && response.message) || "주문 처리에 실패했습니다.");
+                }
+            })
+            .fail(function (xhr, status, error) {
+                console.error("주문 처리 실패:", error);
+                alert("주문 처리 중 오류가 발생했습니다.");
+            });
+    });
+
+    // ===== Bootstrap =====
     function bootstrap() {
-        fetchCart(function (list) {
-            state.raw = list || [];
-            for (var i = 0; i < state.raw.length; i++) state.selected.add(state.raw[i].productId); // 기본 모두 선택
-            recalcGroupsFromRaw();
-            render();
-        }, function () {
-            alert('장바구니를 불러오지 못했습니다.');
-        });
+        api
+            .fetchCart()
+            .done(function (list) {
+                state.raw = Array.isArray(list) ? list : [];
+                // 기본 정책: 최초 로드 시 전체 선택
+                state.selected = new Set(state.raw.map(function (it) {
+                    return it.userCartId;
+                }));
+                recalc();
+                render();
+
+                // 서버가 렌더한 disabled 컨트롤 활성화
+                $selectAll.prop("disabled", state.raw.length === 0);
+                $removeSelected.prop("disabled", state.selected.size === 0);
+                $checkout.prop("disabled", state.selected.size === 0);
+            })
+            .fail(function () {
+                alert("장바구니를 불러오지 못했습니다.");
+            });
     }
 
     $(bootstrap);
