@@ -8,5 +8,5 @@ public class AddCartRequest {
     private Integer quantity;
 
     private Long productVariantId;
-    private String productVariantName;
+    private String variantName;
 }

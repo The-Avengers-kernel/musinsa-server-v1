@@ -29,24 +29,28 @@ public class ProductServiceImpl implements ProductService {
     private final SearchLogService searchLogService;
 
     @Override
-    public ProductDetailResponse getProductById(Long productId) {
-        ProductDetailResponse productInfo = productRepository.findProductById(productId);
+    public ProductDetailResponse getProductById(Long productId, Long userId) {
+        ProductDetailResponse productInfo = productRepository.findProductById(productId, userId);
         List<ProductImage> productImage = productRepository.findProductImageById(productId);
         productInfo.getProductImageList().addAll(productImage);
         return productInfo;
     }
 
+//    @Override
+//    public ProductVariantsResponse getProductVariants(Long productId) {
+//        List<String> colors = productRepository.findProductOptionColors(productId);
+//        List<String> materials = productRepository.findProductOptionMaterials(productId);
+//        List<String> sizes = productRepository.findProductOptionSizes(productId);
+//
+//        return ProductVariantsResponse.builder()
+//                .productOptionColor(colors)
+//                .productOptionMaterial(materials)
+//                .productOptionSize(sizes)
+//                .build();
+//    }
     @Override
-    public ProductVariantsResponse getProductVariants(Long productId) {
-        List<String> colors = productRepository.findProductOptionColors(productId);
-        List<String> materials = productRepository.findProductOptionMaterials(productId);
-        List<String> sizes = productRepository.findProductOptionSizes(productId);
-
-        return ProductVariantsResponse.builder()
-                .productOptionColor(colors)
-                .productOptionMaterial(materials)
-                .productOptionSize(sizes)
-                .build();
+    public List<ProductVariantDetailDto> getProductVariants(Long productId){
+        return productRepository.findVariantDetailsByProductId(productId);
     }
 
 
@@ -113,9 +117,9 @@ public class ProductServiceImpl implements ProductService {
 
     // 상품상세 사이즈 리스트 조회
     @Override
-    public Object getProductDetailSizeList(Long productId) {
+    public Object getProductDetailSizeList(Long productId, Long userId) {
         // 상품 정보 가져오기
-        ProductDetailResponse product = productRepository.findProductById(productId);
+        ProductDetailResponse product = productRepository.findProductById(productId,userId);
 
         // 상품 컬럼에서 sizeDetailImageId를 찾는다.
         Long sizeDetailImageId = product.getSizeDetailImageId();
@@ -260,9 +264,6 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    //상품 좋아요 토글
-    @Override
-    @Transactional
     public ProductLikeResponse ProductLikeToggle(Long userId, Long productId) {
         UserProductStatus status = productRepository.getUserProductStatus(userId, productId);
         //레코드가 없을 때

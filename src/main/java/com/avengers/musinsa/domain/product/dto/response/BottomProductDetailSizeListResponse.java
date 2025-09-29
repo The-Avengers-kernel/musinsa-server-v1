@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 public class BottomProductDetailSizeListResponse {
     private Long BottomProductDetailSizeId;
 
+    private Long sizeDetailImageId;
+
     private Size cm;
     private BigDecimal length;
     private BigDecimal waist;

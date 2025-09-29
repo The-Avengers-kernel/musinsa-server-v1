@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 public class TopProductDetailSizeListResponse {
     private Long topSizeDetailId;
 
+    private  Long sizeDetailImageId;
+
     private String cm;
     private BigDecimal length;
     private BigDecimal shoulderWidth;

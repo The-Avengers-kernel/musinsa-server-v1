@@ -2,6 +2,7 @@ package com.avengers.musinsa.domain.order.controller;
 
 
 import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest;
+import com.avengers.musinsa.domain.order.dto.request.DirectPurchaseRequest;
 import com.avengers.musinsa.domain.order.dto.response.OrderCreateResponse;
 import com.avengers.musinsa.domain.order.dto.response.OrderSummaryResponse;
 import com.avengers.musinsa.domain.order.dto.response.UserInfoDTO;
@@ -63,5 +64,21 @@ public class OrderController {
 
         return ResponseEntity.ok(shippingAddresses);
 
+    }
+
+    // 직접 구매
+    @PostMapping("/products")
+    public ResponseEntity<?> directPurchase(@RequestBody DirectPurchaseRequest request) {
+        try {
+            // 요청 데이터 로깅
+            System.out.println("Direct Purchase Request: " + request);
+
+            // 일단 요청 받았다는 응답 반환
+            return ResponseEntity.ok().body("구매 요청이 접수되었습니다.");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("구매 처리 중 오류가 발생했습니다: " + e.getMessage());
+        }
     }
 }
