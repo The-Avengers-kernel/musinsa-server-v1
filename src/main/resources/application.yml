@@ -61,3 +61,4 @@ mybatis:
 logging:
   level:
     com.avengers.musinsa.mapper.BrandMapper: TRACE
+    com.avengers.musinsa.mapper: TRACE

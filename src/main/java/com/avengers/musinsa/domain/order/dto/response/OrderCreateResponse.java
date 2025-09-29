@@ -7,4 +7,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public class OrderCreateResponse {
     private Long orderId;
+
+    @Override
+    public String toString() {
+        return "OrderCreateResponse{" +
+                "orderId=" + orderId +
+                '}';
+    }
 }

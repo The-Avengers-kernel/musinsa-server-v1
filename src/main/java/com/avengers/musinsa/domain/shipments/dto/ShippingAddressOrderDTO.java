@@ -18,7 +18,7 @@ public class ShippingAddressOrderDTO {
     private String recipientName;
     private String recipientPhone;
     private String recipientAddress;
-    private Integer postalCode;
+    private String postalCode;
     private Boolean isDefault; // defaultAddress > isDefault
 
 }

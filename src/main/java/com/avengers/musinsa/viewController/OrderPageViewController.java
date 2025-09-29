@@ -58,7 +58,6 @@ public class OrderPageViewController {
             return ResponseEntity.badRequest().body(result);
         }
     }
-
     @GetMapping("/order-page")
     public String showOrderPage(HttpSession session, Model model) {
 
@@ -82,7 +81,8 @@ public class OrderPageViewController {
     }
 
 
-    public static class BuyerRecipientInfoAdapter {
+
+    public static class BuyerRecipientInfoAdapter{
         private final OrderPageResponse product;
 
         public BuyerRecipientInfoAdapter(OrderPageResponse product) {
@@ -90,47 +90,23 @@ public class OrderPageViewController {
         }
 
         //구매자 정보 가져오기
-        public String getBuyerName() {
-            return product.getBuyerInfo().getName();
-        }
-
-        public String getBuyerPhone() {
-            return product.getBuyerInfo().getPhone();
-        }
-
-        public String getBuyerEmail() {
-            return product.getBuyerInfo().getEmail();
-        }
+        public String getBuyerName(){return product.getBuyerInfo().getName();}
+        public String getBuyerPhone(){return product.getBuyerInfo().getPhone();}
+        public String getBuyerEmail(){return product.getBuyerInfo().getEmail();}
 
         // 수령자 정보 가져오기
-        public String getRecipientName() {
-            return product.getBuyerInfo().getDefaultAddress().getRecipientName();
-        }
-
-        public String getRecipientPhone() {
-            return product.getBuyerInfo().getDefaultAddress().getRecipientPhone();
-        }
-
-        public String getRecipientPostCode() {
-            return product.getBuyerInfo().getDefaultAddress().getPostCode();
-        }
-
-        public String getRecipientAddress() {
-            return product.getBuyerInfo().getDefaultAddress().getAddress();
-        }
-
-        public String getRecipientDetailAddress() {
-            return product.getBuyerInfo().getDefaultAddress().getDetailAddress();
-        }
+        public String getRecipientName(){return product.getBuyerInfo().getDefaultAddress().getRecipientName();}
+        public String getRecipientPhone(){return product.getBuyerInfo().getDefaultAddress().getRecipientPhone();}
+        public String getRecipientPostCode(){return product.getBuyerInfo().getDefaultAddress().getPostCode();}
+        public String getRecipientAddress(){return product.getBuyerInfo().getDefaultAddress().getAddress();}
+        public String getRecipientDetailAddress(){return product.getBuyerInfo().getDefaultAddress().getDetailAddress();}
 
         //적립금 가져오기
-        public Integer getMileage() {
-            return product.getMileageInfo().getTotalMileage();
-        }
+        public Integer getMileage(){return product.getMileageInfo().getTotalMileage();}
     }
 
 
-    public static class ProductAdapter {
+    public static class ProductAdapter{
         private final OrderPageResponse.OrderProductInfo productInfo;
 
         public ProductAdapter(OrderPageResponse.OrderProductInfo productInfo) {
@@ -138,65 +114,20 @@ public class OrderPageViewController {
         }
 
         //구매 상품 가져오기
-        public Long getBrandId() {
-            return productInfo.getBrandId();
-        }
-
-        public String getBrandName() {
-            return productInfo.getBrandName();
-        }
-
-        public String getBrandImage() {
-            return productInfo.getBrandImage();
-        }
-
-        public String getProductName() {
-            return productInfo.getProductName();
-        }
-
-        public String getProductImage() {
-            return productInfo.getProductImage();
-        }
-
-        public Integer getFinalPrice() {
-            return productInfo.getFinalPrice();
-        }
-
-        public String getOptionName() {
-            return productInfo.getOptionName();
-        }
-
-        public Integer getQuantity() {
-            return productInfo.getQuantity();
-        }
-
-        public Integer getTotalPrice() {
-            return productInfo.getTotalPrice();
-        }
-
-        public Integer getDiscountRate() {
-            return productInfo.getDiscountRate();
-        }
-
-        public Integer getOriginalPrice() {
-            return productInfo.getOriginalPrice();
-        }
+        public Long getBrandId(){return productInfo.getBrandId();}
+        public String getBrandName(){return productInfo.getBrandName();}
+        public String getBrandImage(){return productInfo.getBrandImage();}
+        public Long getProductId(){return productInfo.getProductId();}
+        public String getProductName(){return productInfo.getProductName();}
+        public String getProductImage(){return productInfo.getProductImage();}
+        public Integer getFinalPrice(){return productInfo.getFinalPrice();}
+        public String getOptionName(){return productInfo.getOptionName();}
+        public Integer getQuantity(){return productInfo.getQuantity();}
+        public Integer getTotalPrice(){return productInfo.getTotalPrice();}
+        public Integer getDiscountRate(){return productInfo.getDiscountRate();}
+        public Integer getOriginalPrice(){return productInfo.getOriginalPrice();}
     }
 
 
-    @PostMapping("/orders")
-    public String create(@RequestBody Long orderId) {
-        return "redirect:/order-complete/" + orderId; // GET 렌더
-    }
-
-    @GetMapping("/order-complete/{orderId}")
-    public String complete(@PathVariable Long orderId,
-                           @CookieValue(value = "Authorization", required = false) String auth,
-                           Model model) {
-        Long userId = tokenProviderService.getUserIdFromToken(auth);
-        OrderSummaryResponse.OrderSummaryDto response = orderService.getCompletionOrderSummary(orderId, userId);
-        model.addAttribute("orderData", response);
-        return "order/orderCompletePage";
-    }
 }
 

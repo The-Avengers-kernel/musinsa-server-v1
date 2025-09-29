@@ -35,7 +35,7 @@
             <div class="logo-separator">|</div>
 
             <div class="logo">
-                <a href="${pageContext.request.contextPath}/">MUSINSA</a>
+                <a href="${pageContext.request.contextPath}/main">MUSINSA</a>
             </div>
 
             <nav class="gnb">
