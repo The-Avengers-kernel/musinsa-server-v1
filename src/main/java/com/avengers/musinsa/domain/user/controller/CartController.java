@@ -31,8 +31,8 @@ public class CartController {
     private final TokenProviderService tokenProviderService;
 
     // 상품 상세 화면에서 장바구니 추가 POST Request
-    //@PostMapping("/carts")
-    /*public void addProductUserCart(
+    @PostMapping("/carts")
+    public void addProductUserCart(
             @CookieValue(value = "Authorization", required = false) String authorizationHeader,
             @RequestBody AddCartRequest addCartRequest) {
 
@@ -40,10 +40,16 @@ public class CartController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization token is missing");
         } else {
             Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-            return cartService.addProductUserCart(userId,addCartRequest);
+            cartService.addProductUserCart(userId,addCartRequest);
         }
-    }*/
+    }
     // 위 코드와 아래 코드는 같은데 postman용 userId를 url에 넣은 겁니다 나중엔 위에껄로 하시면 됩니다.
+//    @PostMapping("/{userId}/carts")
+//    public void addProductUserCart(
+//            @PathVariable Long userId,
+//            @RequestBody AddCartRequest addCartRequest) {
+//            cartService.addProductUserCart(userId,addCartRequest);
+//    }
     @PostMapping("/{userId}/carts")
     public void addProductUserCart(
             @PathVariable Long userId,

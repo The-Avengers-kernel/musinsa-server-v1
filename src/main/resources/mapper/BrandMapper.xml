@@ -40,7 +40,7 @@
 
     <!--브랜드 최초 좋아요 하기(레코드 추가)-->
     <insert id="insertUserBrandLike">
-        INSERT INTO user_brand_likes (user_brand_like_id, user_id, brand_id, liked) VALUES (user_brand_likes_seq.NEXTVAL,#{userId}, #{brandId}, 1)
+        INSERT INTO user_brand_likes (user_brand_like_id, user_id, brand_id, liked) VALUES (SEQ_USER_BRAND_LIKES.NEXTVAL,#{userId}, #{brandId}, 1)
     </insert>
 
     <!--브랜드 테이블의 좋아요 수+1-->

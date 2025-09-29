@@ -16,7 +16,7 @@ import org.apache.ibatis.annotations.Param;
 public interface ProductMapper {
     List<Product> findAllProducts();
 
-    ProductDetailResponse findProductById(Long productID);
+    ProductDetailResponse findProductById(@Param("productId") Long productId, @Param("userId") Long userId);
 
     List<RecommendationResponse> getRecommendationProductList(@Param("gender") Gender gender);
 

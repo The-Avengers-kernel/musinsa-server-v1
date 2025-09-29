@@ -26,7 +26,7 @@ public interface ProductRepository {
     List<Product> findAllProducts();
 
     // 상품 ID를 받아서 특정 상품 하나를 조회하는 메서드
-    ProductDetailResponse findProductById(Long productId);
+    ProductDetailResponse findProductById(Long productId, Long userId);
 
     ProductVariantsResponse getProductOption(Long productId);
 

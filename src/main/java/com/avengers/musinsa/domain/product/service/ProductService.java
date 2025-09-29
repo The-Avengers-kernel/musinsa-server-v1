@@ -13,7 +13,7 @@ import java.util.*;
 
 public interface ProductService {
 
-    ProductDetailResponse getProductById(Long productId);
+    ProductDetailResponse getProductById(Long productId, Long userId);
 
     //ProductVariantsResponse getProductVariants(Long productId);
 
@@ -22,13 +22,14 @@ public interface ProductService {
 
     List<RecommendationResponse> getRecommendationProductList(Gender gender);
 
+
     Map<Long, List<ProductsInCartInfoResponse.OptionGroup>> getGroupsByProductIds(List<Long> productIds);
 
     // 상품 리뷰 목록 조회
     List<ProductReviewsResponse> getProductReviews(Long productId);
 
     // 상품상세 사이즈 리스트 조회
-    Object getProductDetailSizeList(Long productId);
+    Object getProductDetailSizeList(Long productId,Long userId);
 
     // 상품 상세 설명 조회 api
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);

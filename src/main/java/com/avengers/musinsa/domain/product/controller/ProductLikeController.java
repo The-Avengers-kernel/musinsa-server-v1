@@ -15,9 +15,8 @@ public class ProductLikeController {
     private final ProductService productService;
     private final TokenProviderService tokenProviderService;
 
-    /*//상품 좋아요 토글 기능
+    //상품 좋아요 토글 기능
     @PostMapping("/products/{productId}/liked")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ProductLikeResponse ProductLikeToggle(@PathVariable Long productId, @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         if (authorizationHeader == null || authorizationHeader.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization token is missing");
@@ -26,12 +25,12 @@ public class ProductLikeController {
             System.out.println("userId = " + userId);
             return productService.ProductLikeToggle(userId, productId);
         }
-    }*/
+    }
 
     //상품 좋아요 토글 기능
-    @PostMapping("/{userId}/products/{productId}/liked")
-    public ProductLikeResponse ProductLikeToggle(@PathVariable Long productId, @PathVariable Long userId) {
-            return productService.ProductLikeToggle(userId, productId);
-        }
+//    @PostMapping("/{userId}/products/{productId}/liked")
+//    public ProductLikeResponse ProductLikeToggle(@PathVariable Long productId, @PathVariable Long userId) {
+//            return productService.ProductLikeToggle(userId, productId);
+//        }
 
 }

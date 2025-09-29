@@ -1,6 +1,5 @@
 package com.avengers.musinsa.domain.product.repository;
 
-import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest;
 import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Product;
@@ -9,7 +8,6 @@ import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
-import com.avengers.musinsa.mapper.OrderMapper;
 import com.avengers.musinsa.mapper.ProductMapper;
 
 import java.util.List;
@@ -31,8 +29,8 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     // 상품 ID를 받아서 특정 상품 하나를 조회하는 메서드
     @Override
-    public ProductDetailResponse findProductById(Long productId) {
-        return this.productMapper.findProductById(productId);
+    public ProductDetailResponse findProductById(Long productId, Long userId) {
+        return this.productMapper.findProductById(productId,userId);
     }
 
     @Override

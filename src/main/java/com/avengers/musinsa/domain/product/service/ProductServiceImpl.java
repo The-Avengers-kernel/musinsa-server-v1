@@ -29,8 +29,8 @@ public class ProductServiceImpl implements ProductService {
     private final SearchLogService searchLogService;
 
     @Override
-    public ProductDetailResponse getProductById(Long productId) {
-        ProductDetailResponse productInfo = productRepository.findProductById(productId);
+    public ProductDetailResponse getProductById(Long productId, Long userId) {
+        ProductDetailResponse productInfo = productRepository.findProductById(productId, userId);
         List<ProductImage> productImage = productRepository.findProductImageById(productId);
         productInfo.getProductImageList().addAll(productImage);
         return productInfo;
@@ -117,9 +117,9 @@ public class ProductServiceImpl implements ProductService {
 
     // 상품상세 사이즈 리스트 조회
     @Override
-    public Object getProductDetailSizeList(Long productId) {
+    public Object getProductDetailSizeList(Long productId, Long userId) {
         // 상품 정보 가져오기
-        ProductDetailResponse product = productRepository.findProductById(productId);
+        ProductDetailResponse product = productRepository.findProductById(productId,userId);
 
         // 상품 컬럼에서 sizeDetailImageId를 찾는다.
         Long sizeDetailImageId = product.getSizeDetailImageId();

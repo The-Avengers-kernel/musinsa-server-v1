@@ -18,6 +18,9 @@ public class ProductDetailResponse {
     private int finalprice;
     private String detailSizeImage;
 
+    private boolean isProductLiked;  // 상품 좋아요 여부
+    private boolean isBrandLiked;    // 브랜드 좋아요 여부
+
     private Long brandId;
     private String brandName;
     private int brandLikeCnt;
