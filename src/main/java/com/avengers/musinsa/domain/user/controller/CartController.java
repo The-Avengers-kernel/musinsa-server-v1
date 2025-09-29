@@ -48,29 +48,25 @@ public class CartController {
     public void addProductUserCart(
             @PathVariable Long userId,
             @RequestBody AddCartRequest addCartRequest) {
-            cartService.addProductUserCart(userId,addCartRequest);
+        cartService.addProductUserCart(userId, addCartRequest);
     }
 
 
-    @GetMapping("/carts/{userId}")
-    public List<ProductsInCartInfoResponse> productsInCart(@PathVariable Long userId) {
+    @GetMapping("/carts")
+    public List<ProductsInCartInfoResponse> productsInCart(
+            @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+
         return cartService.getProductsInCart(userId);
     }
 
-//    @PatchMapping("/carts/{productId}")
-//    public ProductsInCartInfoResponse updateProductInCart(
-//            @PathVariable Long productId,
-//            @CookieValue(value = "Authorization", required = false) String authorizationHeader,
-//            ProductOptionUpdateRequest productOptionUpdateRequest) {
-
-    /// /        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-    @PatchMapping("/{userId}/carts/{productId}")
+    @PatchMapping("/carts/{productId}")
     public List<ProductsInCartInfoResponse> updateProductInCart(
             @PathVariable Long productId,
-            @PathVariable Long userId,
+            @CookieValue(value = "Authorization", required = false) String authorizationHeader,
             @RequestBody ProductOptionUpdateRequest productOptionUpdateRequest) {
-//        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
 
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
         return cartService.updateProductOption(userId, productId, productOptionUpdateRequest);
     }
 
