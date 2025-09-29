@@ -7,7 +7,6 @@
     <meta charset="utf-8"/>
     <title>검색 화면</title>
     <link rel="stylesheet" href="<c:url value='/resources/css/header.css'/>">
-    <!-- 여기에 네가 붙여준 CSS를 /resources/css/search.css 로 저장해두었어야 함 -->
     <link rel="stylesheet" href="<c:url value='/resources/css/search.css'/>">
 </head>
 <body>
