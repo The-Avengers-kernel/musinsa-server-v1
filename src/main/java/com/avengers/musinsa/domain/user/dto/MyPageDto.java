@@ -1,18 +1,17 @@
 package com.avengers.musinsa.domain.user.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Data
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class MyPageDto {
     private Long userId;
     private String name;
     private String username;
+    private String nickname;
     private String mobile;
     private Integer userMileage;
     private String profileImage;

@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/mypage")
@@ -37,8 +37,18 @@ public class MyPageController {
 
         return ResponseEntity.ok(userProfile);
 
+    }
 
+    @PostMapping("/nickname")
+    public ResponseEntity< MyPageDto> updateNickname(@RequestBody MyPageDto request, Principal principal) {
+        MyPageDto updateUser = myPageService.updateNickname(principal.getName(), request.getNickname());
+        return ResponseEntity.ok(updateUser);
+    }
 
+    @PostMapping("/profile-image")
+    public ResponseEntity<MyPageDto> updateProfileImage(@RequestParam("file") MultipartFile file, Principal principal) {
+        MyPageDto updatedUser = myPageService.updateProfileImage(principal.getName(), file);
+        return ResponseEntity.ok(updatedUser);
     }
 
 
