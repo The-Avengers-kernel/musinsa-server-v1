@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -25,9 +26,9 @@ public class OrderViewController {
     private final ProductVariantService productVariantService;
 
     @PostMapping("/completion-order")
-    public ResponseEntity<OrderCreateResponse> createOrder(@RequestBody OrderCreateRequest request,
-                              @CookieValue(value = "Authorization", required = false) String authorization){
-        System.out.println("메서드 실행");
+    public String createOrder(@RequestBody OrderCreateRequest request,
+                                                           @CookieValue(value = "Authorization", required = false) String authorization,
+                                                           Model model){
         Long userId = tokenProviderService.getUserIdFromToken(authorization);
 
         //관련된 정보들 세팅
@@ -48,14 +49,20 @@ public class OrderViewController {
             // HashMap 생성 후 설정
             HashMap<String, String> options = new HashMap<>();
             options.put("size", variant.getSizeValue());
+            productLine.setOrderItemSize(variant.getSizeValue());
             options.put("color", variant.getColorValue());
+            productLine.setColor(variant.getColorValue());
             productLine.setOptions(options);  // ← 생성한 Map을 설정
         }
 
         OrderCreateResponse orderCreateResponse = orderService.createOrder(userId, request);
         System.out.println(orderCreateResponse.getOrderId());
-        return ResponseEntity.ok(orderCreateResponse);
+
+
+        return "orders/order-complete/"+orderCreateResponse.getOrderId();
 
     }
+
+
 
 }

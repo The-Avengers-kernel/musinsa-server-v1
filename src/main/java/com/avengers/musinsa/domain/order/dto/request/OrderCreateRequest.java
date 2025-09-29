@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.swing.border.Border;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -61,6 +63,11 @@ public class OrderCreateRequest {
         private Integer finalPrice;
         private int quantity;
         private String optionName;
+        private Integer discountRate;
+        private Integer productDiscountAmount;
+        private String color;
+        private String orderItemSize;
+        private String material;
 
         public Integer getTotalPrice() {
             return finalPrice != null ? finalPrice * quantity : 0;

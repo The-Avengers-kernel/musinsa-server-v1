@@ -545,6 +545,7 @@
                 <c:set var="totalDiscount" value="${totalDiscount + (product.originalPrice * product.quantity - product.totalPrice)}" />
             </c:forEach>
 
+
             <c:set var="totalOrderPrice" value="${totalOriginalProductPrice - totalDiscount}" />
 
             <div class="summary-row">
@@ -779,7 +780,9 @@
             options: {},
             finalPrice: ${product.finalPrice},
             quantity: ${product.quantity},
-            optionName: '${product.optionName}'
+            optionName: '${product.optionName}',
+            discountRate : ${product.discountRate},
+            productDiscountAmount : ${(product.originalPrice - product.finalPrice) * product.quantity }
         });
         </c:forEach>
 

@@ -36,24 +36,20 @@ public class OrderService {
     public OrderCreateResponse createOrder(Long userId, OrderCreateRequest orderCreateRequest) {
         // 배송 예정 정보ID, 배송 요청사항 타입ID, 배송 상태 ID와 여러 배송 정보 배송정보 테이블에 저장
         // 과 동시에 배송테이블 ID 가져오기
-        System.out.println("ship 만들기 전");
         Long shippingId = orderRepository.createShipment(orderCreateRequest);
         System.out.println(shippingId);
-        System.out.println("ship 만들기 후");
+
 
         // 주문 정보 저장 후 주문 ID 가져오기
         Long userAddressId = orderCreateRequest.getAddressId();
-        System.out.println("order 만들기 전");
         orderRepository.createOrder(userId, shippingId, orderCreateRequest.getPayment());
         Long orderId = orderCreateRequest.getPayment().getOrderId();
-        System.out.println("order 만들기 후");
 
         // 주문서 상품 내역 주문한 상품들 순회하며 저장
         List<OrderCreateRequest.ProductLine> orderProducts = orderCreateRequest.getProduct();
         for (ProductLine orderProduct : orderProducts) {
-            System.out.println(orderProduct.getFinalPrice());
+
             orderRepository.createOrderItems(orderId, orderProduct, orderCreateRequest.getCouponId());
-            System.out.println("orderItems 샹성 중");
 
         }
         System.out.println("orderItems 샹성 완료");
