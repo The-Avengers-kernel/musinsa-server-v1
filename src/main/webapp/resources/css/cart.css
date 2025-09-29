@@ -122,17 +122,19 @@ body {
 
 
 .name {
-    font-weight: 600
+    font-weight: 600;
+    font-size: 13px
 }
 
 .meta {
     color: #98a1a8;
-    font-size: 12px;
+    font-size: 13px;
     margin-top: 2px
 }
 
 .price {
     font-weight: 700;
+    font-size: 13px;
     margin-top: 8px
 }
 

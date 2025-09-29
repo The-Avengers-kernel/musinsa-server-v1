@@ -1,4 +1,4 @@
-package com.avengers.musinsa.domain.brand.dto.response;
+package com.avengers.musinsa.domain.category.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

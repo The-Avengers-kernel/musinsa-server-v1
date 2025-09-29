@@ -15,24 +15,10 @@ public class BrandRepositoryImpl implements BrandRepository {
     private final BrandMapper brandMapper;
 
     @Override
-    public List<BrandResponse> getBrandList() {
-        return brandMapper.getBrandList();
-    }
-
-    @Override
     public List<BrandDto> selectRecentVisitedBrands(Long userId){
         return this.brandMapper.selectRecentVisitedBrands(userId);
     }
 
-    @Override
-    public List<BrandResponse> findBrandsByEnglishFirstLetter(char brandFirstLetter) {
-        return this.brandMapper.findBrandsByEnglishFirstLetter(brandFirstLetter);
-    }
-
-    @Override
-    public List<BrandResponse> findBrandsByKoreanFirstLetter(char brandFirstLetter) {
-        return this.brandMapper.findBrandsByKoreanFirstLetter(brandFirstLetter);
-    }
     @Override
     public List<BrandResponse> findByBrandName(String brandName) {
         return this.brandMapper.findByBrandName(brandName);
@@ -73,8 +59,4 @@ public class BrandRepositoryImpl implements BrandRepository {
     }
     //
 
-    @Override
-    public List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId) {
-        return this.brandMapper.getBrandsByCategoryId(brandCategoryId);
-    }
 }

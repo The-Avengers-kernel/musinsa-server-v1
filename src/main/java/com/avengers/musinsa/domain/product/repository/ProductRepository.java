@@ -2,7 +2,6 @@ package com.avengers.musinsa.domain.product.repository;
 
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.product.dto.response.BottomProductDetailSizeListResponse;
-import com.avengers.musinsa.domain.product.dto.response.CategoryProductResponse;
 import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
 import com.avengers.musinsa.domain.product.dto.response.ProductCategoryListResponse;
 import com.avengers.musinsa.domain.product.dto.response.ProductDetailDescriptionResponse;
@@ -44,8 +43,6 @@ public interface ProductRepository {
 
 
     List<ProductImage> findProductImageById(Long productId);
-
-    List<CategoryProductResponse> getCategoryProductList();
 
     // 상품 리뷰 목록 조회
     List<ProductReviewsResponse> getProductReviews(Long productId);

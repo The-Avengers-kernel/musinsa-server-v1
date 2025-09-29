@@ -3,8 +3,10 @@ package com.avengers.musinsa.viewController;
 import com.avengers.musinsa.domain.order.controller.OrderPageController;
 import com.avengers.musinsa.domain.order.dto.request.OrderPageRequest;
 import com.avengers.musinsa.domain.order.dto.response.OrderPageResponse;
+import com.avengers.musinsa.domain.order.dto.response.OrderSummaryResponse;
 import com.avengers.musinsa.domain.order.dto.response.PriceInfoDto;
 import com.avengers.musinsa.domain.order.service.OrderPageService;
+import com.avengers.musinsa.domain.order.service.OrderService;
 import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +29,7 @@ public class OrderPageViewController {
 
     private final TokenProviderService tokenProviderService;
     private final OrderPageService orderPageService;
+    private final OrderService orderService;
 
     @PostMapping("/orders-page")
     @ResponseBody
@@ -123,6 +126,21 @@ public class OrderPageViewController {
         public Integer getTotalPrice(){return productInfo.getTotalPrice();}
         public Integer getDiscountRate(){return productInfo.getDiscountRate();}
         public Integer getOriginalPrice(){return productInfo.getOriginalPrice();}
+    }
+
+    @PostMapping("/orders")
+    public String create(@RequestBody Long orderId) {
+        return "redirect:/order-complete/" + orderId; // GET 렌더
+    }
+
+    @GetMapping("/order-complete/{orderId}")
+    public String complete(@PathVariable Long orderId,
+                           @CookieValue(value = "Authorization", required = false) String auth,
+                           Model model) {
+        Long userId = tokenProviderService.getUserIdFromToken(auth);
+        OrderSummaryResponse.OrderSummaryDto response = orderService.getCompletionOrderSummary(orderId, userId);
+        model.addAttribute("orderData", response);
+        return "order/orderCompletePage";
     }
 }
 
