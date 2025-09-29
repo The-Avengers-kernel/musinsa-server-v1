@@ -17,4 +17,14 @@ public class MyPageRepository {
         return myPageMapper.findUserProfileByUserName(username);
     }
 
+
+
+    public void updateNickname(String username, String nickname) {
+        myPageMapper.updateNickname(username, nickname);
+    }
+
+    public void updateProfileImage(String username, String profileImage) {
+        myPageMapper.updateProfileImage(username, profileImage);
+
+    }
 }

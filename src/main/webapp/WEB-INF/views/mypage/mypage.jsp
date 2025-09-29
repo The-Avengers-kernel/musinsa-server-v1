@@ -15,21 +15,27 @@
 
         /* 프로필 카드 */
         .profile-card {
-            background: #fff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
         }
         .profile-info { display: flex; align-items: center; gap: 15px; }
-        .profile-img {
-            width: 60px; height: 60px;
-            border-radius: 50%; background: #e9ecef; overflow: hidden;
-        }
+        .profile-img { width: 60px; height: 60px; border-radius: 50%; overflow: hidden; }
         .profile-img img { width: 100%; height: 100%; object-fit: cover; }
+        .nickname { font-size: 18px; font-weight: bold; margin: 0; }
+        .grade { font-size: 14px; color: #888; margin: 2px 0 0; }
+
+        .summary-section {
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+
         .profile-text p { margin: 2px 0; font-size: 14px; color: #333; }
         .profile-text .name { font-weight: bold; font-size: 16px; }
         .profile-actions { text-align: right; font-size: 12px; }
@@ -108,18 +114,12 @@
             <div class="profile-text">
                 <p id="profileName" class="name">
                     <c:choose>
-                        <c:when test="${not empty displayName}">${displayName} 님</c:when>
+                        <c:when test="${not empty nickname}">${nickname} 님</c:when>
                         <c:otherwise>회원 님</c:otherwise>
                     </c:choose>
                 </p>
-                <p id="profileGrade" class="name">
-                    <c:out value="${gradeName}"/>
-                </p>
-            </div>
 
-        </div>
-        <div>
-            <!-- 요약 정보 (적립금) -->
+            </div>
             <div class="profile-summary">
                 <div class="summary-item">
                     <span class="label">적립금</span>
@@ -128,11 +128,14 @@
                     </span>
                 </div>
             </div>
+
         </div>
+
         <div class="profile-actions">
-            <a href="/mypage/edit">프로필 수정</a>
-            <a href="/mypage/settings">⚙️</a>
+            <a href="${pageContext.request.contextPath}/mypage/settings">프로필 수정</a>
+            <a href="${pageContext.request.contextPath}/mypage/settings">⚙️</a>
         </div>
+
     </section>
 
 
@@ -152,11 +155,10 @@
     <section class="menu-section">
         <div class="menu-item">주문 내역 <span class="menu-arrow">›</span></div>
         <div class="menu-item">취소/반품/교환 내역 <span class="menu-arrow">›</span></div>
-        <div class="menu-item">재입고 알림 내역 <span class="menu-arrow">›</span></div>
         <div class="menu-item">최근 본 상품 <span class="menu-arrow">›</span></div>
         <div class="menu-item">내 쿠폰 <span class="menu-arrow">›</span></div>
         <div class="menu-item">적립금 내역 <span class="menu-arrow">›</span></div>
-        <div class="menu-item" onclick="location.href='/shipping-address-popup'">배송지 관리<span class="menu-arrow">›</span></div>
+
 
     </section>
 
@@ -180,15 +182,14 @@
 
         $(function(){
 
-
-
             // 사용자 정보 불러오기
             $.getJSON("/api/mypage/profile", function(user){
                 const name = (user.name && user.name.trim().length > 0) ? user.name : user.username;
-                if(name){
-                    $("#profileName").text(name + " 님");
+                if(user.nickname && user.nickname.trim().length > 0){
+                    $("#profileName").text(user.nickname + " 님");
+                } else {
+                    $("#profileName").text("회원 님");
                 }
-                $("#profileGrade").text(user.grade || "");
 
                 const mileage = typeof user.userMileage === "number" ? user.userMileage : 0;
                 $("#profileMileage").text(mileage.toLocaleString() + " P");
