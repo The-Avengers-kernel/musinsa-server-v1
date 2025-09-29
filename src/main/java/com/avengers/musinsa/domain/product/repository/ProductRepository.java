@@ -12,6 +12,7 @@ import com.avengers.musinsa.domain.product.dto.response.ProductVariantsResponse;
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.dto.response.TopProductDetailSizeListResponse;
 import com.avengers.musinsa.domain.product.dto.response.UserProductStatus;
+import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.entity.Product;
@@ -25,7 +26,7 @@ public interface ProductRepository {
     List<Product> findAllProducts();
 
     // 상품 ID를 받아서 특정 상품 하나를 조회하는 메서드
-    ProductDetailResponse findProductById(Long productId);
+    ProductDetailResponse findProductById(Long productId, Long userId);
 
     ProductVariantsResponse getProductOption(Long productId);
 
@@ -90,5 +91,7 @@ public interface ProductRepository {
 
     //products 테이블의 좋아요 수 -1
     void minusProductLikeCnt(Long productId);
+
+    List<ProductVariantDetailDto> findVariantDetailsByProductId(Long productId);
 }
 

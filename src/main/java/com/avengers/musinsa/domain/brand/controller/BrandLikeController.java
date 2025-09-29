@@ -17,7 +17,7 @@ public class BrandLikeController {
 
     //브랜드 좋아요 토글 기능
     @PostMapping("/brands/{brandId}/liked")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+
     public BrandLikeResponse BrandLikeToggle(@PathVariable Long brandId, @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         if (authorizationHeader == null || authorizationHeader.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization token is missing");

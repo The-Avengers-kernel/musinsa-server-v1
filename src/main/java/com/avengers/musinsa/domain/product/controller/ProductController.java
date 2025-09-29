@@ -8,8 +8,10 @@ import java.util.List;
 
 import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController // 이 클래스는 API용 컨트롤러라는 애너테이션
 @RequestMapping("/api/v1/products") // 이 컨트롤러의 모든 API는 /api/v1/products로 시작
@@ -21,12 +23,19 @@ public class ProductController {
 
     // "해당 productId 상품 정보를 반환해준다.
     @GetMapping("{productId}")
-    public ProductDetailResponse getDetailProduct(@PathVariable Long productId) {
-        return productService.getProductById(productId);
+    public ProductDetailResponse getDetailProduct(@PathVariable Long productId, @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+
+        if (authorizationHeader == null || authorizationHeader.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization token is missing");
+        } else {
+            Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+
+            return productService.getProductById(productId,userId);
+        }
     }
 
     @GetMapping("/{productId}/options")
-    public ProductVariantsResponse getProductVariants(@PathVariable Long productId) {
+    public List<ProductVariantDetailDto> getProductVariants(@PathVariable Long productId) {
         return productService.getProductVariants(productId);
     }
 
@@ -60,8 +69,14 @@ public class ProductController {
 
     // 상품상세 사이즈 리스트 조회
     @GetMapping("{productId}/detail-size-list")
-    public Object getProductDetailSizeList(@PathVariable Long productId) {
-        return productService.getProductDetailSizeList(productId);
+    public Object getProductDetailSizeList(@PathVariable Long productId, @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+        if (authorizationHeader == null || authorizationHeader.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization token is missing");
+        } else {
+            Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+
+            return productService.getProductDetailSizeList(productId, userId);
+        }
     }
 
     // 상품 상세 설명 조회 api
