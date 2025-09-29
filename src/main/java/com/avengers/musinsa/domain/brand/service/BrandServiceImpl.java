@@ -17,18 +17,6 @@ import java.util.List;
 public class BrandServiceImpl implements BrandService{
     private final BrandRepository brandRepository;
 
-    //카테고리 - 브랜드 목록 전체 조회
-    @Override
-    public List<BrandResponse> getBrandList() {
-        return brandRepository.getBrandList();
-    }
-
-    //카테고리 - 카테고리 별로 브랜드 목록 조회
-    @Override
-    public List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId) {
-        return brandRepository.getBrandsByCategoryId(brandCategoryId);
-    }
-
     //최근 방문한 브랜드 조회
     @Override
     public List<BrandDto> getRecentVisitBrands(Long userId) {
@@ -40,20 +28,6 @@ public class BrandServiceImpl implements BrandService{
         return brandRepository.selectRecentVisitedBrands(userId);
     }
 
-    //카테고리 - 초성(ㄱ, A)로 브랜드 조회
-    @Override
-    public List<BrandResponse> getCategoryBrandsByFirstLetter(String brandFirstLetter){
-        if (brandFirstLetter == null || brandFirstLetter.isEmpty()) {
-            return List.of();
-        }
-
-        // 영어인지 한글인지 판단
-        if (brandFirstLetter.matches("[A-Za-z]")) {
-            return brandRepository.findBrandsByEnglishFirstLetter(brandFirstLetter);
-        } else {
-            return brandRepository.findBrandsByKoreanFirstLetter(brandFirstLetter);
-        }
-    }
 
     @Override
     public List<BrandResponse> findByBrandName(String brandName) {

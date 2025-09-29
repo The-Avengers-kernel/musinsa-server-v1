@@ -8,13 +8,8 @@ import com.avengers.musinsa.domain.brand.dto.response.UserBrandStatus;
 import java.util.List;
 
 public interface BrandRepository {
-    List<BrandResponse> getBrandList();
 
     List<BrandDto> selectRecentVisitedBrands(Long userId);
-
-    List<BrandResponse> findBrandsByEnglishFirstLetter(String brandFirstLetter);
-
-    List<BrandResponse> findBrandsByKoreanFirstLetter(String brandFirstLetter);
 
     void insertUserBrandLike(Long userId, Long brandId);
 
@@ -22,8 +17,6 @@ public interface BrandRepository {
 
 
     BrandLikeResponse getIsLikedBrand(Long userId, Long brandId);
-
-    List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
 
     void switchBrandLike(Long userId, Long brandId);
 

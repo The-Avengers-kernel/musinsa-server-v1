@@ -14,17 +14,10 @@ import java.util.List;
 public interface BrandMapper {
     List<BrandDto> selectRecentVisitedBrands(Long userId);
 
-    List<BrandResponse> getBrandList();
-
-    List<BrandResponse> findBrandsByEnglishFirstLetter(String brandFirstLetter);
-
-    List<BrandResponse> findBrandsByKoreanFirstLetter(String brandFirstLetter);
-
     //브랜드 좋아요 토글
     UserBrandStatus getUserBrandStatus(Long userId, Long brandId);
     void insertUserBrandLike(@Param("userId") Long userId, @Param("brandId") Long brandId);
     BrandLikeResponse getIsLikedBrand(Long userId, Long brandId);
-    List<BrandResponse> getBrandsByCategoryId(Long brandCategoryId);
     void updateBrandLikeCnt(Long brandId);
     void switchBrandLike(Long userId, Long brandId);
     void plusBrandLikeCnt(Long brandId);

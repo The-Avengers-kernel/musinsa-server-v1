@@ -34,6 +34,7 @@ $(document).ready(() => {
     let currentCategoryId = "all";
     let currentInitial = "popular";
     let allBrands = [];
+    let currentCategoryBrands = []; // 현재 카테고리의 브랜드 목록
 
     // 전체 브랜드 목록을 한 번에 불러오는 함수
     function loadAllBrands() {
@@ -61,34 +62,74 @@ $(document).ready(() => {
         currentCategoryId = categoryId;
         currentInitial = initial;
 
-        let filteredBrands = [...allBrands];
-
         // 카테고리별 필터링 (전체가 아닌 경우)
         if (categoryId !== "all") {
-            // 여기서 브랜드와 카테고리의 연결 로직이 필요합니다
-            // 현재는 모든 브랜드를 보여주지만, 실제로는 카테고리별 필터링 로직 추가 필요
-            console.log(`카테고리 ${categoryId}로 필터링 - 현재는 모든 브랜드 표시`);
+            // 카테고리별 브랜드 API 호출
+            loadBrandsByCategory(categoryId, initial);
+        } else {
+            // 전체 브랜드에서 초성별 필터링
+            currentCategoryBrands = allBrands; // 전체 브랜드를 현재 카테고리로 설정
+            applyInitialFilter(allBrands, initial);
+        }
+    }
+
+    // 카테고리별 브랜드를 로드하는 함수
+    function loadBrandsByCategory(categoryId, initial = "popular") {
+        console.log(`카테고리 ${categoryId}별 브랜드 로딩 시작`);
+
+        $.ajax({
+            url: `/api/v1/categories/${categoryId}/brands`,
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                console.log(`카테고리 ${categoryId} 브랜드 로드 완료:`, data);
+                // 현재 카테고리의 브랜드 목록 저장
+                currentCategoryBrands = data;
+                // 로드된 카테고리별 브랜드에 초성 필터 적용
+                applyInitialFilter(data, initial);
+            },
+            error: function(xhr, status, error) {
+                console.error(`카테고리 ${categoryId} 브랜드 로딩 실패:`, error);
+                if ($brandItemList.length) {
+                    $brandItemList.html("<li>해당 카테고리의 브랜드 정보를 불러오지 못했습니다.</li>");
+                }
+            }
+        });
+    }
+
+    // 초성별 필터링을 적용하는 함수 (현재 카테고리 내에서만 필터링)
+    function applyInitialFilter(brands, initial) {
+        // 인기순인 경우 전달받은 브랜드 목록 그대로 렌더링
+        if (initial === "popular") {
+            renderBrands(brands);
+            return;
         }
 
-        // 초성별 필터링
-        if (initial !== "popular") {
-            filteredBrands = filteredBrands.filter(brand => {
-                const brandName = brand.brandNameKr || brand.brandNameEn || '';
-                const firstChar = brandName.charAt(0);
-
-                // 한글 초성 체크
-                if (/[ㄱ-ㅎ]/.test(initial)) {
+        // 초성별 클라이언트 사이드 필터링
+        const filteredBrands = brands.filter(brand => {
+            // 한글 초성 체크
+            if (/[ㄱ-ㅎ]/.test(initial)) {
+                const brandNameKr = brand.brandNameKr || '';
+                if (brandNameKr) {
+                    const firstChar = brandNameKr.charAt(0);
                     const chosung = getChosung(firstChar);
                     return chosung === initial;
                 }
-                // 영문 체크
-                else if (/[A-Z]/.test(initial)) {
+                return false;
+            }
+            // 영문 체크
+            else if (/[A-Z]/.test(initial)) {
+                const brandNameEn = brand.brandNameEn || '';
+                if (brandNameEn) {
+                    const firstChar = brandNameEn.charAt(0);
                     return firstChar.toUpperCase() === initial;
                 }
                 return false;
-            });
-        }
+            }
+            return false;
+        });
 
+        console.log(`${initial} 초성으로 필터링된 브랜드:`, filteredBrands.length, "개");
         renderBrands(filteredBrands);
     }
 
@@ -101,6 +142,7 @@ $(document).ready(() => {
         }
         return char;
     }
+
 
     loadAllBrands();
 
@@ -161,18 +203,6 @@ $(document).ready(() => {
         return mapping[categoryId] || 'tops';
     }
 
-    function getCategoryName(categoryId) {
-        const mapping = {
-            1: '상의',
-            2: '아우터',
-            3: '바지',
-            4: '원피스/스커트',
-            5: '가방',
-            6: '패션소품',
-            7: '속옷/홈웨어'
-        };
-        return mapping[categoryId] || '상의';
-    }
 
 
     function loadSubCategories(parentCategoryId) {
