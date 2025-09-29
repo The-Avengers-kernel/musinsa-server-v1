@@ -497,7 +497,7 @@
         };
 
         $.ajax({
-            url: BASE + '/api/v1/' + encodeURIComponent(userId) + '/carts/' + encodeURIComponent(productId),
+            url: BASE + '/api/v1/carts/' + encodeURIComponent(productId),
             type: 'PATCH',
             contentType: 'application/json',
             data: JSON.stringify(payload)
