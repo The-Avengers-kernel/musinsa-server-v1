@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%@ include file="../main/header.jsp" %>
     <link rel="stylesheet" href="<c:url value='/resources/css/header.css'/>">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <title>주문서 - MUSINSA</title>
     <style>
         * {
@@ -91,6 +93,46 @@
         .info-value {
             flex: 1;
             color: #333;
+        }
+
+        /* 배송 요청사항 스타일 */
+        .delivery-request-section {
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .delivery-request-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 10px;
+            cursor: pointer;
+            background-color: white;
+        }
+
+        .delivery-request-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .delivery-request-input.active {
+            display: block;
+        }
+
+        .delivery-request-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+            line-height: 1.4;
         }
 
         .product-section {
@@ -248,43 +290,11 @@
             color: #e74c3c;
         }
 
-        .coupon-section {
-            margin: 20px 0;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        .coupon-select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-
         .payment-info {
             font-size: 12px;
             color: #666;
             margin-top: 15px;
             line-height: 1.4;
-        }
-
-        .delivery-date {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .coupon-btn {
-            background-color: #f8f8f8;
-            border: 1px solid #ddd;
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            margin-left: 10px;
         }
 
         .divider {
@@ -359,40 +369,6 @@
             color: #4285f4;
             border: 1px solid #e0e0e0;
         }
-
-        .payment-description {
-            margin-left: 35px;
-            padding: 12px 16px;
-            background-color: #f0f7ff;
-            font-size: 13px;
-            color: #333;
-            border-radius: 6px;
-            margin-top: 8px;
-            display: none;
-        }
-
-        .payment-option input[type="radio"]:checked ~ .payment-description {
-            display: block;
-        }
-
-        .payment-action {
-            margin-top: 12px;
-        }
-
-        .payment-register-btn {
-            background-color: #4285f4;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .payment-register-btn:hover {
-            background-color: #3367d6;
-        }
     </style>
 </head>
 <body>
@@ -417,9 +393,27 @@
                 <span class="info-label">주소</span>
                 <span class="info-value" id="recipient-address">
                     (<span id="recipient-postcode">${buyerRecipientInfoAdapter.recipientPostCode}</span>)
-                    <span id="recipient-full-address">${buyerRecipientInfoAdapter.recipientAddress}
-                    ${buyerRecipientInfoAdapter.recipientDetailAddress}</span>
+                    <span id="recipient-full-address">${buyerRecipientInfoAdapter.recipientAddress}</span>
                 </span>
+            </div>
+
+            <!-- 배송 요청사항 (수령인 내부) -->
+            <div style="margin-top: 20px;">
+                <select id="deliveryRequestSelect" class="delivery-request-select" onchange="handleDeliveryRequestChange()">
+                    <option value="">배송 요청사항을 선택해주세요</option>
+                    <option value="문 앞에 놓아주세요">문 앞에 놓아주세요</option>
+                    <option value="경비실에 맡겨주세요">경비실에 맡겨주세요</option>
+                    <option value="택배함에 넣어주세요">택배함에 넣어주세요</option>
+                    <option value="배송 전에 연락 주세요">배송 전에 연락 주세요</option>
+                    <option value="custom">직접입력</option>
+                </select>
+                <input
+                        type="text"
+                        id="customDeliveryRequest"
+                        class="delivery-request-input"
+                        placeholder="배송 요청사항을 입력해주세요 (최대 50자)"
+                        maxlength="50"
+                >
             </div>
         </div>
 
@@ -442,13 +436,11 @@
                             <div class="price-info">
                                 <c:if test="${product.discountRate > 0}">
                                     <span class="original-price">
-                                         <!-- 개당 원래 가격 * 수량 -->
                                         <fmt:formatNumber value="${product.originalPrice * product.quantity}" type="number"/>원
                                     </span>
                                     <span class="discount-rate">${product.discountRate}%</span>
                                 </c:if>
                                 <span>
-                                    <!-- 개당 할인 가격 * 수량 -->
                                     <fmt:formatNumber value="${product.finalPrice * product.quantity}" type="number"/>원
                                 </span>
                             </div>
@@ -457,8 +449,6 @@
                 </div>
             </c:forEach>
         </div>
-
-        <div class="divider-thin"></div>
 
         <div class="divider-thin"></div>
 
@@ -538,7 +528,6 @@
         </div>
 
         <div class="divider-thin"></div>
-
     </div>
 
     <!-- 오른쪽 섹션: 결제 금액 -->
@@ -552,16 +541,13 @@
             <c:set var="totalOrderPrice" value="0" />
 
             <c:forEach var="product" items="${orderProductAdapters}">
-                <!-- 상품가격 -->
                 <c:set var="totalOriginalProductPrice" value="${totalOriginalProductPrice + (product.originalPrice*product.quantity)}" />
-                <!-- 각 제품의 할인된 총 가격 = finalPrice * quantity -->
                 <c:set var="totalDiscount" value="${totalDiscount + (product.originalPrice * product.quantity - product.totalPrice)}" />
             </c:forEach>
 
             <c:set var="totalOrderPrice" value="${totalOriginalProductPrice - totalDiscount}" />
 
             <div class="summary-row">
-                <%--모든 상품의 원래 가격 (원래 가격 * 갯수)의 합--%>
                 <span>상품 금액</span>
                 <span id="originalPrice">
                     <fmt:formatNumber value="${totalOriginalProductPrice}" type="number"/>원
@@ -635,26 +621,33 @@
 
 <script>
     // 전역 변수
-    let totalProductPrice = ${totalOrderPrice}; // 할인 후 상품 금액
-    let maxPoints = ${buyerRecipientInfoAdapter.mileage}; // 보유 적립금
-    let maxUsablePoints = Math.floor(totalProductPrice * 0.07); // 적립금 사용 한도 (상품금액의 7%)
+    let totalProductPrice = ${totalOrderPrice};
+    let maxPoints = ${buyerRecipientInfoAdapter.mileage};
+    let maxUsablePoints = Math.floor(totalProductPrice * 0.07);
     let currentPointsUsed = 0;
-    let isPointsUsed = false; // 적립금 사용 상태
-
-    // 실제 사용 가능한 적립금 계산 (보유 적립금과 7% 한도 중 적은 값)
+    let isPointsUsed = false;
     let actualMaxUsable = Math.min(maxPoints, maxUsablePoints);
 
     // 페이지 로드 시 초기화
     document.addEventListener('DOMContentLoaded', function() {
-        // 적립금 한도 표시
         document.getElementById('pointsLimit').textContent = maxUsablePoints.toLocaleString();
-
-        // input의 max 속성 설정
         document.getElementById('pointsInput').setAttribute('max', actualMaxUsable);
-
-        // 초기 가격 표시 업데이트
         updatePriceDisplay();
     });
+
+    // 배송 요청사항 변경 처리
+    function handleDeliveryRequestChange() {
+        const select = document.getElementById('deliveryRequestSelect');
+        const customInput = document.getElementById('customDeliveryRequest');
+
+        if (select.value === 'custom') {
+            customInput.classList.add('active');
+            customInput.focus();
+        } else {
+            customInput.classList.remove('active');
+            customInput.value = '';
+        }
+    }
 
     // 적립금 사용 토글
     function togglePoints() {
@@ -662,14 +655,12 @@
         const toggleBtn = document.getElementById('pointsToggleBtn');
 
         if (!isPointsUsed) {
-            // 적립금 사용
             currentPointsUsed = actualMaxUsable;
             pointsInput.value = actualMaxUsable;
             toggleBtn.textContent = '사용 취소';
             toggleBtn.classList.add('cancel');
             isPointsUsed = true;
         } else {
-            // 적립금 사용 취소
             currentPointsUsed = 0;
             pointsInput.value = 0;
             toggleBtn.textContent = '최대 사용';
@@ -677,7 +668,6 @@
             isPointsUsed = false;
         }
 
-        // 화면 업데이트
         updatePriceDisplay();
     }
 
@@ -685,25 +675,70 @@
     function updatePriceDisplay() {
         const finalPrice = totalProductPrice - currentPointsUsed;
 
-        // 적립금 사용 표시 업데이트
-        document.getElementById('pointsAmount').textContent =
-            currentPointsUsed.toLocaleString();
+        document.getElementById('pointsAmount').textContent = currentPointsUsed.toLocaleString();
+        document.getElementById('finalAmount').textContent = finalPrice.toLocaleString() + '원';
+        document.getElementById('orderButtonAmount').textContent = finalPrice.toLocaleString() + '원';
+    }
 
-        // 총 결제 금액 업데이트
-        document.getElementById('finalAmount').textContent =
-            finalPrice.toLocaleString() + '원';
+    // 배송 요청사항 가져오기
+    function getDeliveryRequest() {
+        const select = document.getElementById('deliveryRequestSelect');
+        const customInput = document.getElementById('customDeliveryRequest');
 
-        // 결제 버튼 금액 업데이트
-        document.getElementById('orderButtonAmount').textContent =
-            finalPrice.toLocaleString() + '원';
+        if (select.value === 'custom') {
+            return customInput.value.trim();
+        } else if (select.value === '') {
+            return null;
+        } else {
+            return select.options[select.selectedIndex].text;
+        }
     }
 
     // 주문 처리
     function processOrder() {
         const finalAmount = totalProductPrice - currentPointsUsed;
-        if (confirm(finalAmount.toLocaleString() + '원을 결제하시겠습니까?')) {
-            alert('주문이 완료되었습니다!');
+        const deliveryRequest = getDeliveryRequest();
+
+        if (!confirm(finalAmount.toLocaleString() + '원을 결제하시겠습니까?')) {
+            return;
         }
+
+        const orderData = {
+            userId: null,
+            addressId: null,
+            shipping: {
+                recipientName: document.getElementById('recipient-name').textContent,
+                recipientPhone: document.getElementById('recipient-phone').textContent,
+                postalCode: document.getElementById('recipient-postcode').textContent,
+                recipientAddress: document.getElementById('recipient-full-address').textContent,
+                shippingDirectRequest: deliveryRequest
+            },
+            payment: {
+                totalAmount: finalAmount,
+                discountAmount: ${totalDiscount},
+                userOfReward: currentPointsUsed,
+                deliveryFee: 0,
+                paymentMethodId: getSelectedPaymentMethodId()
+            },
+            product: getProductsData()
+        };
+
+        console.log('전송할 주문 데이터:', orderData);
+
+        $.ajax({
+            url: '/order/completion-order',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(orderData),
+            success: function(response) {
+                console.log('주문 완료:', response);
+                alert('주문이 완료되었습니다!');
+            },
+            error: function(xhr, status, error) {
+                console.error('주문 실패:', error);
+                alert('주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
+        });
     }
 
     // 배송지 변경 팝업 열기
@@ -711,9 +746,7 @@
         const popup = window.open('/shipping-address-popup', 'addressPopup',
             'width=600,height=700,scrollbars=yes,resizable=yes');
 
-        // 팝업에서 배송지 정보를 받는 함수를 전역으로 정의
         window.updateAddressFromPopup = function(addressData) {
-            // 수령인 정보 업데이트
             document.getElementById('recipient-name').textContent = addressData.recipientName;
             document.getElementById('recipient-phone').textContent = addressData.recipientPhone;
             document.getElementById('recipient-postcode').textContent = addressData.postalCode;
@@ -722,6 +755,35 @@
             console.log('배송지 정보가 업데이트되었습니다:', addressData);
             popup.close();
         };
+    }
+
+    function getSelectedPaymentMethodId() {
+        const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
+        const paymentIds = {
+            'NHPay': 1,
+            'tossPay': 2,
+            'kakaoPay': 3,
+            'payco': 4
+        };
+
+        return selectedPayment ? paymentIds[selectedPayment.value] : 1;
+    }
+
+    function getProductsData() {
+        const products = [];
+
+        <c:forEach var="product" items="${orderProductAdapters}">
+        products.push({
+            productId: ${product.productId},
+            variantId: null,
+            options: {},
+            finalPrice: ${product.finalPrice},
+            quantity: ${product.quantity},
+            optionName: '${product.optionName}'
+        });
+        </c:forEach>
+
+        return products;
     }
 </script>
 </body>

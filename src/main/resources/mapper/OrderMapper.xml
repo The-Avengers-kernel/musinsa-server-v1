@@ -6,7 +6,7 @@
     <select id="getUserInfo" resultType="com.avengers.musinsa.domain.order.dto.response.UserInfoDTO" parameterType="Long">
         SELECT
             u.user_id as userId,
-            u.user_name as userName,
+            u.username as userName,
             ua.phone_number as phoneNumber,
             ua.address_line1 || ' ' || ua.address_line2     AS location
         FROM USERS u
@@ -19,11 +19,9 @@
         <selectKey keyProperty="shipping.shippingId" resultType="long" order="BEFORE">
             SELECT seq_shipments.NEXTVAL FROM dual
         </selectKey>
-        INSERT INTO SHIPMENTS (SHIPPING_ID,
-        SCHEDULED_DELIVERY_INFORMATION_ID,
-        SHIPPING_REQUEST_TYPE_ID,
+        INSERT INTO SHIPMENTS (
+        SHIPPING_ID,
         SHIPPING_STATUS_ID,
-        SHIPPING_INQUIRY,
         RECIPIENT_NAME,
         RECIPIENT_PHONE,
         RECIPIENT_ADDRESS,
@@ -31,17 +29,39 @@
         POSTAL_CODE)
         VALUES (
         #{shipping.shippingId},
-        #{shipping.scheduledDeliveryInformationId},
-        #{shipping.deliveryRequestId},
-        #{shipping.shippingStatusId},
-        NULL,
-        #{shipping.recipientName},
-        #{shipping.recipientPhone},
-        #{shipping.recipientAddress},
-        #{shipping.shippingDirectRequest},
-        #{shipping.postalCode})
+        #{shipping.shippingStatusId, jdbcType=NUMERIC},
+        #{shipping.recipientName, jdbcType=VARCHAR},
+        #{shipping.recipientPhone, jdbcType=VARCHAR},
+        #{shipping.recipientAddress, jdbcType=VARCHAR},
+        #{shipping.shippingDirectRequest, jdbcType=VARCHAR},
+        #{shipping.postalCode, jdbcType=VARCHAR})
     </insert>
 
+<!--    <insert id="createOrder">-->
+<!--        <selectKey keyProperty="payment.orderId" resultType="long" order="BEFORE">-->
+<!--            SELECT SEQ_ORDERS.NEXTVAL FROM dual-->
+<!--        </selectKey>-->
+<!--        INSERT INTO ORDERS (-->
+<!--        ORDER_ID,-->
+<!--        USER_ID,-->
+<!--        SHIPPING_ID,-->
+<!--        PAYMENT_METHOD_ID,==-->
+<!--        TOTAL_PRICE,-->
+<!--        ORDER_DISCOUNT_AMOUNT,-->
+<!--        FINAL_PRICE,-->
+<!--        ORDER_STATUS-->
+<!--        )-->
+<!--        VALUES(-->
+<!--        #{payment.orderId},-->
+<!--        #{userId, jdbcType=NUMERIC},-->
+<!--        #{shippingId, jdbcType=NUMERIC},-->
+<!--        #{payment.paymentMethodId, jdbcType=NUMERIC},-->
+<!--        #{payment.totalAmount, jdbcType=NUMERIC},-->
+<!--        #{payment.discountAmount, jdbcType=NUMERIC},-->
+<!--        (#{payment.totalAmount, jdbcType=NUMERIC} - #{payment.discountAmount, jdbcType=NUMERIC}),-->
+<!--        'PAID'-->
+<!--        )-->
+<!--    </insert>-->
     <insert id="createOrder">
         <selectKey keyProperty="payment.orderId" resultType="long" order="BEFORE">
             SELECT SEQ_ORDERS.NEXTVAL FROM dual
@@ -49,33 +69,34 @@
         INSERT INTO ORDERS (
         ORDER_ID,
         USER_ID,
-        USER_ADDRESS_ID,
         SHIPPING_ID,
         PAYMENT_METHOD_ID,
-        ORDER_CODE,
         TOTAL_PRICE,
         ORDER_DISCOUNT_AMOUNT,
         FINAL_PRICE,
-        ORDER_STATUS)
-        VALUES(
+        ORDER_STATUS
+        )
+        VALUES (
         #{payment.orderId},
         #{userId},
-        #{userAddressId},
         #{shippingId},
         #{payment.paymentMethodId},
-        NULL,
         #{payment.totalAmount},
         #{payment.discountAmount},
         #{payment.totalAmount} - #{payment.discountAmount},
         'PAID'
         )
     </insert>
-
     <insert id="createOrderItems">
         INSERT INTO ORDER_ITEMS
-        (ORDER_ITEM_ID, PRODUCT_ID, ORDER_ID, QUANTITY, UNIT_PRICE, TOTAL_PRICE)
-        VALUES (SEQ_ORDER_ITEMS.NEXTVAL, #{product.productId}, #{orderId}, #{product.quantity}, #{product.price},
-                #{product.price} * #{product.quantity})
+        (ORDER_ITEM_ID, PRODUCT_ID, COUPON_ID, ORDER_ID, QUANTITY, UNIT_PRICE, TOTAL_PRICE)
+        VALUES (SEQ_ORDER_ITEMS.NEXTVAL,
+                #{product.productId, jdbcType=NUMERIC},
+                #{couponId, jdbcType=NUMERIC},
+                #{orderId, jdbcType=NUMERIC},
+                #{product.quantity, jdbcType=NUMERIC},
+                #{product.finalPrice, jdbcType=NUMERIC},
+                #{product.totalPrice, jdbcType=NUMERIC})
     </insert>
 
     <select id="getOrder" resultType="com.avengers.musinsa.domain.order.entity.Order" parameterType="Long">

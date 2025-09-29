@@ -114,6 +114,7 @@ public class OrderPageViewController {
         public Long getBrandId(){return productInfo.getBrandId();}
         public String getBrandName(){return productInfo.getBrandName();}
         public String getBrandImage(){return productInfo.getBrandImage();}
+        public Long getProductId(){return productInfo.getProductId();}
         public String getProductName(){return productInfo.getProductName();}
         public String getProductImage(){return productInfo.getProductImage();}
         public Integer getFinalPrice(){return productInfo.getFinalPrice();}

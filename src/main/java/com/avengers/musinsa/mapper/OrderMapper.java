@@ -30,13 +30,11 @@ public interface OrderMapper {
 
 
     //주문하기
-    int createShipment(OrderCreateRequest orderCreateRequest);
+    void createShipment(OrderCreateRequest orderCreateRequest);
 
-    int createOrder(@Param("userId") Long userId,
-                    @Param("shippingId") Long shippingId,
-                    @Param("userAddressId") Long userAddressId,
-                    @Param("payment") Payment payment);
+    void createOrder(Long userId, Long shippingId, Payment payment);
 
     void createOrderItems(@Param("orderId") Long orderId,
-                          @Param("product") ProductLine orderProduct);
+                          @Param("product") ProductLine product,
+                          @Param("couponId") Long couponId);
 }
