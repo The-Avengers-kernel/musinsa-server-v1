@@ -61,11 +61,13 @@
     <!--레코드 추가 후 회원과 브랜드의 현재 좋아요 상태를 반환-->
     <select id="getIsLikedBrand"
             resultType="com.avengers.musinsa.domain.brand.dto.response.BrandLikeResponse">
-        SELECT brand_id as brandId,
-               user_id as userId,
-               liked as liked
-        FROM USER_BRAND_LIKES
-        WHERE BRAND_ID = #{brandId} and USER_ID = #{userId}
+        SELECT ubl.brand_id as brandId,
+               ubl.user_id as userId,
+               ubl.liked as liked,
+               b.BRAND_LIKES as likeCount
+        FROM USER_BRAND_LIKES ubl
+        JOIN BRANDS b ON ubl.BRAND_ID = b.BRAND_ID
+        WHERE ubl.BRAND_ID = #{brandId} and ubl.USER_ID = #{userId}
     </select>
 
     <!--회원브랜드좋아요 테이블 liked 0 ↔ 1-->
