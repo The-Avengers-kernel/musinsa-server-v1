@@ -70,13 +70,13 @@ public class CartController {
         return cartService.updateProductOption(userId, productId, productOptionUpdateRequest);
     }
 
+    //헤더 장바구니 갯수 뱃지
     @GetMapping("/carts/count")
-    public int getCartItemCount(
+    public Integer getCartItemCount(
             @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         if (authorizationHeader == null || authorizationHeader.isEmpty()) {
             return 0;
         }
-
         try {
             Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
             List<ProductsInCartInfoResponse> cartItems = cartService.getProductsInCart(userId);
