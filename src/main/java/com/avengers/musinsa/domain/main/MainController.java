@@ -14,24 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequiredArgsConstructor
 public class MainController {
-    private final TokenProviderService tokenProviderService;
-
-    private final ProductService productService;
-//    @GetMapping("/")
-//    public String getMainHompage(
-//            @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
-//
-//        //토큰 검사
-//        if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
-//            Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-//            System.out.println("userId = " + userId);
-//        }else{
-//            System.out.println("헤더 없음");
-//        }
-//
-//        return "main/main";
-//    }
-
 
     @GetMapping("/product/productDetail")
     public String getProductDetail() {
@@ -57,26 +39,6 @@ public class MainController {
         return "user/cart";
     }
 
-    // /search?keyword=...  또는 /search/?keyword=...
-    @GetMapping({"/search", "/search/"})
-    public String searchPage(
-            @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
-            @CookieValue(value = "Authorization", required = false) String authorization,
-            Model model
-    ) {
-        Long userId = null;
-        if (authorization != null && !authorization.isBlank()) {
-            try {
-                userId = tokenProviderService.getUserIdFromToken(authorization);
-            } catch (Exception ignore) { /* 비로그인/만료 등은 null 로 */ }
-        }
 
-        SearchResponse result = productService.searchProducts(keyword, userId);
-
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("result", result);
-        // JSP에서 ${result} 사용
-        return "product/searchProducts"; // JSP 뷰 경로
-    }
 }
 
