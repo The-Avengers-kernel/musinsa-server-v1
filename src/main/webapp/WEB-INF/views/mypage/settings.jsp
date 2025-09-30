@@ -12,26 +12,57 @@
         body { font-family: 'Noto Sans KR', sans-serif; background:#f8f9fa; margin:0; }
         .layout { max-width:960px; margin:auto; padding:20px; }
         .settings-card { background:#fff; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.05); padding:20px; margin-top:20px; }
-        .profile-box { text-align:center; margin-bottom:20px; }
-        .profile-box img { width:80px; height:80px; border-radius:50%; object-fit:cover; }
-        .profile-info { margin:10px 0; font-size:16px; font-weight:600; }
-        .profile-id { color:#666; font-size:14px; margin-bottom:15px; }
-        .profile-actions { display:flex; gap:10px; justify-content:center; }
+        .profile-box {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .profile-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .profile-email {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 18px 0 4px;
+        }
+
         .profile-actions button {
-            flex:1; max-width:150px;
-            padding:10px 15px;
-            border:1px solid #ddd;
-            border-radius:8px;
-            background:#fff;
-            color:#000;
-            font-weight:600;
-            font-size:14px;
-            cursor:pointer;
-            transition:all 0.2s ease;
+            flex: 1;
+            max-width: 200px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
         }
         .profile-actions button:hover {
-            border-color:#000;
-            background:#f9f9f9;
+            border-color: #000;
+            background: #f9f9f9;
         }
         .settings-list { list-style:none; padding:0; margin:0; }
         .settings-list li {
@@ -98,11 +129,16 @@
 <div class="layout">
     <section class="settings-card">
         <!-- 프로필 영역 -->
+
         <div class="profile-box">
             <img src="${profileImage != null ? profileImage : '/resources/img/default_profile.png'}" alt="프로필">
             <div class="profile-info">
-                <p><strong>${nickname}</strong></p>
+                <p class="profile-name">${nickname}</p>
+                <p class="profile-email">${email}</p>
+
             </div>
+        </div>
+        <div>
             <div class="profile-actions">
                 <button onclick="openModal('profileModal')">프로필 이미지 변경</button>
                 <button onclick="openModal('nicknameModal')">닉네임 변경</button>
@@ -153,8 +189,6 @@
     function closeModal(id) {
         document.getElementById(id).style.display = "none";
     }
-
-
 
 </script>
 

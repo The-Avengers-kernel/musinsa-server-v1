@@ -17,8 +17,6 @@ public class MyPageRepository {
         return myPageMapper.findUserProfileByUserName(username);
     }
 
-
-
     public void updateNickname(String username, String nickname) {
         myPageMapper.updateNickname(username, nickname);
     }

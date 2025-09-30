@@ -26,7 +26,7 @@
             u.name as name,
             u.username as username,
             u.nickname as nickname,
-            u.mobile as mobile,
+            u.email as email,
             u.user_mileage as userMileage,
             upi.profile_image_url as profileImage,
             ug.grade_name as gradeName

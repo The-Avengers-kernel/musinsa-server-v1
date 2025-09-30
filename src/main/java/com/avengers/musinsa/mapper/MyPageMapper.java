@@ -7,12 +7,12 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface MyPageMapper {
     MyPageDto findUserProfileId(@Param("userId") Long userId);
-    MyPageDto findUserProfileByUserName(@Param("username") String username);
-
 
     void updateNickname(@Param("username") String username, @Param("nickname") String nickname);
 
     void updateProfileImage(@Param("username") String username, @Param("profileImage") String profileImage);
+
+    MyPageDto findUserProfileByUserName(@Param("username") String username);
 
 
 }

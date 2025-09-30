@@ -114,7 +114,7 @@
             <div class="profile-text">
                 <p id="profileName" class="name">
                     <c:choose>
-                        <c:when test="${not empty nickname}">${nickname} 님</c:when>
+                        <c:when test="${not empty profile.nickname}">${profile.nickname} 님</c:when>
                         <c:otherwise>회원 님</c:otherwise>
                     </c:choose>
                 </p>
