@@ -13,7 +13,7 @@ $(document).ready(() => {
 
         const items = data.map(brands => `
             <li>
-                <a href="#">
+                <a href="/search?keyword=${brands.brandNameKr}">
                     <div class="brand-info">
                         <img src="${brands.brandImage || BRAND_PLACEHOLDER}" alt="${brands.brandNameKr || ''} 로고">
                         <div class="text-info">

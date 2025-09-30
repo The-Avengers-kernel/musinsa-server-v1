@@ -21,8 +21,13 @@
     }
 %>
 
+<%-- 헤더 관련 CSS --%>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/header.css">
+
+<%-- 카테고리 include (카테고리 관련 CSS, JS 포함) --%>
+<%@ include file="../main/category.jsp" %>
 <header class="musinsa-header">
     <div class="inner">
         <%-- 로고와 메인 메뉴 --%>
@@ -64,7 +69,14 @@
                 <li class="separator">|</li>
                 <li><a href="${pageContext.request.contextPath}/mypage"><i class="far fa-user"></i>마이</a></li>
                 <li class="separator">|</li>
-                <li><a href="${pageContext.request.contextPath}/cart"><i class="fas fa-shopping-cart"></i>장바구니</a></li>
+                <li class="cart-item">
+                    <a href="${pageContext.request.contextPath}/cart">
+                        <i class="fas fa-shopping-cart"></i>장바구니
+                        <% if (isLoggedIn) { %>
+                        <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+                        <% } %>
+                    </a>
+                </li>
                 <li class="separator">|</li>
                 <%-- 쿠키 기반 로그인/로그아웃 처리 --%>
                 <% if (!isLoggedIn) { %>
@@ -95,12 +107,43 @@
 
 <script>
     window.appContextPath = window.appContextPath || '${pageContext.request.contextPath}';
-    window.userIsLoggedIn = false;
-    window.musinsaUserId = null;
-    <c:if test="${not empty sessionScope.loginUser}">
-    window.userIsLoggedIn = true;
-    window.musinsaUserId = '<c:out value="${sessionScope.loginUser.userId}"/>';
-    </c:if>
+    window.userIsLoggedIn = <%= isLoggedIn %>; // 쿠키 기반으로 전달
+    window.musinsaUserId = null; // 필요 없으면 아예 제거 가능
+
+    // 장바구니 개수 업데이트 함수
+    function updateCartBadge() {
+        const cartBadge = document.getElementById('cartBadge');
+        if (!cartBadge) return;
+
+        fetch(window.appContextPath + '/api/v1/carts/count', {
+            method: 'GET',
+            credentials: 'include' // Authorization 쿠키 자동 전송
+        })
+            .then(response => {
+                if (response.ok) return response.json();
+                throw new Error('장바구니 개수 조회 실패');
+            })
+            .then(count => {
+                if (count > 0) {
+                    cartBadge.textContent = count > 99 ? '99+' : count;
+                    cartBadge.style.display = 'flex';
+                } else {
+                    cartBadge.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.log('장바구니 개수 조회 중 오류:', error);
+                cartBadge.style.display = 'none';
+            });
+    }
+
+    // 페이지 로드 시 장바구니 개수 조회
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartBadge();
+    });
+
+    // 전역에서 호출 가능하도록
+    window.updateCartBadge = updateCartBadge;
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/recentSearches.js"></script>
