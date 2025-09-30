@@ -356,11 +356,13 @@
     <!--레코드 추가 후 회원과 상품의 현재 좋아요 상태를 반환-->
     <select id="getIsLikedProduct"
             resultType="com.avengers.musinsa.domain.product.dto.response.ProductLikeResponse">
-        SELECT PRODUCT_ID as productId,
-               USER_ID as userId,
-               liked as liked
-        FROM USER_PRODUCT_LIKES
-        WHERE PRODUCT_ID = #{productId} and USER_ID = #{userId}
+        SELECT upl.PRODUCT_ID as productId,
+               upl.USER_ID as userId,
+               upl.liked as liked,
+               p.PRODUCT_LIKES as likeCount
+        FROM USER_PRODUCT_LIKES upl
+        JOIN PRODUCTS p ON upl.PRODUCT_ID = p.PRODUCT_ID
+        WHERE upl.PRODUCT_ID = #{productId} and upl.USER_ID = #{userId}
     </select>
 
     <!--회원상품좋아요 테이블 liked 0 ↔ 1-->

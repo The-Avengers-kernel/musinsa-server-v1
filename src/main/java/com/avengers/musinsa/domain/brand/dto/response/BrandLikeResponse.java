@@ -9,5 +9,6 @@ public class BrandLikeResponse {
     private Long brandId;
     private Long userId;
     private boolean liked;
+    private Integer likeCount;
 
 }

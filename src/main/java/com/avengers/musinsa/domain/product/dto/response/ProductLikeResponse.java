@@ -11,4 +11,5 @@ public class ProductLikeResponse {
     private Long productId;
     private Long userId;
     private boolean liked;
+    private Integer likeCount;
 }
