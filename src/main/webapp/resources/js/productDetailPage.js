@@ -22,6 +22,16 @@ function formatKoreanNumber(num) {
     }
 }
 
+// URL에서 productId 추출하는 함수
+function getProductIdFromUrl() {
+    const pathParts = window.location.pathname.split('/');
+    const productIndex = pathParts.indexOf('products');
+    if (productIndex !== -1 && pathParts[productIndex + 1]) {
+        return parseInt(pathParts[productIndex + 1]);
+    }
+    return 1; // 기본값
+}
+
 // 제품 상세 정보 AJAX
 $(document).ready(function () {
     // 수량 조절 버튼들
@@ -45,7 +55,7 @@ $(document).ready(function () {
         $(this).val(quantity);
     });
 
-    const productId = 1; // 실제로는 URL에서 가져와야 함
+    const productId = getProductIdFromUrl(); // URL에서 productId 가져오기
     let brandId = null;  // 전역 변수 선언
     $.ajax({
         url: '/api/v1/products/' + productId,
@@ -398,7 +408,7 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    const productId = 1;
+    const productId = getProductIdFromUrl(); // URL에서 productId 가져오기
 
     // 카테고리 로드
     $.ajax({
@@ -438,8 +448,11 @@ $(document).ready(function () {
             const $sizeListContainer = $('#productDetailSizeList');
             $sizeListContainer.empty();
 
+            console.log('사이즈 데이터:', data);
+
             if (data && data.length > 0) {
-                const firstImageId = data[0].sizeDetailImageId;
+                const firstImageId = Number(data[0].sizeDetailImageId);
+                console.log('firstImageId:', firstImageId, 'type:', typeof firstImageId);
 
                 if (firstImageId === 1 || firstImageId === 2) {
                     const $table = $('<table>').addClass('size-table');
@@ -460,7 +473,30 @@ $(document).ready(function () {
 
                     $sizeListContainer.append('<h3>상의 실측 사이즈 (cm)</h3>');
                     $sizeListContainer.append($table.append($thead).append($tbody));
+                } else if (firstImageId === 3 || firstImageId === 4) {
+                    const $table = $('<table>').addClass('size-table');
+                    const $thead = $('<thead>').html(
+                        '<tr><th>사이즈</th><th>총장</th><th>허리단면</th><th>엉덩이단면</th><th>허벅지단면</th><th>밑위</th><th>밑단단면</th></tr>'
+                    );
+                    const $tbody = $('<tbody>');
+
+                    data.forEach(function (size) {
+                        $tbody.append($('<tr>').append(
+                            $('<td>').text(size.cm),
+                            $('<td>').text(size.length),
+                            $('<td>').text(size.waist),
+                            $('<td>').text(size.hip),
+                            $('<td>').text(size.thigh),
+                            $('<td>').text(size.rise),
+                            $('<td>').text(size.hemWidth)
+                        ));
+                    });
+
+                    $sizeListContainer.append('<h3>하의 실측 사이즈 (cm)</h3>');
+                    $sizeListContainer.append($table.append($thead).append($tbody));
                 }
+
+
             }
         }
     });
