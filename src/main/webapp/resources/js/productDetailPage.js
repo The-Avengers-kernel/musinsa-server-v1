@@ -242,7 +242,7 @@ $(document).ready(function () {
         const cartData = {
             productId: productId,
             quantity: parseInt($('#quantity-input').val()) || 1,
-            productVariantId: selectedVariant.productVariantId,
+            // productVariantId: selectedVariant.productVariantId,
             variantName: selectedVariant.variantName
         };
 
@@ -318,13 +318,23 @@ $(document).ready(function () {
             method: 'POST',
             dataType: 'json',
             success: function (response) {
-                if (response.updatedLikeCount !== undefined) {
-                    $('#productLikeCnt').text(formatKoreanNumber(response.updatedLikeCount));
-                }
                 console.log('좋아요 버튼 클릭:', response);
 
+                // 좋아요 수 업데이트
+                if (response.likeCount !== undefined) {
+                    const $likeCnt = $('#productLikeCnt');
+                    $likeCnt.text(formatKoreanNumber(response.likeCount));
+
+                    // 숫자 변경 애니메이션
+                    $likeCnt.addClass('like-count-updated');
+                    setTimeout(function() {
+                        $likeCnt.removeClass('like-count-updated');
+                    }, 300);
+                }
+
+                // 하트 아이콘 토글
                 const heartIcon = $('.wishlist-icon .heart-icon');
-                if (heartIcon.hasClass('far')) {
+                if (response.liked) {
                     heartIcon.removeClass('far').addClass('fas').addClass('liked');
                 } else {
                     heartIcon.removeClass('fas').removeClass('liked').addClass('far');
@@ -359,13 +369,23 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (response) {
-                if (response.updatedLikeCount !== undefined) {
-                    $('#brandLikeCnt').text(formatKoreanNumber(response.updatedLikeCount));
-                }
-                console.log('userId:', response);
+                console.log('브랜드 좋아요:', response);
 
+                // 좋아요 수 업데이트
+                if (response.likeCount !== undefined) {
+                    const $likeCnt = $('#brandLikeCnt');
+                    $likeCnt.text(formatKoreanNumber(response.likeCount));
+
+                    // 숫자 변경 애니메이션
+                    $likeCnt.addClass('like-count-updated');
+                    setTimeout(function() {
+                        $likeCnt.removeClass('like-count-updated');
+                    }, 300);
+                }
+
+                // 하트 아이콘 토글
                 const heartIcon = $('.brand-wishlist-icon .heart-icon');
-                if (heartIcon.hasClass('far')) {
+                if (response.liked) {
                     heartIcon.removeClass('far').addClass('fas').addClass('liked');
                 } else {
                     heartIcon.removeClass('fas').removeClass('liked').addClass('far');

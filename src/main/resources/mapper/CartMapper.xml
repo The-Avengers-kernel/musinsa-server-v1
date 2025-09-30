@@ -61,25 +61,26 @@
     <!--    userId와 productVariantId를 이용해 장바구니 찾기-->
     <select id="findCartItemByVariantId"
             resultType="com.avengers.musinsa.domain.user.dto.CartItemDto">
-        SELECT USER_CART_ID  AS cartId,
-               CART_QUANTITY AS quantity
-        FROM USER_CARTS
-        WHERE USER_ID = #{userId}
-          AND PRODUCT_VARIANT_ID = #{productVariantId}
+        SELECT uc.USER_CART_ID  AS cartId,
+               uc.CART_QUANTITY AS quantity
+        FROM USER_CARTS uc
+        WHERE uc.USER_ID = #{userId}
+          AND uc.CART_OPTION = (SELECT pv.VARIANT_NAME
+                                FROM PRODUCT_VARIANTS pv
+                                WHERE pv.PRODUCT_VARIANT_ID = #{productVariantId, jdbcType=NUMERIC})
     </select>
 
     <!--처음 장바구니 insert-->
     <insert id="insertNewCartItem">
         INSERT INTO USER_CARTS
-        (user_cart_id, user_id, product_id, CART_QUANTITY, PRODUCT_VARIANT_ID, CART_OPTION)
+        (user_cart_id, user_id, product_id, CART_QUANTITY, CART_OPTION)
         SELECT SEQ_USER_CARTS.nextval,
                #{userId},
                #{request.productId},
                #{request.quantity},
-               #{request.productVariantId},
                (SELECT VARIANT_NAME
                 FROM PRODUCT_VARIANTS
-                WHERE PRODUCT_VARIANT_ID = #{request.productVariantId})
+                WHERE PRODUCT_VARIANT_ID = #{request.productVariantId, jdbcType=NUMERIC})
         FROM DUAL
     </insert>
 
