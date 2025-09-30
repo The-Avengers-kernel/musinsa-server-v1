@@ -210,7 +210,7 @@
                 switchToRecentView();
                 loadSearchData();
                 if (state.searchInput) {
-                    state.searchInput.focus({ preventScroll: true });
+                    state.searchInput.focus({preventScroll: true});
                 }
             })
             .catch(function (error) {
@@ -240,10 +240,10 @@
 
     function loadRecentKeywords() {
         if (isLoggedIn() && getUserId()) {
-        const url = new URL(contextPath + '/api/v1/search/recent', win.location.origin);
+            const url = new URL(contextPath + '/api/v1/search/recent', win.location.origin);
             url.searchParams.set('userId', getUserId());
 
-            fetch(url, { credentials: 'include' })
+            fetch(url, {credentials: 'include'})
                 .then(handleJsonResponse)
                 .then(function (data) {
                     const list = Array.isArray(data) ? data : (data && data.data ? data.data : []);
@@ -314,7 +314,7 @@
         state.brandListEl.innerHTML = '';
         const normalized = (items || []).map(function (item) {
             if (typeof item === 'string') {
-                return { name: item, image: null };
+                return {name: item, image: null};
             }
             if (item && typeof item === 'object') {
                 return {
@@ -322,8 +322,10 @@
                     image: item.brandImageUrl || item.brandImage || ''
                 };
             }
-            return { name: '', image: '' };
-        }).filter(function (item) { return item.name; });
+            return {name: '', image: ''};
+        }).filter(function (item) {
+            return item.name;
+        });
 
         if (normalized.length === 0) {
             state.brandSection.classList.add('is-hidden');
@@ -375,7 +377,9 @@
                 rank: item.rank || (idx + 1),
                 keyword: item.keyword || ''
             };
-        }).filter(function (item) { return item.keyword; });
+        }).filter(function (item) {
+            return item.keyword;
+        });
 
         if (normalized.length === 0) {
             listA.innerHTML = '<li><div class="no-results">인기 검색어를 불러올 수 없습니다.</div></li>';
@@ -422,7 +426,7 @@
             renderRecentKeywords(getLocalRecentKeywords());
         }
         //메인 상품 리스트 페이지로 이동
-        win.location.href = contextPath + '/search?keyword=' + encodeURIComponent(keyword);
+        win.location.href = contextPath + '/products?keyword=' + encodeURIComponent(keyword);
     }
 
     /*
@@ -626,7 +630,9 @@
                 body: formData
             }).finally(loadRecentKeywords);
         } else {
-            const list = getLocalRecentKeywords().filter(function (item) { return item !== keyword; });
+            const list = getLocalRecentKeywords().filter(function (item) {
+                return item !== keyword;
+            });
             saveLocalRecentKeywords(list);
             renderRecentKeywords(list);
         }
@@ -636,7 +642,9 @@
         if (!keyword) {
             return;
         }
-        const list = getLocalRecentKeywords().filter(function (item) { return item !== keyword; });
+        const list = getLocalRecentKeywords().filter(function (item) {
+            return item !== keyword;
+        });
         list.unshift(keyword);
         saveLocalRecentKeywords(list.slice(0, 10));
     }
@@ -718,7 +726,7 @@
     function setInputValue(value) {
         if (state.searchInput) {
             state.searchInput.value = value;
-            state.searchInput.focus({ preventScroll: true });
+            state.searchInput.focus({preventScroll: true});
         }
     }
 
