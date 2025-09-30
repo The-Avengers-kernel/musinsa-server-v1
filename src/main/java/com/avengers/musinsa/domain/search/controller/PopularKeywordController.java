@@ -14,7 +14,7 @@ public class PopularKeywordController {
     private final PopularKeywordServiceImpl popularKeywordService;
 
     @GetMapping("/popular-keyword")
-   public PopularKeywordResponseDTO findPopularKeyword(){
+    public PopularKeywordResponseDTO findPopularKeyword(){
         return popularKeywordService.getTrendingKeywords();
     }
 

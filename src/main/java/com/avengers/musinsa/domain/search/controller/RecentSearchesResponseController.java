@@ -19,6 +19,6 @@ public class RecentSearchesResponseController {
 
     @GetMapping("/recent")
     public List<SearchKeywordResponseDTO> recentSearches(@RequestParam Long userId) {
-            return recentSearchService.getRecentSearches(userId);
+        return recentSearchService.getRecentSearches(userId);
     }
 }
