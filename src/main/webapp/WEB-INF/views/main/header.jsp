@@ -68,7 +68,7 @@
                     <a href="${pageContext.request.contextPath}/cart">
                         <i class="fas fa-shopping-cart"></i>장바구니
                         <% if (isLoggedIn) { %>
-                        <span class="cart-badge" id="cartBadge" style="display: flex;">3</span>
+                        <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
                         <% } %>
                     </a>
                 </li>
@@ -116,7 +116,7 @@
         const cartBadge = document.getElementById('cartBadge');
         if (!cartBadge) return;
 
-        fetch(window.appContextPath + '/api/v1/cart/count', {
+        fetch(window.appContextPath + '/api/v1/carts/count', {
             method: 'GET',
             credentials: 'include'
         })
@@ -126,8 +126,7 @@
             }
             throw new Error('장바구니 개수 조회 실패');
         })
-        .then(data => {
-            const count = data.count || 0;
+        .then(count => {
             if (count > 0) {
                 cartBadge.textContent = count > 99 ? '99+' : count;
                 cartBadge.style.display = 'flex';
