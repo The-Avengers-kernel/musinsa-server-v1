@@ -34,8 +34,6 @@ public interface ProductMapper {
   
     List<String> findProductOptionSizes(Long productId);
 
-    List<CategoryProductResponse> getCategoryProductList();
-
     // 상품 리뷰 목록 조회
     List<ProductReviewsResponse> getProductReviews(Long productId);
   

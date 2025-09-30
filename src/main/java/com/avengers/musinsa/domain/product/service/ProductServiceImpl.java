@@ -173,11 +173,6 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.getProductsByCategory(categoryId);
     }
 
-    public List<CategoryProductResponse> getCategoryProductList() {
-        return productRepository.getCategoryProductList();
-    }
-
-
     // 상품 상세 페이지 카테고리 조회
     @Override
     public ProductCategoryListResponse getProductCategories(Long productId) {
