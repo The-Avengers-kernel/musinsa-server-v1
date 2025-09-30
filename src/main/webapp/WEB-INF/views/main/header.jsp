@@ -27,7 +27,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/header.css">
 
 <%-- 카테고리 include (카테고리 관련 CSS, JS 포함) --%>
-<%@ include file="../main/category.jsp" %>
+<%@ include file="category.jsp" %>
 <header class="musinsa-header">
     <div class="inner">
         <%-- 로고와 메인 메뉴 --%>
@@ -63,7 +63,8 @@
             <ul class="user-menu">
                 <li><a href="#">오프라인스토어</a></li>
                 <li class="separator">|</li>
-                <li><a href="${pageContext.request.contextPath}/main/search" id="searchBtn"><i class="fas fa-search"></i>검색</a></li>
+                <li><a href="${pageContext.request.contextPath}/main/search" id="searchBtn"><i
+                        class="fas fa-search"></i>검색</a></li>
                 <li class="separator">|</li>
                 <li><a href="#"><i class="far fa-heart"></i>좋아요</a></li>
                 <li class="separator">|</li>
@@ -138,7 +139,7 @@
     }
 
     // 페이지 로드 시 장바구니 개수 조회
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         updateCartBadge();
     });
 
