@@ -70,4 +70,20 @@ public class CartController {
         return cartService.updateProductOption(userId, productId, productOptionUpdateRequest);
     }
 
+    @GetMapping("/carts/count")
+    public int getCartItemCount(
+            @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+        if (authorizationHeader == null || authorizationHeader.isEmpty()) {
+            return 0;
+        }
+
+        try {
+            Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+            List<ProductsInCartInfoResponse> cartItems = cartService.getProductsInCart(userId);
+            return cartItems.size();
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
 }
