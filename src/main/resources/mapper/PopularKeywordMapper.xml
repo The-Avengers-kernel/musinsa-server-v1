@@ -10,4 +10,62 @@
           AND sk.UPDATED_AT >= SYSDATE - (30/1440)
             FETCH FIRST 10 ROWS ONLY
     </select>
+
+    <select id="selectTrendingKeywordsUpdatedAt" resultType="java.lang.String">
+        SELECT TO_CHAR(
+                   MAX(updated_at),
+                   'YYYY-MM-DD"T"HH24:MI:SS'
+               )
+        FROM search_keywords
+        WHERE is_trending = 'Y'
+    </select>
+
+    <!-- 기존 insert: 신규 검색어를 최초 발생 시 기본 카운트 1로 저장 -->
+    <!-- 수정: 30분 집계 결과를 그대로 저장하도록 KeywordCountDTO 기반으로 구현 -->
+    <insert id="insertKeyword" parameterType="com.avengers.musinsa.domain.search.dto.KeywordCountDTO">
+        INSERT INTO search_keywords (
+            search_keyword_id,
+            keyword,
+            keyword_initial,
+            daily_count,
+            current_hour_search_count,
+            growth_rate,
+            is_trending,
+            created_at,
+            updated_at
+        ) VALUES (
+            seq_search_keywords.NEXTVAL,
+            #{keyword},
+            SUBSTR(#{keyword}, 1, 20),
+            #{count},
+            #{count},
+            0,
+            'Y',
+            #{basedOnTime},
+            #{basedOnTime}
+        )
+    </insert>
+
+    <!-- 기존 update: 이미 존재하는 검색어의 카운트를 1씩 증가 -->
+    <!-- 수정: 집계된 카운트로 덮어쓰고 갱신 시점을 저장 -->
+    <update id="updateKeyword" parameterType="com.avengers.musinsa.domain.search.dto.KeywordCountDTO">
+        UPDATE search_keywords
+        SET daily_count = #{count},
+            current_hour_search_count = #{count},
+            updated_at = #{basedOnTime},
+            is_trending = 'Y'
+        WHERE keyword = #{keyword}
+    </update>
+
+    <!-- 30분 집계용: 최근 검색 로그에서 키워드별 건수를 조회 -->
+    <select id="selectRecentKeywordCounts" resultType="com.avengers.musinsa.domain.search.dto.KeywordCountDTO">
+        SELECT
+            skl.search_text AS keyword,
+            COUNT(*) AS count
+        FROM search_keyword_logs skl
+        WHERE skl.search_datetime BETWEEN #{from} AND #{to}
+        GROUP BY skl.search_text
+        ORDER BY COUNT(*) DESC
+        FETCH FIRST 10 ROWS ONLY
+    </select>
 </mapper>
