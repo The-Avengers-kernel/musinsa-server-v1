@@ -107,42 +107,34 @@
 
 <script>
     window.appContextPath = window.appContextPath || '${pageContext.request.contextPath}';
-    window.userIsLoggedIn = false;
-    window.musinsaUserId = null;
-    <c:if test="${not empty sessionScope.loginUser}">
-    window.userIsLoggedIn = true;
-    window.musinsaUserId = '<c:out value="${sessionScope.loginUser.userId}"/>';
-    </c:if>
+    window.userIsLoggedIn = <%= isLoggedIn %>; // 쿠키 기반으로 전달
+    window.musinsaUserId = null; // 필요 없으면 아예 제거 가능
 
     // 장바구니 개수 업데이트 함수
     function updateCartBadge() {
-        if (!window.userIsLoggedIn) return;
-
         const cartBadge = document.getElementById('cartBadge');
         if (!cartBadge) return;
 
         fetch(window.appContextPath + '/api/v1/carts/count', {
             method: 'GET',
-            credentials: 'include'
+            credentials: 'include' // Authorization 쿠키 자동 전송
         })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            throw new Error('장바구니 개수 조회 실패');
-        })
-        .then(count => {
-            if (count > 0) {
-                cartBadge.textContent = count > 99 ? '99+' : count;
-                cartBadge.style.display = 'flex';
-            } else {
+            .then(response => {
+                if (response.ok) return response.json();
+                throw new Error('장바구니 개수 조회 실패');
+            })
+            .then(count => {
+                if (count > 0) {
+                    cartBadge.textContent = count > 99 ? '99+' : count;
+                    cartBadge.style.display = 'flex';
+                } else {
+                    cartBadge.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.log('장바구니 개수 조회 중 오류:', error);
                 cartBadge.style.display = 'none';
-            }
-        })
-        .catch(error => {
-            console.log('장바구니 개수 조회 중 오류:', error);
-            cartBadge.style.display = 'none';
-        });
+            });
     }
 
     // 페이지 로드 시 장바구니 개수 조회
@@ -150,7 +142,7 @@
         updateCartBadge();
     });
 
-    // 전역에서 호출 가능하도록 설정
+    // 전역에서 호출 가능하도록
     window.updateCartBadge = updateCartBadge;
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
