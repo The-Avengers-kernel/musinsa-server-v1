@@ -24,9 +24,7 @@ public class MyPageService {
         return myPageRepository.findUserProfileId(userId);
     }
 
-    public MyPageDto findUserProfileByUserName(String username){
-        return myPageRepository.findUserProfileByUserName(username);
-    }
+
 
 
     public MyPageDto updateNickname(String username, String nickname) {
@@ -61,11 +59,14 @@ public class MyPageService {
         }
     }
     private String getExtension(String name){
-        if (name == null) return "";
-        int idx = name.lastIndexOf(".");
-        return name.substring(idx);
+        if (name == null || !name.contains(".")) return "";
+        return name.substring(name.lastIndexOf("."));
     }
 
+
+    public MyPageDto findUserProfileByUserName(String username){
+        return myPageRepository.findUserProfileByUserName(username);
+    }
 
 
 }

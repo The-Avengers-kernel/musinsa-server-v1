@@ -12,7 +12,7 @@ public class MyPageDto {
     private String name;
     private String username;
     private String nickname;
-    private String mobile;
+    private String email;
     private Integer userMileage;
     private String profileImage;
     private String gradeName;

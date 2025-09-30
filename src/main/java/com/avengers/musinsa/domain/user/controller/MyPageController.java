@@ -40,8 +40,8 @@ public class MyPageController {
     }
 
     @PostMapping("/nickname")
-    public ResponseEntity< MyPageDto> updateNickname(@RequestBody MyPageDto request, Principal principal) {
-        MyPageDto updateUser = myPageService.updateNickname(principal.getName(), request.getNickname());
+    public ResponseEntity< MyPageDto> updateNickname(@RequestParam("nickname") String nickname, Principal principal) {
+        MyPageDto updateUser = myPageService.updateNickname(principal.getName(), nickname);
         return ResponseEntity.ok(updateUser);
     }
 

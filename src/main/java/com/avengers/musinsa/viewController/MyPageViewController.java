@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -64,13 +65,18 @@ public class MyPageViewController {
         if (user == null) return "redirect:/login";
         model.addAttribute("nickname", user.getNickname());
         model.addAttribute("profileImage", user.getProfileImage());
+        model.addAttribute("email", user.getEmail());
         return "mypage/settings";
     }
 
+
     @PostMapping("/nickname")
     public String updateNickname(@RequestParam("nickname") String nickname,
-                                 Principal principal) {
-        myPageService.updateNickname(principal.getName(), nickname);
+                                 Principal principal, RedirectAttributes ra) {
+        MyPageDto updated = myPageService.updateNickname(principal.getName(), nickname);
+
+        ra.addFlashAttribute("msg", "닉네임이 변경되었습니다.");
+
         return "redirect:/mypage";
     }
 
