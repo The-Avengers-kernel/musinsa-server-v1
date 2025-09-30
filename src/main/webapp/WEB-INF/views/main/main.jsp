@@ -6,9 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MUSINSA - 무신사</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/header.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/category.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <%-- Swiper CSS --%>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
 
     <style>
@@ -258,8 +257,8 @@
 
 </head>
 <body>
+<%-- 헤더 include (헤더 관련 CSS, JS, 카테고리 모두 포함) --%>
 <%@ include file="../main/header.jsp" %>
-<%@ include file="../main/category.jsp" %>
 <main class="container">
     <section class="section">
         <section class = section-banner>
@@ -402,8 +401,7 @@
     </section>
 </main>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/category.js"></script>
+<%-- Swiper JS --%>
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
     // 공통 스와이퍼 설정

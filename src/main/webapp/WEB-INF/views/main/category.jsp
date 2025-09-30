@@ -2,7 +2,8 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
-
+<%-- 카테고리 관련 CSS --%>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/category.css">
 
 <div class="category-dropdown-overlay" id="categoryDropdownOverlay">
     <div class="category-dropdown-menu">
@@ -202,3 +203,7 @@
         </div>
     </div>
 </div>
+
+<%-- 카테고리 관련 JS --%>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/category.js"></script>

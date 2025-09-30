@@ -18,8 +18,13 @@
     }
 %>
 
+<%-- 헤더 관련 CSS --%>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/header.css">
+
+<%-- 카테고리 include (카테고리 관련 CSS, JS 포함) --%>
+<%@ include file="../main/category.jsp" %>
 <header class="musinsa-header">
     <div class="inner">
         <%-- 로고와 메인 메뉴 --%>
