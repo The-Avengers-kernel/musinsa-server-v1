@@ -1,7 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
-
 <%-- 카테고리 관련 CSS --%>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/category.css">
 
@@ -21,12 +17,16 @@
                         <ul>
                             <%-- data-target과 data-category-id 속성 추가 --%>
                             <li><a href="#" class="list-item-link" data-target="tops" data-category-id="1">상의</a></li>
-                            <li><a href="#" class="list-item-link" data-target="outers" data-category-id="2">아우터</a></li>
+                            <li><a href="#" class="list-item-link" data-target="outers" data-category-id="2">아우터</a>
+                            </li>
                             <li><a href="#" class="list-item-link" data-target="pants" data-category-id="3">바지</a></li>
-                            <li><a href="#" class="list-item-link" data-target="dresses" data-category-id="4">원피스/스커트</a></li>
+                            <li><a href="#" class="list-item-link" data-target="dresses"
+                                   data-category-id="4">원피스/스커트</a></li>
                             <li><a href="#" class="list-item-link" data-target="bags" data-category-id="5">가방</a></li>
-                            <li><a href="#" class="list-item-link" data-target="accessories" data-category-id="6">패션소품</a></li>
-                            <li><a href="#" class="list-item-link" data-target="underwear" data-category-id="7">속옷/홈웨어</a></li>
+                            <li><a href="#" class="list-item-link" data-target="accessories"
+                                   data-category-id="6">패션소품</a></li>
+                            <li><a href="#" class="list-item-link" data-target="underwear"
+                                   data-category-id="7">속옷/홈웨어</a></li>
                         </ul>
                     </div>
                     <div class="category-details">
