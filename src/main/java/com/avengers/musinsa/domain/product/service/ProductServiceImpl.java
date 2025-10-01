@@ -7,26 +7,33 @@ import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
+import com.avengers.musinsa.domain.product.repository.ProductRepository;
 import com.avengers.musinsa.domain.product.repository.ProductRepositoryImpl;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.review.dto.Request.RequestReview;
+import com.avengers.musinsa.domain.review.dto.ReviewMeta;
+import com.avengers.musinsa.domain.review.repository.ReviewRepository;
 import com.avengers.musinsa.domain.search.service.SearchLogService;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
 
+import com.avengers.musinsa.mapper.ReviewMapper;
 import java.util.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     // 의존성 주입
-    private final ProductRepositoryImpl productRepository;
+    private final ProductRepository productRepository;
     private final BrandRepository brandRepository;
+    private final ReviewRepository reviewRepository;
     private final SearchLogService searchLogService;
+    private final ReviewMapper reviewMapper;
 
     @Override
     public ProductDetailResponse getProductById(Long productId, Long userId) {
@@ -103,19 +110,45 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.getProductReviews(productId);
     }
 
+    @Transactional
     @Override
     public void createProductReview(Long productId, Long userId, RequestReview requestReview) {
         productRepository.createProductReview(productId, userId, requestReview);
+
+        Integer rating = requestReview.getRating();
+
+        reviewRepository.updateReviewStatus(1, productId, rating);
     }
 
+    @Transactional
     @Override
     public void updateProductReview(Long reviewId, RequestReview requestReview) {
+        // 수정 전 productId, 평점 가져오기
+        ReviewMeta meta = reviewMapper.findReviewMetaById(reviewId);
+
+        // 본문 수정
         productRepository.updateProductReview(reviewId, requestReview);
+
+        // 차이 계산
+        int oldRating = meta.getRating();
+        int newRating = requestReview.getRating();
+
+        if (newRating - oldRating != 0) {
+            reviewRepository.updateReviewStatus(0, meta.getProductId(), newRating - oldRating);
+        }
     }
 
+    @Transactional
     @Override
     public void deleteProductReview(Long reviewId) {
+        // 기존 productId, 평점 가져오기
+        ReviewMeta meta = reviewMapper.findReviewMetaById(reviewId);
+
+        // 삭제
         productRepository.deleteProductReview(reviewId);
+
+        int oldRating = meta.getRating();
+        reviewRepository.updateReviewStatus(-1, meta.getProductId(), -oldRating);
     }
 
     // 상품상세 사이즈 리스트 조회
