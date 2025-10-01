@@ -84,6 +84,7 @@ public class ProductController {
     public ResponseEntity<?> updateProductReview(@PathVariable Long reviewId,
                                                  @CookieValue(value = "Authorization", required = false) String authorizationHeader,
                                                  @RequestBody RequestReview requestReview) {
+        tokenProviderService.getUserIdFromToken(authorizationHeader);
         productService.updateProductReview(reviewId, requestReview);
         return ResponseEntity.ok().build();
     }
