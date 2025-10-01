@@ -1,9 +1,6 @@
 package com.avengers.musinsa.domain.order.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -30,6 +27,7 @@ public class OrderPageResponse {
         @AllArgsConstructor
         @NoArgsConstructor
         @Builder
+        @ToString
         public static class DefaultAddress {
             private Long addressId;
             private String recipientName;

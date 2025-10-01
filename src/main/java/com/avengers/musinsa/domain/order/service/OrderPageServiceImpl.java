@@ -42,7 +42,9 @@ public class OrderPageServiceImpl implements OrderPageService{
     private OrderPageResponse.BuyerInfo getBuyerInfo(Long userId) {
         OrderPageResponse.BuyerInfo buyerInfo = orderPageRepository.getBuyerInfo(userId);
         OrderPageResponse.BuyerInfo.DefaultAddress defaultAddress = orderPageRepository.getDefaultAddress(userId);
-
+        System.out.println(defaultAddress.getAddress());
+        System.out.println(defaultAddress.getAddressId());
+        System.out.println(defaultAddress.getDetailAddress());
         return OrderPageResponse.BuyerInfo.builder()
                 .name(buyerInfo.getName())
                 .phone(buyerInfo.getPhone())
