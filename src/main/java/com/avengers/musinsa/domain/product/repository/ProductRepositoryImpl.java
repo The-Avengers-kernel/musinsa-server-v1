@@ -189,4 +189,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     public void updateProductReview(Long reviewId, RequestReview requestReview) {
         productMapper.updateProductReview(reviewId, requestReview);
     }
+
+    @Override
+    public void deleteProductReview(Long reviewId) {
+        productMapper.deleteProductReview(reviewId);
+    }
 }
