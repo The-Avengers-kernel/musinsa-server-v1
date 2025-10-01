@@ -8,6 +8,7 @@ import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
+import com.avengers.musinsa.domain.review.dto.Request.RequestCreateReview;
 import com.avengers.musinsa.mapper.ProductMapper;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     // 상품 ID를 받아서 특정 상품 하나를 조회하는 메서드
     @Override
     public ProductDetailResponse findProductById(Long productId, Long userId) {
-        return this.productMapper.findProductById(productId,userId);
+        return this.productMapper.findProductById(productId, userId);
     }
 
     @Override
@@ -175,7 +176,12 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     // productId로 productVariantId 찾기
     @Override
-    public List<ProductVariantDetailDto> findVariantDetailsByProductId(Long productId){
+    public List<ProductVariantDetailDto> findVariantDetailsByProductId(Long productId) {
         return productMapper.findVariantDetailsByProductId(productId);
+    }
+
+    @Override
+    public void createProductReview(Long productId, Long userId, RequestCreateReview requestCreateReview) {
+        productMapper.createProductReview(productId, userId, requestCreateReview);
     }
 }

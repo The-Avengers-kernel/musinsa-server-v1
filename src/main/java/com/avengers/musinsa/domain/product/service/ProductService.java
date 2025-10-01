@@ -7,6 +7,7 @@ import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
+import com.avengers.musinsa.domain.review.dto.Request.RequestCreateReview;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
 
 import java.util.*;
@@ -28,8 +29,11 @@ public interface ProductService {
     // 상품 리뷰 목록 조회
     List<ProductReviewsResponse> getProductReviews(Long productId);
 
+    // 상품 리뷰 작성
+    void createProductReview(Long productId, Long userId, RequestCreateReview requestCreateReview);
+
     // 상품상세 사이즈 리스트 조회
-    Object getProductDetailSizeList(Long productId,Long userId);
+    Object getProductDetailSizeList(Long productId, Long userId);
 
     // 상품 상세 설명 조회 api
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
