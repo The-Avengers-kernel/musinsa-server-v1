@@ -169,7 +169,7 @@ $(document).ready(() => {
         const items = subcategories.map(category => {
             console.log("카테고리 아이템:", category.categoryName, "ID:", category.productCategoryId);
             return `
-                <a href="#" class="item" data-category-id="${category.productCategoryId}">
+                <a href="/search?keyword=${encodeURIComponent(category.categoryName)}" class="item">
                     <img src="${category.categoryImage || 'https://image.msscdn.net/thumbnails/images/goods_img/default.jpg'}" alt="${category.categoryName}">
                     <span>${category.categoryName}</span>
                 </a>
