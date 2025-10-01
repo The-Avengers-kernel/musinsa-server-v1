@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class RequestReview {
+    private Long productId;
     private String content;
     private String purchaseOption;
     private Integer rating;

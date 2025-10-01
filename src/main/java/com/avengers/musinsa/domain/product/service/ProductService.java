@@ -28,6 +28,10 @@ public interface ProductService {
     // 상품 리뷰 작성
     void createProductReview(Long productId, Long userId, RequestReview requestReview);
 
+    void updateProductReview(Long reviewId, RequestReview requestReview);
+
+    void deleteProductReview(Long reviewId);
+
     // 상품상세 사이즈 리스트 조회
     Object getProductDetailSizeList(Long productId, Long userId);
 
@@ -46,9 +50,4 @@ public interface ProductService {
 
     //상품 좋아요 토글
     ProductLikeResponse ProductLikeToggle(Long userId, Long productId);
-
-
-    void updateProductReview(Long reviewId, RequestReview requestReview);
-
-    void deleteProductReview(Long reviewId);
 }
