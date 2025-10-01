@@ -113,6 +113,11 @@ public class ProductServiceImpl implements ProductService {
         productRepository.updateProductReview(reviewId, requestReview);
     }
 
+    @Override
+    public void deleteProductReview(Long reviewId) {
+        productRepository.deleteProductReview(reviewId);
+    }
+
     // 상품상세 사이즈 리스트 조회
     @Override
     public Object getProductDetailSizeList(Long productId, Long userId) {

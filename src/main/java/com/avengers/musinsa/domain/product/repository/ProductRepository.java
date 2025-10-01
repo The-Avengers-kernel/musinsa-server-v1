@@ -98,5 +98,7 @@ public interface ProductRepository {
     void createProductReview(Long productId, Long userId, RequestReview requestReview);
 
     void updateProductReview(Long reviewId, RequestReview requestReview);
+
+    void deleteProductReview(Long reviewId);
 }
 

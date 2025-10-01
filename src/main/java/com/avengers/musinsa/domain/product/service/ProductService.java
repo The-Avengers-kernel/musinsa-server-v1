@@ -49,4 +49,6 @@ public interface ProductService {
 
 
     void updateProductReview(Long reviewId, RequestReview requestReview);
+
+    void deleteProductReview(Long reviewId);
 }

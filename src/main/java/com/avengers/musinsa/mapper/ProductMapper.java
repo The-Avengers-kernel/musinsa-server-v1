@@ -84,4 +84,6 @@ public interface ProductMapper {
     void createProductReview(Long productId, Long userId, @Param("request") RequestReview requestReview);
 
     void updateProductReview(Long reviewId, @Param("request") RequestReview requestReview);
+
+    void deleteProductReview(Long reviewId);
 }

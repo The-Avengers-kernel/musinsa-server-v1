@@ -195,6 +195,11 @@
         WHERE REVIEW_ID = #{reviewId}
     </update>
 
+    <delete id="deleteProductReview">
+        DELETE REVIEWS
+        WHERE REVIEW_ID = #{reviewId}
+    </delete>
+
 
     <!--상의 실측 사이즈 조회-->
     <select id="getTopProductDetailSizeList"

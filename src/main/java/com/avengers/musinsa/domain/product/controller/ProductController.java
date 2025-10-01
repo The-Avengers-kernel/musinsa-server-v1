@@ -89,6 +89,15 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
+    // 리뷰 삭제 기능
+    @DeleteMapping("reviews/{reviewId}/delete")
+    public ResponseEntity<?> deleteProductReview(@PathVariable Long reviewId,
+                                                 @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+        tokenProviderService.getUserIdFromToken(authorizationHeader);
+        productService.deleteProductReview(reviewId);
+        return ResponseEntity.ok().build();
+    }
+
     // 상품상세 사이즈 리스트 조회
     @GetMapping("{productId}/detail-size-list")
     public Object getProductDetailSizeList(@PathVariable Long productId,
