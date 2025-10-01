@@ -8,7 +8,7 @@ import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
-import com.avengers.musinsa.domain.review.dto.Request.RequestCreateReview;
+import com.avengers.musinsa.domain.review.dto.Request.RequestReview;
 import com.avengers.musinsa.mapper.ProductMapper;
 
 import java.util.List;
@@ -181,7 +181,12 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public void createProductReview(Long productId, Long userId, RequestCreateReview requestCreateReview) {
-        productMapper.createProductReview(productId, userId, requestCreateReview);
+    public void createProductReview(Long productId, Long userId, RequestReview requestReview) {
+        productMapper.createProductReview(productId, userId, requestReview);
+    }
+
+    @Override
+    public void updateProductReview(Long reviewId, RequestReview requestReview) {
+        productMapper.updateProductReview(reviewId, requestReview);
     }
 }
