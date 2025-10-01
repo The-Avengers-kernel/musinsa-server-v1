@@ -9,6 +9,7 @@ import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepositoryImpl;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
+import com.avengers.musinsa.domain.review.dto.Request.RequestReview;
 import com.avengers.musinsa.domain.search.service.SearchLogService;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
 
@@ -17,7 +18,6 @@ import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -36,20 +36,8 @@ public class ProductServiceImpl implements ProductService {
         return productInfo;
     }
 
-//    @Override
-//    public ProductVariantsResponse getProductVariants(Long productId) {
-//        List<String> colors = productRepository.findProductOptionColors(productId);
-//        List<String> materials = productRepository.findProductOptionMaterials(productId);
-//        List<String> sizes = productRepository.findProductOptionSizes(productId);
-//
-//        return ProductVariantsResponse.builder()
-//                .productOptionColor(colors)
-//                .productOptionMaterial(materials)
-//                .productOptionSize(sizes)
-//                .build();
-//    }
     @Override
-    public List<ProductVariantDetailDto> getProductVariants(Long productId){
+    public List<ProductVariantDetailDto> getProductVariants(Long productId) {
         return productRepository.findVariantDetailsByProductId(productId);
     }
 
@@ -115,11 +103,26 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.getProductReviews(productId);
     }
 
+    @Override
+    public void createProductReview(Long productId, Long userId, RequestReview requestReview) {
+        productRepository.createProductReview(productId, userId, requestReview);
+    }
+
+    @Override
+    public void updateProductReview(Long reviewId, RequestReview requestReview) {
+        productRepository.updateProductReview(reviewId, requestReview);
+    }
+
+    @Override
+    public void deleteProductReview(Long reviewId) {
+        productRepository.deleteProductReview(reviewId);
+    }
+
     // 상품상세 사이즈 리스트 조회
     @Override
     public Object getProductDetailSizeList(Long productId, Long userId) {
         // 상품 정보 가져오기
-        ProductDetailResponse product = productRepository.findProductById(productId,userId);
+        ProductDetailResponse product = productRepository.findProductById(productId, userId);
 
         // 상품 컬럼에서 sizeDetailImageId를 찾는다.
         Long sizeDetailImageId = product.getSizeDetailImageId();
@@ -291,4 +294,5 @@ public class ProductServiceImpl implements ProductService {
             return productRepository.getIsLikedProduct(userId, productId);
         }
     }
+
 }

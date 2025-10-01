@@ -18,6 +18,7 @@ import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.entity.Product;
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
+import com.avengers.musinsa.domain.review.dto.Request.RequestReview;
 import java.util.List;
 
 public interface ProductRepository {
@@ -93,5 +94,11 @@ public interface ProductRepository {
     void minusProductLikeCnt(Long productId);
 
     List<ProductVariantDetailDto> findVariantDetailsByProductId(Long productId);
+
+    void createProductReview(Long productId, Long userId, RequestReview requestReview);
+
+    void updateProductReview(Long reviewId, RequestReview requestReview);
+
+    void deleteProductReview(Long reviewId);
 }
 
