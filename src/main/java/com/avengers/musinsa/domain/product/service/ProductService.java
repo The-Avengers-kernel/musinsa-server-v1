@@ -1,13 +1,9 @@
 package com.avengers.musinsa.domain.product.service;
 
-import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
-import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
-import com.avengers.musinsa.domain.product.entity.ProductCategory;
-import com.avengers.musinsa.domain.product.entity.ProductImage;
-import com.avengers.musinsa.domain.review.dto.Request.RequestCreateReview;
+import com.avengers.musinsa.domain.review.dto.Request.RequestReview;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
 
 import java.util.*;
@@ -30,7 +26,7 @@ public interface ProductService {
     List<ProductReviewsResponse> getProductReviews(Long productId);
 
     // 상품 리뷰 작성
-    void createProductReview(Long productId, Long userId, RequestCreateReview requestCreateReview);
+    void createProductReview(Long productId, Long userId, RequestReview requestReview);
 
     // 상품상세 사이즈 리스트 조회
     Object getProductDetailSizeList(Long productId, Long userId);
@@ -52,4 +48,5 @@ public interface ProductService {
     ProductLikeResponse ProductLikeToggle(Long userId, Long productId);
 
 
+    void updateProductReview(Long reviewId, RequestReview requestReview);
 }

@@ -4,7 +4,7 @@ import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
-import com.avengers.musinsa.domain.review.dto.Request.RequestCreateReview;
+import com.avengers.musinsa.domain.review.dto.Request.RequestReview;
 import java.util.List;
 import com.avengers.musinsa.domain.product.entity.Product;
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
@@ -81,5 +81,7 @@ public interface ProductMapper {
 
     List<ProductVariantDetailDto> findVariantDetailsByProductId(Long productId);
 
-    void createProductReview(Long productId, Long userId, @Param("request") RequestCreateReview requestCreateReview);
+    void createProductReview(Long productId, Long userId, @Param("request") RequestReview requestReview);
+
+    void updateProductReview(Long reviewId, @Param("request") RequestReview requestReview);
 }

@@ -4,8 +4,7 @@ import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.service.ProductService;
-import com.avengers.musinsa.domain.product.service.ProductServiceImpl;
-import com.avengers.musinsa.domain.review.dto.Request.RequestCreateReview;
+import com.avengers.musinsa.domain.review.dto.Request.RequestReview;
 import java.util.List;
 
 import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
@@ -71,12 +70,21 @@ public class ProductController {
     }
 
     // 상품 리뷰 작성
-    @PostMapping("{productId}/reviews/write")
+    @PostMapping("{productId}/reviews/create")
     public ResponseEntity<?> createProductReview(@PathVariable Long productId,
                                                  @CookieValue(value = "Authorization", required = false) String authorizationHeader,
-                                                 @RequestBody RequestCreateReview requestCreateReview) {
+                                                 @RequestBody RequestReview requestReview) {
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-        productService.createProductReview(productId, userId, requestCreateReview);
+        productService.createProductReview(productId, userId, requestReview);
+        return ResponseEntity.ok().build();
+    }
+
+    // 상품 리뷰 수정
+    @PatchMapping("reviews/{reviewId}/update")
+    public ResponseEntity<?> updateProductReview(@PathVariable Long reviewId,
+                                                 @CookieValue(value = "Authorization", required = false) String authorizationHeader,
+                                                 @RequestBody RequestReview requestReview) {
+        productService.updateProductReview(reviewId, requestReview);
         return ResponseEntity.ok().build();
     }
 

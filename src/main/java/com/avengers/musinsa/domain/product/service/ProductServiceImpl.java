@@ -9,7 +9,7 @@ import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepositoryImpl;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
-import com.avengers.musinsa.domain.review.dto.Request.RequestCreateReview;
+import com.avengers.musinsa.domain.review.dto.Request.RequestReview;
 import com.avengers.musinsa.domain.search.service.SearchLogService;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
 
@@ -18,7 +18,6 @@ import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -105,8 +104,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void createProductReview(Long productId, Long userId, RequestCreateReview requestCreateReview) {
-        productRepository.createProductReview(productId, userId, requestCreateReview);
+    public void createProductReview(Long productId, Long userId, RequestReview requestReview) {
+        productRepository.createProductReview(productId, userId, requestReview);
+    }
+
+    @Override
+    public void updateProductReview(Long reviewId, RequestReview requestReview) {
+        productRepository.updateProductReview(reviewId, requestReview);
     }
 
     // 상품상세 사이즈 리스트 조회
@@ -285,4 +289,5 @@ public class ProductServiceImpl implements ProductService {
             return productRepository.getIsLikedProduct(userId, productId);
         }
     }
+
 }

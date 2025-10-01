@@ -187,6 +187,14 @@
                #{request.rating}
     </insert>
 
+    <update id="updateProductReview">
+        UPDATE REVIEWS
+        SET CONTENT          = #{request.content},
+            PURCHASE_OPTIONS = #{request.purchaseOption},
+            RATING           = #{request.rating}
+        WHERE REVIEW_ID = #{reviewId}
+    </update>
+
 
     <!--상의 실측 사이즈 조회-->
     <select id="getTopProductDetailSizeList"
