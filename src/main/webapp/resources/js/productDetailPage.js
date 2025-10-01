@@ -287,6 +287,7 @@ $(document).ready(function () {
 
         const purchaseData = {
             type: "DIRECT_PURCHASE",
+            cartItemIds: null,
             productId: productId,
             quantity: parseInt($('#quantity-input').val()) || 1,
             productVariantId: selectedVariant.productVariantId,
@@ -294,7 +295,7 @@ $(document).ready(function () {
         };
 
         $.ajax({
-            url: '/api/v1/orders/products',
+            url: '/orders/orders-page',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(purchaseData),

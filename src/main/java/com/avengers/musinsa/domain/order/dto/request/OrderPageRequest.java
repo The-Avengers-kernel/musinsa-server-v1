@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 
 public class OrderPageRequest {
-    private String type; // "FROM_CART" | "DIRECT_PURCHASE"
+    private String ㅊㅣ명ㄷ; // "FROM_CART" | "DIRECT_PURCHASE"
 
     // 장바구니에서 주문
     private List<Long> cartItemIds;
