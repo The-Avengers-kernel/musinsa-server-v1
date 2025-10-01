@@ -1,3 +1,6 @@
+<%@ page language="java"
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8" %>
 <%-- 카테고리 관련 CSS --%>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/category.css">
 
