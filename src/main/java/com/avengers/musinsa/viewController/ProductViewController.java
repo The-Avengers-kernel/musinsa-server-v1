@@ -1,9 +1,11 @@
 package com.avengers.musinsa.viewController;
 
+import com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse;
 import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
 import com.avengers.musinsa.domain.product.service.ProductService;
 import com.avengers.musinsa.domain.product.service.ProductServiceImpl;
 import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +23,7 @@ public class ProductViewController {
     private final ProductService productService;
 
     @GetMapping("/{productId}")
-    public String geetProductDetail(@PathVariable Long productId, Model model) {
+    public String getProductDetail(@PathVariable Long productId, Model model) {
 
         return "product/productDetailPage";
     }
@@ -46,5 +48,12 @@ public class ProductViewController {
         model.addAttribute("result", result);
         // JSP에서 ${result} 사용
         return "product/searchProducts"; // JSP 뷰 경로
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public String getProductsByCategory(@PathVariable Long categoryId, Model model) {
+        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId);
+        model.addAttribute("products", products);
+        return "product/categoryProductsPage";
     }
 }

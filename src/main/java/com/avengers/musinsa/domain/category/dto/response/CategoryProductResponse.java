@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class CategoryProductResponse {
-    private Long productCategoryID;
+    private Long productCategoryId;
     private Long parentProductCategoryId;
     private String categoryName;
     private String categoryImage;
