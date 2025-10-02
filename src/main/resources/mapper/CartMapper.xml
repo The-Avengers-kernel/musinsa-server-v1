@@ -65,22 +65,19 @@
                uc.CART_QUANTITY AS quantity
         FROM USER_CARTS uc
         WHERE uc.USER_ID = #{userId}
-          AND uc.CART_OPTION = (SELECT pv.VARIANT_NAME
-                                FROM PRODUCT_VARIANTS pv
-                                WHERE pv.PRODUCT_VARIANT_ID = #{productVariantId, jdbcType=NUMERIC})
+          AND uc.CART_OPTION = #{request.variantName}
+          AND uc.PRODUCT_ID = #{request.productId}
     </select>
 
     <!--처음 장바구니 insert-->
     <insert id="insertNewCartItem">
         INSERT INTO USER_CARTS
-        (user_cart_id, user_id, product_id, CART_QUANTITY, CART_OPTION)
+            (user_cart_id, user_id, product_id, CART_QUANTITY, CART_OPTION)
         SELECT SEQ_USER_CARTS.nextval,
                #{userId},
                #{request.productId},
                #{request.quantity},
-               (SELECT VARIANT_NAME
-                FROM PRODUCT_VARIANTS
-                WHERE PRODUCT_VARIANT_ID = #{request.productVariantId, jdbcType=NUMERIC})
+               #{request.variantName}
         FROM DUAL
     </insert>
 
