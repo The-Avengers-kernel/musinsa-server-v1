@@ -42,13 +42,13 @@ $(document).ready(() => {
             url: "/api/v1/categories/brands",
             type: "GET",
             dataType: "json",
-            success: function(data) {
+            success: function (data) {
                 allBrands = data;
                 console.log("전체 브랜드 로드 완료", allBrands);
                 // 초기 로드 시 전체 브랜드 표시
                 filterAndRenderBrands(currentCategoryId, currentInitial);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error("전체 브랜드 로딩 실패:", error);
                 if ($brandItemList.length) {
                     $brandItemList.html("<li>브랜드 정보를 불러오지 못했습니다.</li>");
@@ -81,14 +81,14 @@ $(document).ready(() => {
             url: `/api/v1/categories/${categoryId}/brands`,
             type: "GET",
             dataType: "json",
-            success: function(data) {
+            success: function (data) {
                 console.log(`카테고리 ${categoryId} 브랜드 로드 완료:`, data);
                 // 현재 카테고리의 브랜드 목록 저장
                 currentCategoryBrands = data;
                 // 로드된 카테고리별 브랜드에 초성 필터 적용
                 applyInitialFilter(data, initial);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error(`카테고리 ${categoryId} 브랜드 로딩 실패:`, error);
                 if ($brandItemList.length) {
                     $brandItemList.html("<li>해당 카테고리의 브랜드 정보를 불러오지 못했습니다.</li>");
@@ -168,13 +168,20 @@ $(document).ready(() => {
 
         const items = subcategories.map(category => {
             console.log("카테고리 아이템:", category.categoryName, "ID:", category.productCategoryId);
+            const href = `/products/category/${category.productCategoryId}`;
             return `
-                <a href="/products?keyword=${encodeURIComponent(category.categoryName)}" class="item">
+                <a href="${href}" class="item" data-name="${category.categoryName}">
                     <img src="${category.categoryImage || 'https://image.msscdn.net/thumbnails/images/goods_img/default.jpg'}" alt="${category.categoryName}">
                     <span>${category.categoryName}</span>
                 </a>
             `;
         }).join('');
+
+        // 클릭할 때 categoryName 저장
+        $(document).on('click', 'a.item', function () {
+            const name = $(this).data('name');
+            if (name) sessionStorage.setItem('categoryName', name);
+        });
 
         console.log("생성된 HTML 길이:", items.length);
 
@@ -204,25 +211,25 @@ $(document).ready(() => {
     }
 
 
-
     function loadSubCategories(parentCategoryId) {
         console.log("API 호출 시작 - 부모 카테고리 ID:", parentCategoryId);
         $.ajax({
             url: `/api/v1/categories/products?parentCategoryId=${parentCategoryId}`,
             type: "GET",
             dataType: "json",
-            success: function(data) {
+            success: function (data) {
                 console.log("API 응답 성공:", data);
                 console.log("데이터 길이:", data ? data.length : 0);
                 renderSubCategories(parentCategoryId, data);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error(`중분류 카테고리 로딩 실패 (ID: ${parentCategoryId}):`, error);
                 console.error("HTTP 상태:", xhr.status);
                 console.error("응답 텍스트:", xhr.responseText);
             }
         });
     }
+
     // --------------------------------------------------------
     // 1. DOM 요소 선택
     // --------------------------------------------------------
@@ -248,7 +255,7 @@ $(document).ready(() => {
     // --------------------------------------------------------
     // 3. 상단 탭 전환 (카테고리/브랜드)
     // --------------------------------------------------------
-    $tabLinks.on("click", function(e) {
+    $tabLinks.on("click", function (e) {
         e.preventDefault();
         const targetId = $(this).data("tab");
 
@@ -271,7 +278,7 @@ $(document).ready(() => {
     // --------------------------------------------------------
     // 4. 상품(Product) 탭: 왼쪽 목록 클릭 시 우측 상세 섹션으로 스크롤 및 API 호출
     // --------------------------------------------------------
-    $("#product .category-list").on("click", ".list-item-link", function(e) {
+    $("#product .category-list").on("click", ".list-item-link", function (e) {
         e.preventDefault();
         const targetSectionId = $(this).data("target");
         const categoryId = $(this).data("category-id");
@@ -290,13 +297,13 @@ $(document).ready(() => {
             // 상의는 카테고리 상세 영역의 맨 위로 스크롤
             const $categoryDetails = $('.category-details');
             if ($categoryDetails.length) {
-                $categoryDetails[0].scrollTo({ top: 0, behavior: "smooth" });
+                $categoryDetails[0].scrollTo({top: 0, behavior: "smooth"});
             }
         } else {
             // 다른 카테고리는 해당 섹션으로 스크롤
             const $targetSection = $(`#${targetSectionId}`);
             if ($targetSection.length) {
-                $targetSection[0].scrollIntoView({ behavior: "smooth", block: "start" });
+                $targetSection[0].scrollIntoView({behavior: "smooth", block: "start"});
             }
         }
     });
@@ -304,7 +311,7 @@ $(document).ready(() => {
     // --------------------------------------------------------
     // 5. 왼쪽 브랜드 카테고리 클릭 이벤트
     // --------------------------------------------------------
-    $("#brand .category-list").on("click", ".list-item-link", function(e) {
+    $("#brand .category-list").on("click", ".list-item-link", function (e) {
         e.preventDefault();
         const categoryId = $(this).data("id");
 
@@ -344,7 +351,7 @@ $(document).ready(() => {
     // --------------------------------------------------------
     // 7. 초성 항목 (인기, ㄱ, A...) 클릭 이벤트
     // --------------------------------------------------------
-    $(".initial-list").on("click", "a", function(e) {
+    $(".initial-list").on("click", "a", function (e) {
         e.preventDefault();
         $(this).siblings().removeClass("active");
         $(this).addClass("active");
