@@ -85,7 +85,7 @@
                         <input type="text" id="reviewPurchaseOption" placeholder="구매 옵션 (예: 블랙 / M)"/>
                     </div>
                     <div class="review-write-row">
-                        <textarea id="reviewContent" rows="4" placeholder="리뷰 내용을 입력하세요"></textarea>
+                        <input id="reviewContent" rows="4" placeholder="리뷰 내용을 입력하세요">
                     </div>
                     <div class="review-write-actions">
                         <button type="button" id="btnReviewSubmit" class="btn primary">리뷰 등록</button>

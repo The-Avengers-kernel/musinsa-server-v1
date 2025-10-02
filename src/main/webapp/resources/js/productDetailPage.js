@@ -648,7 +648,7 @@
                     const $item = $(`
           <div class="review-item" data-review-id="${reviewId}">
             <div class="review-header">
-              <div class="review-stars">${buildStarsHtml(rating)}</div>
+              <div class="review-stars">${buildStarsHtml(rating)}${review.rating}</div>
               <strong class="review-nickname">${review.nickName ?? '익명'}</strong>
             </div>
             <div class="review-body">
@@ -656,10 +656,10 @@
             </div>
             <div class="review-footer">
               <span class="review-meta">구매옵션: ${option}</span>
-              <div class="review-actions">
+            </div>
+            <div class="review-actions">
                 <button type="button" class="btn text review-edit">수정</button>
                 <button type="button" class="btn text danger review-delete">삭제</button>
-              </div>
             </div>
           </div>
         `);
