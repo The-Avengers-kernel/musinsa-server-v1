@@ -11,6 +11,7 @@ public class ProductReviewsResponse {
     private String nickName;
     private String content;
     private String purchaseOptions;
-    private int helpCount;
+    private Integer helpCount;
+    private Integer rating;
 
 }
