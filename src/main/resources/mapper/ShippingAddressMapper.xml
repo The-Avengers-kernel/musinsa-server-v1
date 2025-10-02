@@ -4,7 +4,7 @@
 <mapper namespace="com.avengers.musinsa.mapper.ShippingAddressMapper">
     <select id="findByUserId" resultType="com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO" parameterType="Long">
         SELECT
-            ua.user_address_id AS shippingId,
+            ua.user_address_id AS shippingAddressId,
             ua.user_id AS userId,
             ua.recipient_name AS recipientName,
             ua.phone_number AS recipientPhone,
@@ -15,7 +15,73 @@
 
         WHERE ua.user_id = #{userId}
         ORDER BY ua.is_default DESC, ua.user_address_id ASC
-
-
     </select>
+
+
+    <insert id="insertShippingAddress"
+            parameterType="com.avengers.musinsa.domain.shipments.dto.ShippingAddressCreateDTO">
+        <selectKey keyProperty="shippingAddressId" resultType="long" order="BEFORE">
+            SELECT USER_ADDRESSES_SEQ.NEXTVAL FROM dual
+        </selectKey>
+
+        INSERT INTO user_addresses
+            (user_address_id, user_id, recipient_name, phone_number,
+            address_line1, address_line2, postal, is_default)
+        VALUES
+        (
+            #{shippingAddressId},
+            #{userId},
+            #{recipientName},
+            #{recipientPhone},
+            #{addressLine1},
+            #{addressLine2},
+            #{postalCode},
+            <choose>
+                <when test="isDefault != null and isDefault">1</when>
+               <otherwise>0</otherwise>
+            </choose>
+        )
+    </insert>
+
+
+    <update id="updateShippingAddress">
+            update user_addresses
+            set recipient_name = #{recipientName},
+                phone_number = #{recipientPhone},
+                address_line1 = #{addressLine1},
+                address_line2 = #{addressLine2},
+                postal = #{postalCode}
+                is_default = <choose>
+                                <when test="isDefault != null and isDefault">1</when>
+                                <otherwise>0</otherwise>
+                            </choose>
+            where user_address_id = #{shippingAddressId}
+            AND user_id = #{userId}
+    </update>
+
+    <delete id="deleteShippingAddress">
+        delete from user_addresses
+        where user_address_id = #{shippingAddressId}
+        AND user_id = #{userId}
+    </delete>
+
+    <!--기본 배송지 해제-->
+    <update id="resetDefaultShippingAddress">
+        UPDATE user_addresses
+        SET is_default = 0
+        WHERE user_id = #{userId}
+    </update>
+
+
+    <update id="setDefaultShippingAddress">
+        UPDATE user_addresses
+        SET is_default = 1
+        WHERE user_address_id = #{shippingAddressId}
+        AND user_id = #{userId}
+    </update>
+
+
+
+
+
 </mapper>
