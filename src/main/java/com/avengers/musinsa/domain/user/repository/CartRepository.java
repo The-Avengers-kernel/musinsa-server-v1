@@ -29,8 +29,8 @@ public class CartRepository {
     }
 
     // userId와 productVariantId로 이전에 장바구니를 추가했는지 확인하는 메서드
-    public CartItemDto findCartItemByVariantId(Long userId, Long productVariantId) {
-        return cartMapper.findCartItemByVariantId(userId, productVariantId);
+    public CartItemDto findCartItemByVariantId(Long userId, AddCartRequest request) {
+        return cartMapper.findCartItemByVariantId(userId, request);
     }
 
     //

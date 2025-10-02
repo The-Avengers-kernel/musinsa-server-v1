@@ -40,9 +40,13 @@ public class CartController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization token is missing");
         } else {
             Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-            cartService.addProductUserCart(userId,addCartRequest);
+            System.out.println(addCartRequest.getProductId());
+            System.out.println(addCartRequest.getQuantity());
+            System.out.println(addCartRequest.getVariantName());
+            cartService.addProductUserCart(userId, addCartRequest);
         }
     }
+
     // 위 코드와 아래 코드는 같은데 postman용 userId를 url에 넣은 겁니다 나중엔 위에껄로 하시면 됩니다.
 //    @PostMapping("/{userId}/carts")
 //    public void addProductUserCart(

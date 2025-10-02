@@ -15,7 +15,7 @@ public interface CartMapper {
 
     void updateProductOption(Long userId, Long productId, String productOptionName, Integer quantity);
 
-    CartItemDto findCartItemByVariantId(@Param("userId") Long userId, @Param("productVariantId") Long productVariantId);
+    CartItemDto findCartItemByVariantId(@Param("userId") Long userId, @Param("request") AddCartRequest request);
 
     void insertNewCartItem(@Param("userId") Long userId, @Param("request") AddCartRequest request);
 
