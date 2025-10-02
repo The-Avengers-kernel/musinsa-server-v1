@@ -123,13 +123,17 @@
                pimg.image_url                as productImage,
                b.brand_name_kr               as brandName,
                ranked_products.price         as price,
-               ranked_products.product_likes as productLikes
+               ranked_products.product_likes as productLikes,
+               ranked_products.rating_avg    as ratingAverage,
+               ranked_products.review_count  as reviewCount
 
         FROM (SELECT p.product_id,
                      p.product_name,
                      p.brand_id,
                      p.price,
                      p.product_likes,
+                     prs.rating_avg,
+                     prs.review_count,
                      -- 가중치 계산
                      (
                          NVL(order_stats.total_orders, 0) * 10.0 +
@@ -143,16 +147,15 @@
                                   FROM order_items oi
                                            JOIN orders o ON o.order_id = oi.order_id
                                   WHERE o.order_status NOT IN ('취소', '반품완료')
-                                  GROUP BY oi.product_id) order_stats ON order_stats.product_id = p.product_id
+                                  GROUP BY oi.product_id) order_stats
+                                 ON order_stats.product_id = p.product_id
 
                   -- 리뷰 평점 통계
-                       LEFT JOIN (SELECT prs.product_id,
-                                         prs.rating_avg
+                       LEFT JOIN (SELECT prs.product_id, prs.review_count, prs.rating_avg
                                   FROM product_review_stats prs) prs ON p.product_id = prs.product_id
-
               WHERE p.product_category_id = #{categoryId}) ranked_products
-
-                 JOIN brands b ON b.brand_id = ranked_products.brand_id
+                 JOIN brands b
+                      ON b.brand_id = ranked_products.brand_id
                  JOIN product_images pimg ON pimg.product_id = ranked_products.product_id
 
         WHERE pimg.image_type = 'MAIN'
@@ -309,10 +312,13 @@
                pi.image_url     as productImage,
                p.product_name   as productName,
                p.price,
-               p.product_likes  as productLikes
+               p.product_likes  as productLikes,
+               prs.rating_avg   as ratingAverage,
+               prs.review_count as reviewCount
         FROM products p
                  JOIN brands b ON p.brand_id = b.brand_id
                  LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
+                 LEFT JOIN product_review_stats prs ON p.product_id = prs.product_id
         WHERE p.brand_id = #{brandId}
         ORDER BY p.product_likes DESC
     </select>
@@ -326,10 +332,13 @@
         pi.image_url as productImage,
         p.product_name as productName,
         p.price,
-        p.product_likes as productLikes
+        p.product_likes as productLikes,
+        prs.rating_avg as ratingAverage,
+        prs.review_count as reviewCount
         FROM products p
         JOIN brands b ON p.brand_id = b.brand_id
         LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
+        LEFT JOIN product_review_stats prs ON p.product_id = prs.product_id
         WHERE (
         <foreach collection="keywords" item="keyword" separator=" OR ">
             p.product_name LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'

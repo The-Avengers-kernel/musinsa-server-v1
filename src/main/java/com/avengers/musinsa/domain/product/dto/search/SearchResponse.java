@@ -40,5 +40,7 @@ public class SearchResponse {
         private String productName;
         private Integer price;
         private Integer productLikes;
+        private Double ratingAverage;
+        private Integer reviewCount;
     }
 }
