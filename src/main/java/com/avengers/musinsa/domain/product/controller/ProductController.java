@@ -134,4 +134,18 @@ public class ProductController {
         }
 
     }
+
+
+    //상품 좋아요 토글 기능
+    @PostMapping("/{productId}/liked")
+    public ProductLikeResponse ProductLikeToggle(@PathVariable Long productId,
+                                                 @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+        if (authorizationHeader == null || authorizationHeader.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization token is missing");
+        } else {
+            Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+            System.out.println("userId = " + userId);
+            return productService.ProductLikeToggle(userId, productId);
+        }
+    }
 }
