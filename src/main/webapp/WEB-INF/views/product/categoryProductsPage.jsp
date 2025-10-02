@@ -53,9 +53,16 @@
                                 <span class="current-price">
                                     <fmt:formatNumber value='${p.price}' pattern='#,###'/>원
                                 </span>
+                            </div>
+                            <div class="likes-and-stars">
                                 <c:if test='${p.productLikes != null}'>
                                     <span class="likes">♥ <fmt:formatNumber value='${p.productLikes}'
                                                                             pattern='#,###'/></span>
+                                </c:if>
+                                <c:if test='${p.ratingAverage != null}'>
+                                    <span class="stars">★<fmt:formatNumber value='${p.ratingAverage}'
+                                                                           pattern='0.0'/>(<fmt:formatNumber
+                                            value='${p.reviewCount}'/>)</span>
                                 </c:if>
                             </div>
                         </a>
