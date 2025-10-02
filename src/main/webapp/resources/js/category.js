@@ -13,7 +13,7 @@ $(document).ready(() => {
 
         const items = data.map(brands => `
             <li>
-                <a href="/search?keyword=${brands.brandNameKr}">
+                <a href="/products?keyword=${brands.brandNameKr}">
                     <div class="brand-info">
                         <img src="${brands.brandImage || BRAND_PLACEHOLDER}" alt="${brands.brandNameKr || ''} 로고">
                         <div class="text-info">
@@ -169,7 +169,7 @@ $(document).ready(() => {
         const items = subcategories.map(category => {
             console.log("카테고리 아이템:", category.categoryName, "ID:", category.productCategoryId);
             return `
-                <a href="#" class="item" data-category-id="${category.productCategoryId}">
+                <a href="/products?keyword=${encodeURIComponent(category.categoryName)}" class="item">
                     <img src="${category.categoryImage || 'https://image.msscdn.net/thumbnails/images/goods_img/default.jpg'}" alt="${category.categoryName}">
                     <span>${category.categoryName}</span>
                 </a>
