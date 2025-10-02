@@ -166,10 +166,13 @@
                r.NICKNAME         AS nickName,
                r.CONTENT          AS content,
                r.PURCHASE_OPTIONS AS purchaseOptions,
-               r.HELP_COUNT       AS helpCount
+               r.HELP_COUNT       AS helpCount,
+               r.RATING           AS rating
         FROM REVIEWS r
-        WHERE r.PRODUCT_ID = #{productId}
-        ORDER BY r.HELP_COUNT DESC
+        WHERE r.PRODUCT_ID =
+              #{productId}
+        ORDER BY r.CREATED_AT
+            DESC
     </select>
 
     <insert id="createProductReview">
