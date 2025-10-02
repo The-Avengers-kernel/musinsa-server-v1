@@ -304,16 +304,36 @@ $(document).ready(function () {
         };
 
         $.ajax({
-            url: '/api/v1/orders/products',
+            url: '/product/direct-purchase',  // ✅ 새로운 뷰 컨트롤러 URL
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(purchaseData),
+            xhrFields: {
+                withCredentials: true  // 쿠키 전송 활성화
+            },
             success: function (response) {
-                console.log('구매할 제품 정보 : ', purchaseData);
-                alert('구매 페이지로 이동합니다.');
+                console.log('구매할 제품 정보:', purchaseData);
+
+                if (response.success && response.redirectUrl) {
+                    // 서버에서 반환한 리다이렉트 URL로 이동
+                    window.location.href = response.redirectUrl;
+                } else {
+                    alert('구매 페이지로 이동합니다.');
+                    window.location.href = '/orders/order-page';
+                }
             },
             error: function (xhr, status, error) {
-                alert('구매 요청에 실패했습니다.');
+                console.error('구매 요청 실패:', error);
+                console.error('상태 코드:', xhr.status);
+                console.error('응답:', xhr.responseText);
+
+                // 에러 메시지 파싱 시도
+                try {
+                    const errorResponse = JSON.parse(xhr.responseText);
+                    alert(errorResponse.message || '구매 요청에 실패했습니다.');
+                } catch (e) {
+                    alert('구매 요청에 실패했습니다.');
+                }
             }
         });
     });

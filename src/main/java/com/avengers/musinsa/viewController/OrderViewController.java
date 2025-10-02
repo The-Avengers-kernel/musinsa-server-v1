@@ -44,6 +44,13 @@ public class OrderViewController {
                     productLine.getOptionName()
             );
 
+            if (variant == null) {
+                throw new IllegalArgumentException(
+                    "상품 옵션을 찾을 수 없습니다. productId: " + productLine.getProductId() +
+                    ", optionName: " + productLine.getOptionName()
+                );
+            }
+
             Long variantId = variant.getProductVariantId();
             productLine.setVariantId(variantId);
 

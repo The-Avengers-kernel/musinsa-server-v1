@@ -21,6 +21,7 @@ public class OrderPageRepositoryImpl implements OrderPageRepository{
     // 회원의 기본 배송지 조회
     @Override
     public OrderPageResponse.BuyerInfo.DefaultAddress getDefaultAddress(Long userId) {
+        System.out.println("리포지토리에서 아이디 출력 : " + userId);
         return orderPageMapper.getDefaultAddress(userId);
     }
 
