@@ -61,8 +61,41 @@
             <!-- 리뷰 섹션 -->
             <section class="product-review-section" aria-labelledby="review-title">
                 <h2 id="review-title" class="sr-only">리뷰</h2>
+
+                <!-- ✅ 리뷰 요약 -->
+                <div class="review-summary" aria-label="평균 평점 요약">
+                    <div class="review-summary-stars" id="avgStars" aria-hidden="true"></div>
+                    <div class="review-summary-text">
+                        <strong id="avgScore">0.0</strong> / 5
+                        <span id="reviewTotalCount" class="muted">후기 0개</span>
+                    </div>
+                </div>
+
+                <!-- ✅ 리뷰 작성 -->
+                <form class="review-write" id="reviewWriteForm" onsubmit="return false;">
+                    <div class="star-input" id="writeStars" data-value="0" role="radiogroup" aria-label="평점 선택">
+                        <button type="button" class="star-btn" data-score="1" aria-label="1점">★</button>
+                        <button type="button" class="star-btn" data-score="2" aria-label="2점">★</button>
+                        <button type="button" class="star-btn" data-score="3" aria-label="3점">★</button>
+                        <button type="button" class="star-btn" data-score="4" aria-label="4점">★</button>
+                        <button type="button" class="star-btn" data-score="5" aria-label="5점">★</button>
+                    </div>
+
+                    <div class="review-write-row">
+                        <input type="text" id="reviewPurchaseOption" placeholder="구매 옵션 (예: 블랙 / M)"/>
+                    </div>
+                    <div class="review-write-row">
+                        <textarea id="reviewContent" rows="4" placeholder="리뷰 내용을 입력하세요"></textarea>
+                    </div>
+                    <div class="review-write-actions">
+                        <button type="button" id="btnReviewSubmit" class="btn primary">리뷰 등록</button>
+                    </div>
+                </form>
+
+                <!-- ✅ 리뷰 목록 -->
                 <div id="productsReviews" class="product-reviews" aria-live="polite"></div>
             </section>
+
         </div>
 
         <!-- 오른쪽: 제품 정보 및 구매 옵션 -->
@@ -90,10 +123,12 @@
 
                     <!-- 별점 및 리뷰 (JS가 값 채움) -->
                     <div class="product-rating" aria-label="평점 요약">
-                        <span class="star-icon" aria-hidden="true">★</span>
-                        <span class="rating-score" id="summaryRatingScore">4.9</span>
-                        <span class="review-count" id="summaryReviewCount">후기 69개</span>
+                        <!-- ✅ 여러 개 별을 동적으로 채울 자리 -->
+                        <span class="star-icon" aria-hidden="true">★</span> <!-- 이 한 개만 유지 -->
+                        <span class="rating-score" id="summaryRatingScore">0.0</span>
+                        <span class="review-count" id="summaryReviewCount">후기 0개</span>
                     </div>
+
                 </section>
 
                 <!-- 색상 스와치 -->

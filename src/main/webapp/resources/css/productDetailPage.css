@@ -158,9 +158,11 @@ body {
     margin-bottom: 20px;
     text-align: center;
 }
-.product-description-url{
+
+.product-description-url {
     padding: 10px;
 }
+
 .size-table {
     width: 100%;
     border-collapse: collapse;
@@ -761,3 +763,135 @@ body {
         overflow-x: auto;
     }
 }
+
+/* ===== 리뷰 요약 / 별점 / 폼 ===== */
+.review-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+}
+
+.review-summary .muted {
+    color: #888;
+    margin-left: 6px
+}
+
+.star {
+    color: #ff7a00;
+    margin-right: 2px
+}
+
+.star.empty {
+    color: #ddd
+}
+
+.review-summary-stars .star {
+    font-size: 18px
+}
+
+/* 작성 폼 */
+.review-write {
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 12px 12px 14px;
+    margin-bottom: 12px
+}
+
+.star-input {
+    display: inline-flex;
+    gap: 4px;
+    margin-bottom: 8px
+}
+
+.star-input .star-btn {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    color: #ddd;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.star-input .star-btn.active {
+    color: #ff7a00
+}
+
+.review-write-row {
+    margin-bottom: 8px
+}
+
+#reviewPurchaseOption, #reviewContent, .edit-option, .edit-content {
+    width: 100%;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    background: #fff;
+}
+
+#reviewContent, .edit-content {
+    min-height: 88px
+}
+
+/* 버튼 */
+.btn {
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-weight: 600;
+    cursor: pointer
+}
+
+.btn.primary {
+    background: #111;
+    color: #fff;
+    border-color: #111
+}
+
+.btn.text {
+    border: 0;
+    background: transparent;
+    color: #666
+}
+
+.btn.text.danger {
+    color: #cc2a2a
+}
+
+.review-write-actions {
+    display: flex;
+    justify-content: flex-end
+}
+
+.review-actions {
+    display: flex;
+    gap: 6px
+}
+
+/* 인라인 수정 영역 */
+.review-edit-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px
+}
+
+/* 요약 별 아이콘(오른쪽 상단) */
+#summaryStars .star {
+    font-size: 16px;
+    color: #ff7a00;
+    margin-right: 2px;
+}
+
+#summaryStars .star.empty {
+    color: #ddd;
+}
+

@@ -578,4 +578,226 @@
             }
         });
     }
+
+
+    // ---------- 별점 유틸 ----------
+    function buildStarsHtml(score) {
+        // score: 0.0 ~ 5.0
+        const full = Math.floor(score);
+        const half = score - full >= 0.5 ? 1 : 0;
+        const empty = 5 - full - half;
+        let html = '';
+        for (let i = 0; i < full; i++) html += '<i class="fa fa-star star full" aria-hidden="true"></i>';
+        if (half) html += '<i class="fa fa-star-half-alt star half" aria-hidden="true"></i>';
+        for (let i = 0; i < empty; i++) html += '<i class="far fa-star star empty" aria-hidden="true"></i>';
+        return html;
+    }
+
+    function setWriteStars(score) {
+        $('#writeStars').data('value', score);
+        // 시각적 표시
+        $('#writeStars .star-btn').each(function () {
+            const s = Number($(this).data('score'));
+            $(this).toggleClass('active', s <= score);
+        });
+    }
+
+// 별점 입력 버튼(작성/수정 공용)
+    $(document).off('click.starInput').on('click.starInput', '.star-btn', function () {
+        const parent = $(this).closest('.star-input');
+        const score = Number($(this).data('score'));
+        parent.data('value', score);
+        parent.find('.star-btn').each(function () {
+            const s = Number($(this).data('score'));
+            $(this).toggleClass('active', s <= score);
+        });
+    });
+
+// ---------- 리뷰 목록 + 평균 ----------
+    function loadReviews(productId) {
+        $.ajax({
+            url: '/api/v1/products/' + productId + '/reviews',
+            method: 'GET',
+            dataType: 'json',
+            success: function (reviews) {
+                const $wrap = $('#productsReviews').empty();
+
+                // 평균 계산
+                const list = Array.isArray(reviews) ? reviews : [];
+                const count = list.length;
+                const sum = list.reduce((acc, r) => acc + (Number(r.rating) || 0), 0);
+                const avg = count ? (sum / count) : 0;
+
+                $('#avgScore').text(avg.toFixed(1));
+                $('#reviewTotalCount').text('후기 ' + count + '개');
+                $('#avgStars').html(buildStarsHtml(avg));
+
+                // 평균 계산 후에 ↓↓↓ 추가
+                $('#summaryRatingScore').text(avg.toFixed(1));
+                $('#summaryReviewCount').text('후기 ' + count + '개');
+
+
+                if (!count) return;
+
+                // 리스트 렌더링
+                list.forEach((review) => {
+                    const reviewId = review.reviewId || review.id; // 서버 키 호환
+                    const rating = Number(review.rating) || 0;
+                    const option = review.purchaseOptions ?? review.purchaseOption ?? '';
+
+                    const $item = $(`
+          <div class="review-item" data-review-id="${reviewId}">
+            <div class="review-header">
+              <div class="review-stars">${buildStarsHtml(rating)}</div>
+              <strong class="review-nickname">${review.nickName ?? '익명'}</strong>
+            </div>
+            <div class="review-body">
+              <p class="review-content">${review.content ?? ''}</p>
+            </div>
+            <div class="review-footer">
+              <span class="review-meta">구매옵션: ${option}</span>
+              <div class="review-actions">
+                <button type="button" class="btn text review-edit">수정</button>
+                <button type="button" class="btn text danger review-delete">삭제</button>
+              </div>
+            </div>
+          </div>
+        `);
+
+                    $wrap.append($item);
+                });
+            }
+        });
+    }
+
+// ---------- 리뷰 등록 ----------
+    $(document).off('click.reviewCreate').on('click.reviewCreate', '#btnReviewSubmit', function () {
+        const productId = getProductId();
+        const rating = Number($('#writeStars').data('value')) || 0;
+        const content = ($('#reviewContent').val() || '').trim();
+        const purchaseOption = ($('#reviewPurchaseOption').val() || '').trim();
+
+        if (!rating) return alert('평점을 선택하세요.');
+        if (!content) return alert('리뷰 내용을 입력하세요.');
+
+        const payload = {productId, content, purchaseOption, rating};
+
+        $.ajax({
+            url: `/api/v1/products/${productId}/reviews/create`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            xhrFields: {withCredentials: true},
+            success: () => {
+                $('#reviewContent').val('');
+                $('#reviewPurchaseOption').val('');
+                setWriteStars(0);
+                loadReviews(productId);
+                alert('리뷰가 등록되었습니다.');
+            },
+            error: (xhr) => {
+                console.error(xhr.responseText || xhr);
+                alert('리뷰 등록에 실패했습니다.');
+            }
+        });
+    });
+
+// ---------- 리뷰 삭제 ----------
+    $(document).off('click.reviewDelete').on('click.reviewDelete', '.review-delete', function () {
+        const productId = getProductId();
+        const reviewId = $(this).closest('.review-item').data('review-id');
+        if (!reviewId) return;
+
+        if (!confirm('이 리뷰를 삭제하시겠어요?')) return;
+
+        $.ajax({
+            url: `/api/v1/products/reviews/${reviewId}/delete`,
+            method: 'DELETE',
+            xhrFields: {withCredentials: true},
+            success: () => {
+                loadReviews(productId);
+                alert('리뷰가 삭제되었습니다.');
+            },
+            error: (xhr) => {
+                console.error(xhr.responseText || xhr);
+                alert('리뷰 삭제에 실패했습니다.');
+            }
+        });
+    });
+
+// ---------- 리뷰 수정 (인라인) ----------
+    $(document).off('click.reviewEdit').on('click.reviewEdit', '.review-edit', function () {
+        const $item = $(this).closest('.review-item');
+        const content = $item.find('.review-content').text();
+        const reviewId = $item.data('review-id');
+
+        // 현재 별점 추출(아이콘 개수 기반)
+        const currentScore = $item.find('.review-stars .fa-star.star.full').length +
+            ($item.find('.review-stars .star.half').length ? 0.5 : 0);
+
+        // 편집 모드 UI
+        const editHtml = `
+    <div class="review-edit-area">
+      <div class="star-input edit-stars" data-value="${currentScore}">
+        <button type="button" class="star-btn" data-score="1">★</button>
+        <button type="button" class="star-btn" data-score="2">★</button>
+        <button type="button" class="star-btn" data-score="3">★</button>
+        <button type="button" class="star-btn" data-score="4">★</button>
+        <button type="button" class="star-btn" data-score="5">★</button>
+      </div>
+      <input type="text" class="edit-option" placeholder="구매 옵션" value="${($item.find('.review-meta').text().replace('구매옵션: ', '') || '').trim()}"/>
+      <textarea class="edit-content" rows="4">${content}</textarea>
+      <div class="review-edit-actions">
+        <button type="button" class="btn primary review-save" data-review-id="${reviewId}">저장</button>
+        <button type="button" class="btn text review-cancel">취소</button>
+      </div>
+    </div>
+  `;
+        // 본문을 편집 UI로 교체
+        $item.find('.review-body').html(editHtml);
+
+        // 시각적 활성화
+        const s = Math.round(currentScore);
+        $item.find('.edit-stars .star-btn').each(function () {
+            const score = Number($(this).data('score'));
+            $(this).toggleClass('active', score <= s);
+        });
+    });
+
+    $(document).off('click.reviewCancel').on('click.reviewCancel', '.review-cancel', function () {
+        const productId = getProductId();
+        loadReviews(productId); // 원상복구
+    });
+
+    $(document).off('click.reviewSave').on('click.reviewSave', '.review-save', function () {
+        const productId = getProductId();
+        const reviewId = $(this).data('review-id');
+        const $root = $(this).closest('.review-item');
+
+        const rating = Number($root.find('.edit-stars').data('value')) || 0;
+        const content = ($root.find('.edit-content').val() || '').trim();
+        const purchaseOption = ($root.find('.edit-option').val() || '').trim();
+
+        if (!rating) return alert('평점을 선택하세요.');
+        if (!content) return alert('리뷰 내용을 입력하세요.');
+
+        const payload = {productId, content, purchaseOption, rating};
+
+        $.ajax({
+            url: `/api/v1/products/reviews/${reviewId}/update`,
+            method: 'PATCH',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            xhrFields: {withCredentials: true},
+            success: () => {
+                loadReviews(productId);
+                alert('리뷰가 수정되었습니다.');
+            },
+            error: (xhr) => {
+                console.error(xhr.responseText || xhr);
+                alert('리뷰 수정에 실패했습니다.');
+            }
+        });
+    });
+
 })();
