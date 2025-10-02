@@ -28,7 +28,6 @@ public class ProductViewController {
         return "product/productDetailPage";
     }
 
-    // /search?keyword=...  또는 /search/?keyword=...
     @GetMapping()
     public String searchPage(
             @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
