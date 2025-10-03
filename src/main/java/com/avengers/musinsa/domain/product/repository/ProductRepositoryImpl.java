@@ -71,6 +71,8 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, String sortBy) {
         return productMapper.getProductsByCategory(categoryId, sortBy);
+    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId) {
+        return productMapper.getProductsByCategory(categoryId, userId);
     }
 
     @Override

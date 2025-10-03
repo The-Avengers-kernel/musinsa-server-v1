@@ -24,6 +24,7 @@ public interface ProductMapper {
     List<ProductOptionRow> findOptionsByProductIds(@Param("productIds") List<Long> productIds);
 
     List<ProductByCategoryResponse> getProductsByCategory(@Param("categoryId") Long categoryId, @Param("sortBy") String sortBy);
+    List<ProductByCategoryResponse> getProductsByCategory(@Param("categoryId") Long categoryId, @Param("userId") Long userId);
 
     List<ProductImage> findProductImageById(Long productId);
 
