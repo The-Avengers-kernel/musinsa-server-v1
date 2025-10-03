@@ -41,8 +41,7 @@ public interface ProductRepository {
 
     List<ProductOptionRow> findOptionRowsByProductId(List<Long> productIds);
 
-    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, String sortBy);
-    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId);
+    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId, String sortBy);
 
 
     List<ProductImage> findProductImageById(Long productId);
@@ -64,9 +63,9 @@ public interface ProductRepository {
     // 상품 상세 설명 조회 api
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
 
-    List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId, Long userId);
+    List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId, Long userId, String sortBy);
 
-    List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords, Long userId);
+    List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords, Long userId, String sortBy);
 
     //검색 시 검색어 로그 테이블에 검색 정보 저장하기.
     void saveSearchKeywordLog(String keyword);

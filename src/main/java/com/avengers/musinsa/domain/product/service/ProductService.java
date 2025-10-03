@@ -39,8 +39,7 @@ public interface ProductService {
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
 
 
-    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, String sortBy);
-    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId);
+    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId, String sortBy);
 
 
     // 상품 상세 페이지 카테고리 조회

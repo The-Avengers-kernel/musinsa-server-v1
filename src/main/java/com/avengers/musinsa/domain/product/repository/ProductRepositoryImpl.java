@@ -69,10 +69,8 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, String sortBy) {
-        return productMapper.getProductsByCategory(categoryId, sortBy);
-    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId) {
-        return productMapper.getProductsByCategory(categoryId, userId);
+    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId, String sortBy) {
+        return productMapper.getProductsByCategory(categoryId, userId, sortBy);
     }
 
     @Override
@@ -118,18 +116,14 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId, String sortBy) {
-        return productMapper.findProductsByBrandId(brandId, sortBy);
-    public List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId, Long userId) {
-        return productMapper.findProductsByBrandId(brandId, userId);
+    public List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId, Long userId, String sortBy) {
+        return productMapper.findProductsByBrandId(brandId, userId, sortBy);
     }
 
     // 검색어로 상품 목록 찾기
     @Override
-    public List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords, String sortBy) {
-        return productMapper.findProductsByKeyword(keywords, sortBy);
-    public List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords, Long userId) {
-        return productMapper.findProductsByKeyword(keywords, userId);
+    public List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords, Long userId, String sortBy) {
+        return productMapper.findProductsByKeyword(keywords, userId, sortBy);
     }
 
     //검색 시 검색어 로그 테이블에 검색 정보 저장하기.

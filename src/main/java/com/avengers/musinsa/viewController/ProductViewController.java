@@ -54,11 +54,8 @@ public class ProductViewController {
     public String getProductsByCategory(
             @PathVariable Long categoryId,
             @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+            @CookieValue(value = "Authorization", required = false) String authorization,
             Model model) {
-        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, sortBy);
-    public String getProductsByCategory(@PathVariable Long categoryId,
-                                        @CookieValue(value = "Authorization", required = false) String authorization,
-                                        Model model) {
         Long userId = null;
         if (authorization != null && !authorization.isBlank()) {
             try {
@@ -66,7 +63,7 @@ public class ProductViewController {
             } catch (Exception ignore) { /* 비로그인/만료 등은 null 로 */ }
         }
 
-        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, userId);
+        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, userId, sortBy);
         model.addAttribute("products", products);
         return "product/categoryProductsPage";
     }

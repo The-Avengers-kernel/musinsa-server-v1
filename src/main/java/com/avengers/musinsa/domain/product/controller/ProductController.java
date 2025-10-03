@@ -72,12 +72,11 @@ public class ProductController {
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(
             @PathVariable Long categoryId,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy) {
-    public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(@PathVariable Long categoryId,
-                                                                                  @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
+            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+            @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         System.out.println("category_id = " + categoryId);
         System.out.println("sortBy = " + sortBy);
-        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, sortBy);
+
         Long userId = null;
         if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
             try {
@@ -86,7 +85,7 @@ public class ProductController {
                 userId = null;
             }
         }
-        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, userId);
+        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, userId, sortBy);
         return ResponseEntity.ok(products);
     }
 

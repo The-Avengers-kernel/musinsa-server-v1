@@ -147,8 +147,6 @@
         </foreach>
     </select>
 
-    <select id="getProductsByCategory"
-            resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
     <resultMap id="ProductByCategoryResultMap" type="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
         <result property="productId" column="productId"/>
         <result property="productName" column="productName"/>
@@ -170,8 +168,7 @@
                ranked_products.product_likes as productLikes,
                ranked_products.rating_avg    as ratingAverage,
                ranked_products.review_count  as reviewCount,
-               ranked_products.recommendation_score as recommendationScore
-               ranked_products.review_count  as reviewCount,
+               ranked_products.recommendation_score as recommendationScore,
                CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END AS isLiked
 
         FROM (SELECT p.product_id,

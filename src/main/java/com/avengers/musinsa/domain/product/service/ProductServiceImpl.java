@@ -202,13 +202,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, String sortBy) {
-    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId) {
+    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId, String sortBy) {
         log.info("카테고리 ID로 상품 조회 시작: {}", categoryId);
         log.info("정렬 기준: {}", sortBy);
 
-        List<ProductByCategoryResponse> result = productRepository.getProductsByCategory(categoryId, sortBy);
-        List<ProductByCategoryResponse> result = productRepository.getProductsByCategory(categoryId, userId);
+        List<ProductByCategoryResponse> result = productRepository.getProductsByCategory(categoryId, userId, sortBy);
 
         log.info("조회 결과 개수: {}", result != null ? result.size() : 0);
         log.debug("조회 결과: {}", result);
@@ -249,8 +247,7 @@ public class ProductServiceImpl implements ProductService {
 
             // 브랜드 상품 불러오기
             List<SearchResponse.ProductInfo> brandProducts =
-                    productRepository.findProductsByBrandId(brand.getBrandId(), sortBy);
-                    productRepository.findProductsByBrandId(brand.getBrandId(), userId);
+                    productRepository.findProductsByBrandId(brand.getBrandId(), userId, sortBy);
 
             SearchResponse.BrandInfo brandInfo = SearchResponse.BrandInfo.builder()
                     .brandId(brand.getBrandId())
@@ -274,8 +271,7 @@ public class ProductServiceImpl implements ProductService {
                 System.out.println("키워드 = " + key);
             }
             List<SearchResponse.ProductInfo> products =
-                    productRepository.findProductsByKeyword(keywords, sortBy);
-                    productRepository.findProductsByKeyword(keywords, userId);
+                    productRepository.findProductsByKeyword(keywords, userId, sortBy);
 
             if (!products.isEmpty()) {
                 return SearchResponse.builder()
