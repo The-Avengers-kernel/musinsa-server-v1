@@ -14,9 +14,14 @@ public interface ShippingAddressMapper {
 
     void insertShippingAddress(ShippingAddressCreateDTO shippingAddressCreate);
 
-    void updateShippingAddress(@Param("shippingAddress") ShippingAddressCreateDTO shippingAddressCreate,
+
+    //배송지 수정 전 기본정보 노출
+    ShippingAddressCreateDTO getShippingAddressDefault(@Param("userId") Long userId, @Param("shippingAddressId") Long shippingAddressId);
+
+
+    void updateShippingAddress(@Param("userId") Long userId,
                                @Param("shippingAddressId") Long shippingAddressId,
-                               @Param("userId") Long userId);
+                               ShippingAddressCreateDTO shippingAddressCreate);
 
     void deleteShippingAddress(@Param("shippingAddressId") Long shippingAddressId, @Param("userId") Long userId);
 

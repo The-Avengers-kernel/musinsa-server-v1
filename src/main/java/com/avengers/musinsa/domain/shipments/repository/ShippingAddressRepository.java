@@ -22,9 +22,16 @@ public class ShippingAddressRepository {
         shippingAddressMapper.insertShippingAddress(shippingAddressCreate);
     }
 
-    public void updateShippingAddress(ShippingAddressCreateDTO shippingAddressCreate, Long shippingAddressId, Long userId) {
-        shippingAddressMapper.updateShippingAddress(shippingAddressCreate, shippingAddressId, userId);
+    //배송지 수정 전 기본정보 노출
+    public ShippingAddressCreateDTO getShippingAddressDefault(Long userId, Long shippingAddressId) {
+        return shippingAddressMapper.getShippingAddressDefault(userId, shippingAddressId);
     }
+
+
+    public void updateShippingAddress(Long userId, Long shippingAddressId, ShippingAddressCreateDTO shippingAddressCreate) {
+        shippingAddressMapper.updateShippingAddress(userId, shippingAddressId, shippingAddressCreate);
+    }
+
 
     public void deleteShippingAddress(Long shippingAddressId, Long userId) {
         shippingAddressMapper.deleteShippingAddress(shippingAddressId, userId);

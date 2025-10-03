@@ -39,16 +39,23 @@ public class ShippingAddressService {
         shippingAddressRepository.insertShippingAddress(shippingAddressCreate);
     }
 
+    //배송지 수정 전 기본정보 노출
+    public ShippingAddressCreateDTO getShippingAddressDefault(Long userId, Long shippingAddressId) {
+        return shippingAddressRepository.getShippingAddressDefault(userId, shippingAddressId);
+    }
+
     //배송지 수정
-    public void updateShippingAddress(ShippingAddressCreateDTO shippingAddressCreate, Long shippingAddressId, Long userId) {
+    public void updateShippingAddress(Long userId, Long shippingAddressId, ShippingAddressCreateDTO shippingAddressCreate) {
+
+        shippingAddressCreate.setUserId(userId);
+        shippingAddressCreate.setShippingAddressId(shippingAddressId);
 
         if (Boolean.TRUE.equals(shippingAddressCreate.getIsDefault())) {
             shippingAddressRepository.resetDefaultShippingAddress(userId);
-
         }
-        shippingAddressCreate.setUserId(userId);
-        shippingAddressCreate.setShippingAddressId(shippingAddressId);
-        shippingAddressRepository.updateShippingAddress(shippingAddressCreate, shippingAddressId, userId);
+
+
+        shippingAddressRepository.updateShippingAddress(userId, shippingAddressId, shippingAddressCreate);
     }
 
 

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -16,6 +17,13 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Controller
 public class ShippingAddressViewController {
+
+    private final ShippingAddressService shippingAddressService;
+
+    public ShippingAddressViewController(ShippingAddressService shippingAddressService) {
+        this.shippingAddressService = shippingAddressService;
+    }
+
 
     @GetMapping("/shipping-address-popup")
     public String shippingAddressPopup(){
@@ -41,11 +49,13 @@ public class ShippingAddressViewController {
 
 
     @GetMapping("/shipping-address-edit")
-    public String shippingAddressEditForm(
-            ShippingAddressCreateDTO shippingAddressCreate, HttpSession session, Model model, RedirectAttributes redirectAttributes){
+    public String shippingAddressEditForm(@RequestParam("shippingAddressId") Long shippingAddressId,
+                                          HttpSession session, Model model, RedirectAttributes redirectAttributes){
 
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) userId = 1L; // 테스트용
+
+        ShippingAddressCreateDTO shippingAddressCreate = shippingAddressService.getShippingAddressDefault(userId, shippingAddressId);
 
         if (shippingAddressCreate == null) {
             // 없는 경우 404 페이지나 에러 처리

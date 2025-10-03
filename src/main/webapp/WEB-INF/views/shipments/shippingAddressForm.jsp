@@ -6,6 +6,7 @@
     <title>배송지 추가</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
     <style>
         :root{
@@ -177,12 +178,44 @@
         $("#requestManualWrap").toggle($(this).val()==="직접입력");
     });
 
-    // 주소 찾기 (실서비스는 카카오/다음 우편번호 API 연동)
-    $("#btnFindAddr").on("click", function(){
-        alert("주소 찾기 연동 위치 (카카오/다음 우편번호 API)");
-        // 연동 후 예시:
-        // $("#postalCode").val('12345'); $("#address1").val('서울 강남구 테헤란로 000');
-    });
+
+    // 주소 찾기 (카카오/다음 우편번호 API 연동)
+    function openDaumPostcode(){
+        new daum.Postcode({
+            oncomplete: function(data){
+                // 선택된 주소 정보 조립
+                var addr = '';
+                if (data.userSelectedType === 'R') { // 도로명 주소
+                    addr = data.roadAddress;
+                } else { // 지번 주소
+                    addr = data.jibunAddress;
+                }
+                // 동/로/가 및 건물명 보조표기
+                var extra = '';
+                if (data.bname !== '' && /[\uB3D9|\uB85C|\uAC00]$/g.test(data.bname)) { // 한글 동/로/가 체크
+                    extra += data.bname;
+                }
+                if (data.buildingName !== '' && data.apartment === 'Y') {
+                    extra += (extra !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                if (extra !== '') {
+                    addr += ' (' + extra + ')';
+                }
+
+                // 값 주입
+                $("#postalCode").val(data.zonecode);
+                $("#address1").val(addr);
+                $("#address2").val('');
+
+                // 상세주소 포커스 이동
+                $("#address2").focus();
+            }
+        }).open();
+    }
+
+    $("#btnFindAddr").on("click", openDaumPostcode);
+
+
 
     // 검증
     function validate(){
