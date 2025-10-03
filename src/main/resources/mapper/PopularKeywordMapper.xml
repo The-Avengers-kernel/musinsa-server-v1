@@ -12,12 +12,13 @@
     </select>
 
     <select id="selectTrendingKeywordsUpdatedAt" resultType="java.lang.String">
-        SELECT TO_CHAR(
-                   MAX(updated_at),
-                   'YYYY-MM-DD"T"HH24:MI:SS'
-               )
-        FROM search_keywords
-        WHERE is_trending = 'Y'
+            SELECT TO_CHAR(
+                           MAX(updated_at),
+                           'YYYY-MM-DD"T"HH24:MI:SS'
+                   ) AS updated_at
+            FROM search_keywords
+            WHERE is_trending = 'Y'
+
     </select>
 
     <!-- 기존 insert: 신규 검색어를 최초 발생 시 기본 카운트 1로 저장 -->
@@ -46,12 +47,21 @@
         )
     </insert>
 
-    <!-- 기존 update: 이미 존재하는 검색어의 카운트를 1씩 증가 -->
-    <!-- 수정: 집계된 카운트로 덮어쓰고 갱신 시점을 저장 -->
-    <update id="updateKeyword" parameterType="com.avengers.musinsa.domain.search.dto.KeywordCountDTO">
+    <!-- 참고용: 집계 결과로 덮어쓰는 이전 구현 -->
+    <update id="updateKeywordOverwrite" parameterType="com.avengers.musinsa.domain.search.dto.KeywordCountDTO">
         UPDATE search_keywords
         SET daily_count = #{count},
             current_hour_search_count = #{count},
+            updated_at = #{basedOnTime},
+            is_trending = 'Y'
+        WHERE keyword = #{keyword}
+    </update>
+
+    <!-- 신규 구현: 누적 카운트 반영 -->
+    <update id="updateKeyword" parameterType="com.avengers.musinsa.domain.search.dto.KeywordCountDTO">
+        UPDATE search_keywords
+        SET daily_count = NVL(daily_count, 0) + #{count},
+            current_hour_search_count = NVL(current_hour_search_count, 0) + #{count},
             updated_at = #{basedOnTime},
             is_trending = 'Y'
         WHERE keyword = #{keyword}
@@ -68,4 +78,9 @@
         ORDER BY COUNT(*) DESC
         FETCH FIRST 10 ROWS ONLY
     </select>
+
+<!--    <select>
+        SELECT
+
+    </select>-->
 </mapper>
