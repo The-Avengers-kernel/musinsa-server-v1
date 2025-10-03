@@ -147,8 +147,19 @@
         </foreach>
     </select>
 
-    <select id="getProductsByCategory" parameterType="long"
-            resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
+    <resultMap id="ProductByCategoryResultMap" type="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
+        <result property="productId" column="productId"/>
+        <result property="productName" column="productName"/>
+        <result property="productImage" column="productImage"/>
+        <result property="brandName" column="brandName"/>
+        <result property="price" column="price"/>
+        <result property="productLikes" column="productLikes"/>
+        <result property="ratingAverage" column="ratingAverage"/>
+        <result property="reviewCount" column="reviewCount"/>
+        <result property="isLiked" column="isLiked" javaType="java.lang.Boolean"/>
+    </resultMap>
+
+    <select id="getProductsByCategory" resultMap="ProductByCategoryResultMap">
         SELECT ranked_products.product_id    as productId,
                ranked_products.product_name  as productName,
                pimg.image_url                as productImage,
@@ -156,7 +167,8 @@
                ranked_products.price         as price,
                ranked_products.product_likes as productLikes,
                ranked_products.rating_avg    as ratingAverage,
-               ranked_products.review_count  as reviewCount
+               ranked_products.review_count  as reviewCount,
+               CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END AS isLiked
 
         FROM (SELECT p.product_id,
                      p.product_name,
@@ -188,6 +200,9 @@
                  JOIN brands b
                       ON b.brand_id = ranked_products.brand_id
                  JOIN product_images pimg ON pimg.product_id = ranked_products.product_id
+                 LEFT JOIN USER_PRODUCT_LIKES upl
+                           ON upl.PRODUCT_ID = ranked_products.product_id
+                               AND upl.user_id = #{userId}
 
         WHERE pimg.image_type = 'MAIN'
         ORDER BY ranked_products.recommendation_score DESC

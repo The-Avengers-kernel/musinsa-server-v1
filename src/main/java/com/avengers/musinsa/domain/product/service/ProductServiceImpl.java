@@ -202,15 +202,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId) {
+    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId) {
         log.info("카테고리 ID로 상품 조회 시작: {}", categoryId);
 
-        List<ProductByCategoryResponse> result = productRepository.getProductsByCategory(categoryId);
+        List<ProductByCategoryResponse> result = productRepository.getProductsByCategory(categoryId, userId);
 
         log.info("조회 결과 개수: {}", result != null ? result.size() : 0);
         log.debug("조회 결과: {}", result);
 
-        return productRepository.getProductsByCategory(categoryId);
+        return result;
     }
 
     // 상품 상세 페이지 카테고리 조회

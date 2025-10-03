@@ -23,7 +23,7 @@ public interface ProductMapper {
 
     List<ProductOptionRow> findOptionsByProductIds(@Param("productIds") List<Long> productIds);
 
-    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId);
+    List<ProductByCategoryResponse> getProductsByCategory(@Param("categoryId") Long categoryId, @Param("userId") Long userId);
 
     List<ProductImage> findProductImageById(Long productId);
 

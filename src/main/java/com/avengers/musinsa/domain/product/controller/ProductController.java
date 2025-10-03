@@ -70,9 +70,18 @@ public class ProductController {
 
     //카테고리 선택 시 상품 목록 조회되는 화면
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(@PathVariable Long categoryId,
+                                                                                  @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         System.out.println("category_id = " + categoryId);
-        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId);
+        Long userId = null;
+        if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
+            try {
+                userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+            } catch (Exception e) {
+                userId = null;
+            }
+        }
+        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, userId);
         return ResponseEntity.ok(products);
     }
 

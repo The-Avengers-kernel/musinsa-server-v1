@@ -7,9 +7,45 @@
 <head>
     <meta charset="utf-8"/>
     <title>카테고리 상품 목록</title>
+
+    <%-- Resource URLs --%>
+    <c:url value="/resources/js/common/likeToggle.js" var="jsLikeToggle"/>
+
     <link rel="stylesheet" href="<c:url value='/resources/css/header.css'/>">
     <!-- 검색 화면과 동일 톤 유지 -->
     <link rel="stylesheet" href="<c:url value='/resources/css/categoryProductsPage.css'/>">
+
+    <%-- Font Awesome for icons --%>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+
+    <style>
+        /* 좋아요 하트 아이콘 스타일 */
+        .product-like-icon {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 15px;
+            transition: transform 0.2s ease;
+        }
+
+        .product-like-icon:hover {
+            transform: scale(1.2);
+        }
+
+        .product-like-icon.empty {
+            color: #ddd;
+        }
+
+        .product-like-icon.filled {
+            color: #ff4444;
+        }
+
+        .product-image {
+            position: relative;
+        }
+    </style>
 </head>
 <body>
 <%@ include file="../main/header.jsp" %>
@@ -41,6 +77,10 @@
                                         <img src="<c:url value='/resources/img/placeholder.png'/>" alt="no image">
                                     </c:otherwise>
                                 </c:choose>
+                                <%-- 좋아요 하트 아이콘 --%>
+                                <i class="fa-heart product-like-icon ${p.isLiked ? 'fas filled' : 'far empty'}"
+                                   data-product-id="${p.productId}"
+                                   onclick="event.preventDefault(); event.stopPropagation(); toggleProductLike(this);"></i>
                             </div>
 
                             <!-- 검색 화면 구조와 동일: 브랜드/이름/가격/좋아요 -->
@@ -74,6 +114,12 @@
     </section>
 </main>
 
+<%-- jQuery --%>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<%-- 공통 좋아요 토글 스크립트 --%>
+<script src="${jsLikeToggle}"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const name = sessionStorage.getItem('categoryName');
@@ -85,6 +131,39 @@
             target.appendChild(safe);
         }
     });
+
+    // 카테고리 페이지 상품 좋아요 토글 함수
+    function toggleProductLike(iconElement) {
+        const $icon = $(iconElement);
+        const productId = $icon.attr('data-product-id');
+
+        console.log('토글 시작 - productId:', productId);
+
+        if (!productId) {
+            alert('상품 정보를 찾을 수 없습니다.');
+            return;
+        }
+
+        $.ajax({
+            url: '/api/v1/products/' + productId + '/liked',
+            method: 'POST',
+            dataType: 'json',
+            success: function (response) {
+                console.log('좋아요 토글 성공:', response);
+
+                // response.liked가 true이면 좋아요 상태, false이면 좋아요 해제 상태
+                if (response.liked === true || response.liked === 1) {
+                    $icon.removeClass('far empty').addClass('fas filled');
+                } else {
+                    $icon.removeClass('fas filled').addClass('far empty');
+                }
+            },
+            error: function (xhr) {
+                console.error('좋아요 토글 실패:', xhr);
+                alert('좋아요 처리에 실패했습니다.');
+            }
+        });
+    }
 </script>
 </body>
 </html>

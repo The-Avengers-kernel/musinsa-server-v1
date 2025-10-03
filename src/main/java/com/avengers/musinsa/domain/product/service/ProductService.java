@@ -39,7 +39,7 @@ public interface ProductService {
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
 
 
-    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId);
+    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId);
 
 
     // 상품 상세 페이지 카테고리 조회

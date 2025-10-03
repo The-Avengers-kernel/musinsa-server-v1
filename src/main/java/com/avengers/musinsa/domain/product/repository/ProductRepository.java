@@ -41,7 +41,7 @@ public interface ProductRepository {
 
     List<ProductOptionRow> findOptionRowsByProductId(List<Long> productIds);
 
-    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId);
+    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId);
 
 
     List<ProductImage> findProductImageById(Long productId);
