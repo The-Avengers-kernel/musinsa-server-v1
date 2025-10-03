@@ -191,9 +191,10 @@
             right: 8px;
             cursor: pointer;
             z-index: 10;
-            font-size: 20px;
+            font-size: 15px;
             color: #ff4444;
             transition: transform 0.2s ease;
+
         }
 
         .product-like-icon:hover {
