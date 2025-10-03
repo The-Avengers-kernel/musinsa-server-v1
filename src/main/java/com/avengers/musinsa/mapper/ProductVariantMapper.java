@@ -8,4 +8,6 @@ import org.apache.ibatis.annotations.Param;
 public interface ProductVariantMapper {
 
     ProductVariantDto findProductVariantByOptionName(@Param("productId") Long productId, @Param("optionName") String optionName);
+
+    void decrementStock(@Param("productVariantId") Long productVariantId, @Param("quantity") int quantity);
 }
