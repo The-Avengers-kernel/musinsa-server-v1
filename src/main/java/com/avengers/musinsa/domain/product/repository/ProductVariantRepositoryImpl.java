@@ -16,4 +16,9 @@ public class ProductVariantRepositoryImpl implements ProductVariantRepository{
     public ProductVariantDto findProductVariantByOptionName(Long productId, String optionName) {
         return productVariantMapper.findProductVariantByOptionName(productId,optionName);
     }
+
+    @Override
+    public void decrementStock(Long productVariantId, int quantity) {
+        productVariantMapper.decrementStock(productVariantId, quantity);
+    }
 }

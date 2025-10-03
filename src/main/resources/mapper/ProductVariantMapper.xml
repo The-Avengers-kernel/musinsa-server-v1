@@ -15,4 +15,10 @@
         from product_variants
         where product_id = #{productId} and variant_name = #{optionName}
     </select>
+
+    <update id="decrementStock">
+        UPDATE product_variants
+        SET stock_quantity = stock_quantity - #{quantity}
+        WHERE product_variant_id = #{productVariantId}
+    </update>
 </mapper>

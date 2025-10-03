@@ -10,6 +10,7 @@ import java.util.List;
 import com.avengers.musinsa.domain.order.dto.response.*;
 import com.avengers.musinsa.domain.order.entity.Order;
 import com.avengers.musinsa.domain.order.repository.OrderRepository;
+import com.avengers.musinsa.domain.product.repository.ProductVariantRepository;
 import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import com.avengers.musinsa.domain.user.dto.UserResponseDto;
 import com.avengers.musinsa.domain.user.repository.UserRepository;
@@ -27,6 +28,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final ProductVariantRepository productVariantRepository;
 
     //주문자 기본정보 조회
     public UserInfoDTO getUserInfo(Long userId) {
@@ -51,6 +53,9 @@ public class OrderService {
         for (ProductLine orderProduct : orderProducts) {
 
             orderRepository.createOrderItems(orderId, orderProduct, orderCreateRequest.getCouponId());
+
+            // 재고 감소
+            productVariantRepository.decrementStock(orderProduct.getVariantId(), orderProduct.getQuantity());
 
         }
         System.out.println("orderItems 샹성 완료");
