@@ -39,14 +39,14 @@ public interface ProductService {
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
 
 
-    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId);
+    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, String sortBy);
 
 
     // 상품 상세 페이지 카테고리 조회
     ProductCategoryListResponse getProductCategories(Long productId);
 
     // 상품 검색
-    SearchResponse searchProducts(String keyword, Long userId);
+    SearchResponse searchProducts(String keyword, Long userId, String sortBy);
 
     //상품 좋아요 토글
     ProductLikeResponse ProductLikeToggle(Long userId, Long productId);

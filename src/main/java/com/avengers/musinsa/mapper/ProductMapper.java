@@ -23,7 +23,7 @@ public interface ProductMapper {
 
     List<ProductOptionRow> findOptionsByProductIds(@Param("productIds") List<Long> productIds);
 
-    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId);
+    List<ProductByCategoryResponse> getProductsByCategory(@Param("categoryId") Long categoryId, @Param("sortBy") String sortBy);
 
     List<ProductImage> findProductImageById(Long productId);
 
@@ -52,9 +52,9 @@ public interface ProductMapper {
 
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
 
-    List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId);
+    List<SearchResponse.ProductInfo> findProductsByBrandId(@Param("brandId") Long brandId, @Param("sortBy") String sortBy);
 
-    List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords);
+    List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords, @Param("sortBy") String sortBy);
 
     void saveSearchKeywordLog(String keyword);
 

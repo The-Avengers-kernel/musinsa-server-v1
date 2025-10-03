@@ -202,15 +202,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId) {
+    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, String sortBy) {
         log.info("카테고리 ID로 상품 조회 시작: {}", categoryId);
+        log.info("정렬 기준: {}", sortBy);
 
-        List<ProductByCategoryResponse> result = productRepository.getProductsByCategory(categoryId);
+        List<ProductByCategoryResponse> result = productRepository.getProductsByCategory(categoryId, sortBy);
 
         log.info("조회 결과 개수: {}", result != null ? result.size() : 0);
         log.debug("조회 결과: {}", result);
 
-        return productRepository.getProductsByCategory(categoryId);
+        return result;
     }
 
     // 상품 상세 페이지 카테고리 조회
@@ -226,11 +227,12 @@ public class ProductServiceImpl implements ProductService {
 
     // 상품 검색
     @Override
-    public SearchResponse searchProducts(String keyword, Long userId) {
+    public SearchResponse searchProducts(String keyword, Long userId, String sortBy) {
 
         String processedKeyword = preprocessKeyword(keyword);
         searchLogService.saveSearchKeywordLog(keyword, userId);
         System.out.println("검색어 : " + processedKeyword);
+        System.out.println("정렬 : " + sortBy);
 
         // 브랜드 검색 먼저 시도
         // 브랜드 두 개 검색될 경우도 고려하여 코드 작성
@@ -245,7 +247,7 @@ public class ProductServiceImpl implements ProductService {
 
             // 브랜드 상품 불러오기
             List<SearchResponse.ProductInfo> brandProducts =
-                    productRepository.findProductsByBrandId(brand.getBrandId());
+                    productRepository.findProductsByBrandId(brand.getBrandId(), sortBy);
 
             SearchResponse.BrandInfo brandInfo = SearchResponse.BrandInfo.builder()
                     .brandId(brand.getBrandId())
@@ -269,7 +271,7 @@ public class ProductServiceImpl implements ProductService {
                 System.out.println("키워드 = " + key);
             }
             List<SearchResponse.ProductInfo> products =
-                    productRepository.findProductsByKeyword(keywords);
+                    productRepository.findProductsByKeyword(keywords, sortBy);
 
             if (!products.isEmpty()) {
                 return SearchResponse.builder()

@@ -29,6 +29,13 @@
             검색 결과 <span class="count"><fmt:formatNumber value="${result.totalCount}" pattern="#,###"/></span>개
         </div>
 
+        <!-- 정렬 옵션 -->
+        <div class="sort-options">
+            <button class="sort-btn" data-sort="POPULARITY">인기순</button>
+            <button class="sort-btn" data-sort="PRICE_LOW">낮은 가격</button>
+            <button class="sort-btn" data-sort="PRICE_HIGH">높은 가격</button>
+        </div>
+
         <!-- 브랜드 정보(brandInfo 있을 때만 노출) -->
         <c:if test="${not empty result.brandInfo}">
             <a class="brand-box" href='<c:url value='/brands/${result.brandInfo.brandId}'/>'>
@@ -104,6 +111,34 @@
 
     </section>
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 현재 URL에서 sortBy 파라미터 읽기
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentSort = urlParams.get('sortBy') || 'POPULARITY';
+
+        // 현재 정렬 버튼에 active 클래스 추가
+        const sortButtons = document.querySelectorAll('.sort-btn');
+        sortButtons.forEach(btn => {
+            if (btn.dataset.sort === currentSort) {
+                btn.classList.add('active');
+            }
+
+            // 클릭 이벤트 추가
+            btn.addEventListener('click', function () {
+                const sortType = this.dataset.sort;
+
+                // URL 파라미터 업데이트
+                const newParams = new URLSearchParams(window.location.search);
+                newParams.set('sortBy', sortType);
+
+                // 페이지 리로드
+                window.location.search = newParams.toString();
+            });
+        });
+    });
+</script>
 
 </body>
 </html>
