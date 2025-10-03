@@ -43,20 +43,36 @@
         )
     </insert>
 
+    <select id="getShippingAddressDefault" parameterType="map" resultType="com.avengers.musinsa.domain.shipments.dto.ShippingAddressCreateDTO">
+        SELECT
+            ua.user_address_id as shippingAddressId,
+            ua.user_id as userId,
+            ua.recipient_name as recipientName,
+            ua.phone_number as recipientPhone,
+            ua.address_line1 as addressLine1,
+            ua.address_line2 as addressLine2,
+            ua.postal as postalCode,
+            ua.is_default as isDefault
+        FROM user_addresses ua
+        WHERE ua.user_id = #{userId}
+        AND ua.user_address_id = #{shippingAddressId}
+    </select>
+
 
     <update id="updateShippingAddress">
-            update user_addresses
-            set recipient_name = #{recipientName},
-                phone_number = #{recipientPhone},
-                address_line1 = #{addressLine1},
-                address_line2 = #{addressLine2},
-                postal = #{postalCode}
-                is_default = <choose>
-                                <when test="isDefault != null and isDefault">1</when>
-                                <otherwise>0</otherwise>
-                            </choose>
-            where user_address_id = #{shippingAddressId}
-            AND user_id = #{userId}
+        UPDATE user_addresses
+        SET recipient_name = #{shippingAddressCreate.recipientName},
+            phone_number   = #{shippingAddressCreate.recipientPhone},
+            address_line1  = #{shippingAddressCreate.addressLine1},
+            address_line2  = #{shippingAddressCreate.addressLine2},
+            postal         = #{shippingAddressCreate.postalCode},
+            is_default     =
+                <choose>
+                    <when test="shippingAddressCreate.isDefault != null and shippingAddressCreate.isDefault">1</when>
+                    <otherwise>0</otherwise>
+                </choose>
+        WHERE user_address_id = #{shippingAddressId}
+          AND user_id = #{userId}
     </update>
 
     <delete id="deleteShippingAddress">

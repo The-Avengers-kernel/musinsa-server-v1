@@ -150,7 +150,7 @@
 
         <!-- 기본 배송지 체크 -->
         <div class="check">
-            <input type="checkbox" id="isDefault">
+            <input type="checkbox" id="isDefault" ${address.isDefault ? 'checked' : ''}>
             <label for="isDefault">기본 배송지로 설정</label>
         </div>
     </div>
@@ -167,6 +167,61 @@
     const shippingAddressId = "${address.shippingAddressId}";
     const userId = "${userId}";
 
+    // 휴대폰 하이픈 자동 포맷
+    const phoneFormat = (v) => v.replace(/[^0-9]/g,'')
+        .replace(/^(\d{0,3})(\d{0,4})(\d{0,4}).*$/, (m,a,b,c) => {
+            let out = a;
+            if(b) out += '-' + b;
+            if(c) out += '-' + c;
+            return out;
+        });
+    $("#recipientPhone").on("input", function(){ $(this).val(phoneFormat($(this).val())); });
+
+    // 주소 찾기 (카카오/다음 우편번호 API 연동)
+    function openDaumPostcode(){
+        new daum.Postcode({
+            oncomplete: function(data){
+                // 선택된 주소 정보 조립
+                var addr = '';
+                if (data.userSelectedType === 'R') { // 도로명 주소
+                    addr = data.roadAddress;
+                } else { // 지번 주소
+                    addr = data.jibunAddress;
+                }
+                // 동/로/가 및 건물명 보조표기
+                var extra = '';
+                if (data.bname !== '' && /[\uB3D9|\uB85C|\uAC00]$/g.test(data.bname)) { // 한글 동/로/가 체크
+                    extra += data.bname;
+                }
+                if (data.buildingName !== '' && data.apartment === 'Y') {
+                    extra += (extra !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                if (extra !== '') {
+                    addr += ' (' + extra + ')';
+                }
+
+                // 값 주입
+                $("#postalCode").val(data.zonecode);
+                $("#address1").val(addr);
+                $("#address2").val('');
+
+                // 상세주소 포커스 이동
+                $("#address2").focus();
+            }
+        }).open();
+    }
+
+    $("#btnFindAddr").on("click", openDaumPostcode);
+
+    // 검증
+    function validate(){
+        if(!$("#recipientName").val().trim()){ alert("이름을 입력해주세요."); return false; }
+        if(!/^010-\d{4}-\d{4}$/.test($("#recipientPhone").val().trim())){ alert("휴대폰번호를 010-1234-5678 형식으로 입력해주세요."); return false; }
+        if($("#postalCode").val().trim().length !== 5){ alert("우편번호 5자를 입력해주세요."); return false; }
+        if(!$("#address1").val().trim()){ alert("주소를 입력해주세요."); return false; }
+        if(!$("#address2").val().trim()){ alert("상세주소를 입력해주세요."); return false; }
+        return true;
+    }
 
     $("#request").on("change",function(){
         $("#requestManualWrap").toggle($(this).val()==="직접입력");
@@ -176,17 +231,19 @@
         const recipientName = $("#recipientName").val().trim();
         const recipientPhone = $("#recipientPhone").val().trim();
         const postalCode = $("#postalCode").val().trim();
-        const recipientAddress = $("#addressLine1").val().trim() + " " + $("#addressLine2").val().trim();
+        const addressLine1 = (("" + $("#address1").val()) || "").trim();
+        const addressLine2 = (("" + $("#address2").val()) || "").trim();
+        const recipientAddress = (addressLine1 + " " + addressLine2).trim();
         $("#recipientAddress").val(recipientAddress);
 
 
 
         const payload = {
-            recipientName: $("#recipientName").val().trim(),
+            recipientName: (($("#recipientName").val()) || "").trim(),
             recipientPhone: $("#recipientPhone").val().trim(),
             postalCode: $("#postalCode").val().trim(),
-            addressLine1: $("#address1").val().trim(),
-            addressLine2: $("#address2").val().trim(),
+            addressLine1: addressLine1,
+            addressLine2: addressLine2,
             requestMessage: ($("#request").val()==="직접입력") ? $("#requestManual").val().trim() : $("#request").val(),
             isDefault: $("#isDefault").is(":checked")
         };

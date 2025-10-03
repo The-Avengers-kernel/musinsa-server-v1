@@ -56,13 +56,24 @@ public class ShippingAddressController {
         }
     }
 
+    //배송지 수정 전 기본정보 노출
+    @GetMapping("/default/{userId}/{shippingAddress}")
+    public ResponseEntity<ShippingAddressCreateDTO> getShippingAddressDefault (@PathVariable("userId") Long userId,
+                                                                               @PathVariable("shippingAddress") Long shippingAddressId){
+        ShippingAddressCreateDTO shippingAddressCreate = shippingAddressService.getShippingAddressDefault(userId, shippingAddressId);
+        return ResponseEntity.ok(shippingAddressCreate);
+    }
+
+
+
+
 
     //배송지 수정
     @PutMapping("/update/{userId}/{shippingAddressId}")
-    public String updateShippingAddress(@RequestBody ShippingAddressCreateDTO shippingAddressCreate,
-                                        @PathVariable("userId") Long userId,
-                                        @PathVariable("shippingAddressId") Long shippingAddressId) {
-        shippingAddressService.updateShippingAddress(shippingAddressCreate, userId, shippingAddressId);
+    public String updateShippingAddress(@PathVariable("userId") Long userId,
+                                        @PathVariable("shippingAddressId") Long shippingAddressId,
+                                        @RequestBody ShippingAddressCreateDTO shippingAddressCreate) {
+        shippingAddressService.updateShippingAddress(userId, shippingAddressId, shippingAddressCreate);
         return "ok";
     }
 

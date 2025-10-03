@@ -266,6 +266,13 @@
                 // 데이터가 배열이 아닌 경우를 대비하여 배열 형태로 감싸줍니다. (API 응답 형식에 따라 변경 가능)
                 const addressList = Array.isArray(data) ? data : (data && Array.isArray(data.addresses) ? data.addresses : []);
 
+                // If USER_ID is not provided by JSP, try to infer from the first address item
+                if ((!USER_ID || USER_ID === 'null' || USER_ID === '') && addressList.length > 0 && addressList[0].userId) {
+                    USER_ID = String(addressList[0].userId);
+                    window.USER_ID = USER_ID; // cache for other pages if needed
+                }
+
+
                 if (addressList.length > 0) {
                     addressList.forEach(function(address) {
                         // 템플릿을 복제합니다.
@@ -274,6 +281,8 @@
                         // **배송지 ID**를 라디오 버튼의 value와 숨겨진 요소에 설정
                         $newItem.find('.radio-select').val(address.shippingAddressId);
                         $newItem.find('.shippingAddressId').text(address.shippingAddressId);
+
+                        $newItem.find('data-user-id', address.userId);
 
                         // 복제한 템플릿에 데이터를 채웁니다.
                         $newItem.find('.recipientName').text(address.recipientName);
@@ -335,15 +344,39 @@
         });
 
         // 삭제 버튼 이벤트
+        // Context path and user id constants
+        const CTX = '${pageContext.request.contextPath}';
+        let USER_ID = (('${userId}' !== '' && '${userId}' !== 'null') ? '${userId}' : (window.USER_ID || null));
         $(document).on('click', '.delete-button', function(e){
             e.stopPropagation();
-            const id = $(this).closest('.address-item').find('.radio-select').val();
+            //const id = $(this).closest('.address-item').find('.radio-select').val();
+            const $item = $(this).closest('.address-item');
+            const id = $item.find('.radio-select').val();
+            const userId = $item.data('user-id') || USER_ID; // fallback to global if needed
+
             if (confirm('정말 삭제하시겠습니까?')) {
+                if (!userId){
+                    alert('사용자 식별자를 확인할 수 없습니다. 다시 로그인한 후 시도해주세요.');
+                    return;
+                }
+
+                const $btn = $(this);
+                $btn.prop('disabled', true);
+
                 $.ajax({
                     type: 'DELETE',
-                    url: '${pageContext.request.contextPath}/api/v1/delete/' + userId + '/' + id,
-                    success: () => location.reload(),
-                    error: (xhr) => alert('삭제 실패: ' + (xhr.responseText || '알 수 없는 오류'))
+                    url: CTX + '/api/v1/delete/' + encodeURIComponent(id) + '/' + encodeURIComponent(userId),
+                    success: () => {
+                        alert('삭제가 완료되었습니다.');
+                        $item.remove();
+                        if ($('#address-list-container .address-item').length === 0) {
+                            $('#address-list-container').text('등록된 배송지 정보가 없습니다.');
+                        }
+                    },
+                    error: (xhr) => {
+                        alert('삭제 실패: ' + (xhr.responseText || '알 수 없는 오류'));
+                        $btn.prop('disabled', false);
+                    }
                 });
             }
         });
