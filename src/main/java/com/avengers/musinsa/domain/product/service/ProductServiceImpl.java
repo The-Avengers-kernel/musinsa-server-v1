@@ -250,6 +250,7 @@ public class ProductServiceImpl implements ProductService {
             // 브랜드 상품 불러오기
             List<SearchResponse.ProductInfo> brandProducts =
                     productRepository.findProductsByBrandId(brand.getBrandId(), sortBy);
+                    productRepository.findProductsByBrandId(brand.getBrandId(), userId);
 
             SearchResponse.BrandInfo brandInfo = SearchResponse.BrandInfo.builder()
                     .brandId(brand.getBrandId())
@@ -274,6 +275,7 @@ public class ProductServiceImpl implements ProductService {
             }
             List<SearchResponse.ProductInfo> products =
                     productRepository.findProductsByKeyword(keywords, sortBy);
+                    productRepository.findProductsByKeyword(keywords, userId);
 
             if (!products.isEmpty()) {
                 return SearchResponse.builder()

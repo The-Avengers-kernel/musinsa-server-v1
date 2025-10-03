@@ -366,8 +366,21 @@
            OR brand_name_eng = #{keyword} LIMIT 1
     </select>
 
-    <select id="findProductsByBrandId"
-            resultType="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
+    <resultMap id="SearchProductInfoResultMap" type="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
+        <result property="brandId" column="brandId"/>
+        <result property="brandNameKr" column="brandNameKr"/>
+        <result property="brandNameEn" column="brandNameEn"/>
+        <result property="productId" column="productId"/>
+        <result property="productImage" column="productImage"/>
+        <result property="productName" column="productName"/>
+        <result property="price" column="price"/>
+        <result property="productLikes" column="productLikes"/>
+        <result property="ratingAverage" column="ratingAverage"/>
+        <result property="reviewCount" column="reviewCount"/>
+        <result property="isLiked" column="isLiked" javaType="java.lang.Boolean"/>
+    </resultMap>
+
+    <select id="findProductsByBrandId" resultMap="SearchProductInfoResultMap">
         SELECT b.brand_id       as brandId,
                b.brand_name_kr  as brandNameKr,
                b.brand_name_eng as brandNameEn,
@@ -377,11 +390,15 @@
                p.price,
                p.product_likes  as productLikes,
                prs.rating_avg   as ratingAverage,
-               prs.review_count as reviewCount
+               prs.review_count as reviewCount,
+               CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END AS isLiked
         FROM products p
                  JOIN brands b ON p.brand_id = b.brand_id
                  LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
                  LEFT JOIN product_review_stats prs ON p.product_id = prs.product_id
+                 LEFT JOIN USER_PRODUCT_LIKES upl
+                           ON upl.PRODUCT_ID = p.PRODUCT_ID
+                               AND upl.user_id = #{userId}
         WHERE p.brand_id = #{brandId}
         <choose>
             <when test="sortBy == 'PRICE_LOW'">
@@ -396,8 +413,7 @@
         </choose>
     </select>
 
-    <select id="findProductsByKeyword"
-            resultType="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
+    <select id="findProductsByKeyword" resultMap="SearchProductInfoResultMap">
         SELECT b.brand_id as brandId,
         b.brand_name_kr as brandNameKr,
         b.brand_name_eng as brandNameEn,
@@ -407,11 +423,15 @@
         p.price,
         p.product_likes as productLikes,
         prs.rating_avg as ratingAverage,
-        prs.review_count as reviewCount
+        prs.review_count as reviewCount,
+        CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END AS isLiked
         FROM products p
         JOIN brands b ON p.brand_id = b.brand_id
         LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
         LEFT JOIN product_review_stats prs ON p.product_id = prs.product_id
+        LEFT JOIN USER_PRODUCT_LIKES upl
+                  ON upl.PRODUCT_ID = p.PRODUCT_ID
+                      AND upl.user_id = #{userId}
         WHERE (
         <foreach collection="keywords" item="keyword" separator=" OR ">
             p.product_name LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'

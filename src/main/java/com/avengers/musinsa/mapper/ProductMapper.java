@@ -54,8 +54,10 @@ public interface ProductMapper {
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
 
     List<SearchResponse.ProductInfo> findProductsByBrandId(@Param("brandId") Long brandId, @Param("sortBy") String sortBy);
+    List<SearchResponse.ProductInfo> findProductsByBrandId(@Param("brandId") Long brandId, @Param("userId") Long userId);
 
     List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords, @Param("sortBy") String sortBy);
+    List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords, @Param("userId") Long userId);
 
     void saveSearchKeywordLog(String keyword);
 
