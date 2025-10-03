@@ -55,8 +55,8 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<RecommendationResponse> getRecommendationProductList(Gender gender) {
-        return productMapper.getRecommendationProductList(gender);
+    public List<RecommendationResponse> getRecommendationProductList(Gender gender, Long userId) {
+        return productMapper.getRecommendationProductList(gender, userId);
     }
 
     @Override
