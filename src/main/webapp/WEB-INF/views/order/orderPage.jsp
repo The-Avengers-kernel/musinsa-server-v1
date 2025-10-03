@@ -393,13 +393,14 @@
                 <span class="info-label">주소</span>
                 <span class="info-value" id="recipient-address">
                     (<span id="recipient-postcode">${buyerRecipientInfoAdapter.recipientPostCode}</span>)
-                    <span id="recipient-full-address">${buyerRecipientInfoAdapter.recipientAddress}</span>
+                    <span id="recipient-full-address">${buyerRecipientInfoAdapter.recipientAddress}${buyerRecipientInfoAdapter.recipientDetailAddress}</span>
                 </span>
             </div>
 
             <!-- 배송 요청사항 (수령인 내부) -->
             <div style="margin-top: 20px;">
-                <select id="deliveryRequestSelect" class="delivery-request-select" onchange="handleDeliveryRequestChange()">
+                <select id="deliveryRequestSelect" class="delivery-request-select"
+                        onchange="handleDeliveryRequestChange()">
                     <option value="">배송 요청사항을 선택해주세요</option>
                     <option value="문 앞에 놓아주세요">문 앞에 놓아주세요</option>
                     <option value="경비실에 맡겨주세요">경비실에 맡겨주세요</option>
@@ -436,7 +437,8 @@
                             <div class="price-info">
                                 <c:if test="${product.discountRate > 0}">
                                     <span class="original-price">
-                                        <fmt:formatNumber value="${product.originalPrice * product.quantity}" type="number"/>원
+                                        <fmt:formatNumber value="${product.originalPrice * product.quantity}"
+                                                          type="number"/>원
                                     </span>
                                     <span class="discount-rate">${product.discountRate}%</span>
                                 </c:if>
@@ -460,7 +462,8 @@
                 <button type="button" id="pointsToggleBtn" onclick="togglePoints()">최대 사용</button>
             </div>
             <div class="payment-info">
-                적립 한도(7%) <span id="pointsLimit"></span>원 / 보유 <fmt:formatNumber value="${buyerRecipientInfoAdapter.mileage}" type="number"/>원
+                적립 한도(7%) <span id="pointsLimit"></span>원 / 보유 <fmt:formatNumber
+                    value="${buyerRecipientInfoAdapter.mileage}" type="number"/>원
             </div>
         </div>
 
@@ -475,7 +478,8 @@
                 <input type="radio" id="NHPay" name="paymentMethod" value="NHPay" checked>
                 <label for="NHPay" class="payment-label">
                     <div class="payment-icon-wrapper">
-                        <img src="https://image.msscdn.net/musinsaUI/store/order/finance/28x28/logo-finance-nh.png" alt="농협페이" class="payment-icon">
+                        <img src="https://image.msscdn.net/musinsaUI/store/order/finance/28x28/logo-finance-nh.png"
+                             alt="농협페이" class="payment-icon">
                         <span class="payment-name">농협페이</span>
                     </div>
                     <div class="payment-benefits">
@@ -489,7 +493,8 @@
                 <input type="radio" id="tossPay" name="paymentMethod" value="tossPay">
                 <label for="tossPay" class="payment-label">
                     <div class="payment-icon-wrapper">
-                        <img src="https://image.msscdn.net/musinsaUI/store/order/finance/logo-finance-toss.png" alt="토스페이" class="payment-icon">
+                        <img src="https://image.msscdn.net/musinsaUI/store/order/finance/logo-finance-toss.png"
+                             alt="토스페이" class="payment-icon">
                         <span class="payment-name">토스페이</span>
                     </div>
                     <div class="payment-benefits">
@@ -503,7 +508,8 @@
                 <input type="radio" id="kakaoPay" name="paymentMethod" value="kakaoPay">
                 <label for="kakaoPay" class="payment-label">
                     <div class="payment-icon-wrapper">
-                        <img src="https://image.msscdn.net/musinsaUI/store/order/finance/logo-finance-kakaopay.png" alt="카카오페이" class="payment-icon">
+                        <img src="https://image.msscdn.net/musinsaUI/store/order/finance/logo-finance-kakaopay.png"
+                             alt="카카오페이" class="payment-icon">
                         <span class="payment-name">카카오페이</span>
                     </div>
                     <div class="payment-benefits">
@@ -517,7 +523,8 @@
                 <input type="radio" id="payco" name="paymentMethod" value="payco">
                 <label for="payco" class="payment-label">
                     <div class="payment-icon-wrapper">
-                        <img src="https://image.msscdn.net/musinsaUI/store/order/finance/logo-finance-payco.png" alt="페이코" class="payment-icon">
+                        <img src="https://image.msscdn.net/musinsaUI/store/order/finance/logo-finance-payco.png"
+                             alt="페이코" class="payment-icon">
                         <span class="payment-name">페이코</span>
                     </div>
                     <div class="payment-benefits">
@@ -536,17 +543,19 @@
 
         <div class="summary-section">
             <!-- 가격 계산 -->
-            <c:set var="totalOriginalProductPrice" value="0" />
-            <c:set var="totalDiscount" value="0" />
-            <c:set var="totalOrderPrice" value="0" />
+            <c:set var="totalOriginalProductPrice" value="0"/>
+            <c:set var="totalDiscount" value="0"/>
+            <c:set var="totalOrderPrice" value="0"/>
 
             <c:forEach var="product" items="${orderProductAdapters}">
-                <c:set var="totalOriginalProductPrice" value="${totalOriginalProductPrice + (product.originalPrice*product.quantity)}" />
-                <c:set var="totalDiscount" value="${totalDiscount + (product.originalPrice * product.quantity - product.totalPrice)}" />
+                <c:set var="totalOriginalProductPrice"
+                       value="${totalOriginalProductPrice + (product.originalPrice*product.quantity)}"/>
+                <c:set var="totalDiscount"
+                       value="${totalDiscount + (product.originalPrice * product.quantity - product.totalPrice)}"/>
             </c:forEach>
 
 
-            <c:set var="totalOrderPrice" value="${totalOriginalProductPrice - totalDiscount}" />
+            <c:set var="totalOrderPrice" value="${totalOriginalProductPrice - totalDiscount}"/>
 
             <div class="summary-row">
                 <span>상품 금액</span>
@@ -582,9 +591,9 @@
         <!-- 적립 혜택 -->
         <div class="points-section">
             <div class="section-title">적립 혜택</div>
-            <c:set var="earnedPoints" value="${totalOrderPrice * 0.015}" />
-            <c:set var="maxReviewPoints" value="2500" />
-            <c:set var="totalEarnedPoints" value="${earnedPoints + maxReviewPoints}" />
+            <c:set var="earnedPoints" value="${totalOrderPrice * 0.015}"/>
+            <c:set var="maxReviewPoints" value="2500"/>
+            <c:set var="totalEarnedPoints" value="${earnedPoints + maxReviewPoints}"/>
 
             <div class="summary-row">
                 <span>LV5 실버 · 1.5% 적립</span>
@@ -630,7 +639,7 @@
     let actualMaxUsable = Math.min(maxPoints, maxUsablePoints);
 
     // 페이지 로드 시 초기화
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('pointsLimit').textContent = maxUsablePoints.toLocaleString();
         document.getElementById('pointsInput').setAttribute('max', actualMaxUsable);
         updatePriceDisplay();
@@ -731,7 +740,7 @@
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(orderData),
-            success: function(response) {
+            success: function (response) {
 
 
                 // orderId 값 확인 후 리다이렉트
@@ -742,7 +751,7 @@
                     alert('주문이 완료되었지만 주문 완료 페이지로 이동할 수 없습니다.');
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('주문 실패:', error);
                 alert('주문 처리 중 오류가 발생했습니다.');
             }
@@ -754,7 +763,7 @@
         const popup = window.open('/shipping-address-popup', 'addressPopup',
             'width=600,height=700,scrollbars=yes,resizable=yes');
 
-        window.updateAddressFromPopup = function(addressData) {
+        window.updateAddressFromPopup = function (addressData) {
             document.getElementById('recipient-name').textContent = addressData.recipientName;
             document.getElementById('recipient-phone').textContent = addressData.recipientPhone;
             document.getElementById('recipient-postcode').textContent = addressData.postalCode;
@@ -788,8 +797,8 @@
             finalPrice: ${product.finalPrice},
             quantity: ${product.quantity},
             optionName: '${product.optionName}',
-            discountRate : ${product.discountRate},
-            productDiscountAmount : ${(product.originalPrice - product.finalPrice) * product.quantity }
+            discountRate: ${product.discountRate},
+            productDiscountAmount: ${(product.originalPrice - product.finalPrice) * product.quantity }
         });
         </c:forEach>
 
