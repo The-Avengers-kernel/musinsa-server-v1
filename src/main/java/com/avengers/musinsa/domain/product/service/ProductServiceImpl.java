@@ -10,6 +10,7 @@ import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepository;
 import com.avengers.musinsa.domain.product.repository.ProductRepositoryImpl;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
+import com.avengers.musinsa.domain.search.repository.PopularKeywordRepository;
 import com.avengers.musinsa.domain.review.dto.Request.RequestReview;
 import com.avengers.musinsa.domain.review.dto.ReviewMeta;
 import com.avengers.musinsa.domain.review.repository.ReviewRepository;
@@ -33,6 +34,7 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
     private final ReviewRepository reviewRepository;
     private final SearchLogService searchLogService;
+    private final PopularKeywordRepository popularKeywordRepository;
     private final ReviewMapper reviewMapper;
 
     @Override
@@ -327,5 +329,4 @@ public class ProductServiceImpl implements ProductService {
             return productRepository.getIsLikedProduct(userId, productId);
         }
     }
-
 }
