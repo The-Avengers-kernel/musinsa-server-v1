@@ -2,17 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.avengers.musinsa.mapper.getRecentSearchesMapper">
-<select id="getRecentSearches" resultType="com.avengers.musinsa.domain.search.response.SearchKeywordResponseDTO" parameterType="Long">
-    <!--현재 조인해야 하는 테이블 : user, brand, product, recent_visit_brand?, search_keyword-->
-<!--최근 검색어 + 브랜드/상품 조인-->
-<!--중복 제거 코드 + 줄바꿈 제거 + 공백 제거-->
-    select SEARCH_TEXT as searchText
-    from SEARCH_KEYWORD_LOGS
-    where USER_ID = #{user_id}
-    ORDER BY SEARCH_DATETIME desc
-    FETCH FIRST 10 ROWS ONLY
-</select>
+<mapper namespace="com.avengers.musinsa.mapper.SearchMapper">
+    <select id="getRecentSearches" resultType="com.avengers.musinsa.domain.search.response.SearchKeywordResponseDTO"
+            parameterType="Long">
+        <!--현재 조인해야 하는 테이블 : user, brand, product, recent_visit_brand?, search_keyword-->
+        <!--최근 검색어 + 브랜드/상품 조인-->
+        <!--중복 제거 코드 + 줄바꿈 제거 + 공백 제거-->
+        select SEARCH_TEXT as searchText
+        from SEARCH_KEYWORD_LOGS
+        where USER_ID = #{user_id}
+        ORDER BY SEARCH_DATETIME desc
+        FETCH FIRST 10 ROWS ONLY
+    </select>
 
-<!--Row Number 같은 윈도우 함수로 검색어별-->
+    <!--Row Number 같은 윈도우 함수로 검색어별-->
 </mapper>
