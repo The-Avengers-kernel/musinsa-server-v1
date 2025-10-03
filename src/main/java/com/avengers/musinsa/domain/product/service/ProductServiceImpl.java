@@ -245,7 +245,7 @@ public class ProductServiceImpl implements ProductService {
 
             // 브랜드 상품 불러오기
             List<SearchResponse.ProductInfo> brandProducts =
-                    productRepository.findProductsByBrandId(brand.getBrandId());
+                    productRepository.findProductsByBrandId(brand.getBrandId(), userId);
 
             SearchResponse.BrandInfo brandInfo = SearchResponse.BrandInfo.builder()
                     .brandId(brand.getBrandId())
@@ -269,7 +269,7 @@ public class ProductServiceImpl implements ProductService {
                 System.out.println("키워드 = " + key);
             }
             List<SearchResponse.ProductInfo> products =
-                    productRepository.findProductsByKeyword(keywords);
+                    productRepository.findProductsByKeyword(keywords, userId);
 
             if (!products.isEmpty()) {
                 return SearchResponse.builder()
