@@ -57,9 +57,12 @@ public class ProductController {
 
     //카테고리 선택 시 상품 목록 조회되는 화면
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(
+            @PathVariable Long categoryId,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy) {
         System.out.println("category_id = " + categoryId);
-        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId);
+        System.out.println("sortBy = " + sortBy);
+        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, sortBy);
         return ResponseEntity.ok(products);
     }
 
@@ -122,10 +125,12 @@ public class ProductController {
     // 상품 검색에 따른 상품 목록 조회
     @GetMapping("/search")
     public ResponseEntity<?> searchProducts(@RequestParam("keyword") String keyword,
+                                            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
                                             @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         System.out.println(keyword);
+        System.out.println("sortBy = " + sortBy);
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-        SearchResponse response = productService.searchProducts(keyword, userId);
+        SearchResponse response = productService.searchProducts(keyword, userId, sortBy);
 
         if (response != null) {
             return ResponseEntity.ok(response);

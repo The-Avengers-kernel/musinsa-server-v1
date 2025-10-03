@@ -116,7 +116,7 @@
         </foreach>
     </select>
 
-    <select id="getProductsByCategory" parameterType="long"
+    <select id="getProductsByCategory"
             resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
         SELECT ranked_products.product_id    as productId,
                ranked_products.product_name  as productName,
@@ -125,7 +125,8 @@
                ranked_products.price         as price,
                ranked_products.product_likes as productLikes,
                ranked_products.rating_avg    as ratingAverage,
-               ranked_products.review_count  as reviewCount
+               ranked_products.review_count  as reviewCount,
+               ranked_products.recommendation_score as recommendationScore
 
         FROM (SELECT p.product_id,
                      p.product_name,
@@ -159,8 +160,21 @@
                  JOIN product_images pimg ON pimg.product_id = ranked_products.product_id
 
         WHERE pimg.image_type = 'MAIN'
-        ORDER BY ranked_products.recommendation_score DESC
-            FETCH FIRST 50 ROWS ONLY
+        <choose>
+            <when test="sortBy == 'PRICE_LOW'">
+                ORDER BY ranked_products.price ASC
+            </when>
+            <when test="sortBy == 'PRICE_HIGH'">
+                ORDER BY ranked_products.price DESC
+            </when>
+            <when test="sortBy == 'POPULARITY'">
+                ORDER BY ranked_products.product_likes DESC
+            </when>
+            <otherwise>
+                ORDER BY ranked_products.recommendation_score DESC
+            </otherwise>
+        </choose>
+        FETCH FIRST 50 ROWS ONLY
     </select>
 
     <select id="getProductReviews"
@@ -320,7 +334,17 @@
                  LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
                  LEFT JOIN product_review_stats prs ON p.product_id = prs.product_id
         WHERE p.brand_id = #{brandId}
-        ORDER BY p.product_likes DESC
+        <choose>
+            <when test="sortBy == 'PRICE_LOW'">
+                ORDER BY p.price ASC
+            </when>
+            <when test="sortBy == 'PRICE_HIGH'">
+                ORDER BY p.price DESC
+            </when>
+            <otherwise>
+                ORDER BY p.product_likes DESC
+            </otherwise>
+        </choose>
     </select>
 
     <select id="findProductsByKeyword"
@@ -344,7 +368,17 @@
             p.product_name LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'
         </foreach>
         )
-        ORDER BY p.product_likes DESC
+        <choose>
+            <when test="sortBy == 'PRICE_LOW'">
+                ORDER BY p.price ASC
+            </when>
+            <when test="sortBy == 'PRICE_HIGH'">
+                ORDER BY p.price DESC
+            </when>
+            <otherwise>
+                ORDER BY p.product_likes DESC
+            </otherwise>
+        </choose>
         FETCH FIRST 50 ROWS ONLY
     </select>
 
