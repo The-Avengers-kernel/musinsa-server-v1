@@ -334,9 +334,11 @@
 .brand-info img {
     width: 30px;
     height: 30px;
-    margin-right: 10px;
-    border-radius: 50%;
+    margin-right: 16px;
+    border-radius: 8px;  /* 50% → 8px로 변경 */
     object-fit: contain;
+    padding: 3px;
+    filter: invert(1);
 }
 
 .brand-info .text-info {
