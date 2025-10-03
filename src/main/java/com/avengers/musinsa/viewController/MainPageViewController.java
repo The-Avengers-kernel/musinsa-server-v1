@@ -3,9 +3,11 @@ package com.avengers.musinsa.viewController;
 import com.avengers.musinsa.domain.product.dto.response.RecommendationResponse;
 import com.avengers.musinsa.domain.product.service.ProductService;
 import com.avengers.musinsa.domain.product.entity.Gender;
+import com.avengers.musinsa.domain.user.auth.jwt.TokenProviderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
@@ -16,18 +18,27 @@ import java.util.stream.Collectors;
 public class MainPageViewController {
 
     private final ProductService productService;
+    private final TokenProviderService tokenProviderService;
 
     @GetMapping("/main")
-    public String main(Model model) {
+    public String main(@CookieValue(value = "Authorization", required = false) String authorization, Model model) {
         try {
+            // 사용자 ID 가져오기 (비로그인일 경우 null)
+            Long userId = null;
+            if (authorization != null && !authorization.isBlank()) {
+                try {
+                    userId = tokenProviderService.getUserIdFromToken(authorization);
+                } catch (Exception ignore) { /* 비로그인/만료 등은 null 로 */ }
+            }
+
             // 남성 상품 추천 API 호출
-            List<RecommendationResponse> maleProducts = productService.getRecommendationProductList(Gender.MALE);
+            List<RecommendationResponse> maleProducts = productService.getRecommendationProductList(Gender.MALE, userId);
             List<ProductAdapter> menProductAdapters = maleProducts.stream()
                     .map(ProductAdapter::new)
                     .collect(Collectors.toList());
 
             // 여성 상품 추천 API 호출
-            List<RecommendationResponse> femaleProducts = productService.getRecommendationProductList(Gender.FEMALE);
+            List<RecommendationResponse> femaleProducts = productService.getRecommendationProductList(Gender.FEMALE, userId);
             List<ProductAdapter> womenProductAdapters = femaleProducts.stream()
                     .map(ProductAdapter::new)
                     .collect(Collectors.toList());
@@ -65,6 +76,7 @@ public class MainPageViewController {
         public String getImageUrl() { return product.getProductImage(); }
         public Integer getOriginalPrice() { return product.getProductPrice(); } // 할인이 없으므로 동일
         public Integer getDiscountRate() { return product.getDiscountRate(); } // 할인율
+        public Boolean getIsLiked() { return product.getIsLiked(); } // 좋아요 상태
 
         // 원본 데이터 접근
         public RecommendationResponse getOriginal() { return product; }

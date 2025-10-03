@@ -17,7 +17,7 @@ public interface ProductService {
     // productId로 productVariantId 찾기
     List<ProductVariantDetailDto> getProductVariants(Long productId);
 
-    List<RecommendationResponse> getRecommendationProductList(Gender gender);
+    List<RecommendationResponse> getRecommendationProductList(Gender gender, Long userId);
 
 
     Map<Long, List<ProductsInCartInfoResponse.OptionGroup>> getGroupsByProductIds(List<Long> productIds);

@@ -50,8 +50,8 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public List<RecommendationResponse> getRecommendationProductList(Gender gender) {
-        return productRepository.getRecommendationProductList(gender);
+    public List<RecommendationResponse> getRecommendationProductList(Gender gender, Long userId) {
+        return productRepository.getRecommendationProductList(gender, userId);
     }
 
     @Override

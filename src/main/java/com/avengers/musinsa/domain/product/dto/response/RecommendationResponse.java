@@ -14,4 +14,5 @@ public class RecommendationResponse {
     private Integer productPrice;
     private String productImage;
     private Integer discountRate;
+    private Boolean isLiked;  // 좋아요 여부
 }

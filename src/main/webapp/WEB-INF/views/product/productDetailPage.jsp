@@ -10,6 +10,7 @@
     <!-- 정적 리소스 경로 일원화 -->
     <c:url value="/resources/css/productDetailPage.css" var="cssProduct"/>
     <c:url value="/resources/css/header.css" var="cssHeader"/>
+    <c:url value="/resources/js/common/likeToggle.js" var="jsLikeToggle"/>
     <c:url value="/resources/js/productDetailPage.js" var="jsDetail"/>
 
     <!-- CSS: 우선순위 높은 것 먼저 로드 -->
@@ -23,6 +24,8 @@
 
     <!-- jQuery: defer로 렌더링 지연 방지 -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+    <!-- 공통 좋아요 스크립트: productDetailPage.js 전에 로드되어야 함 -->
+    <script src="${jsLikeToggle}" defer></script>
     <!-- 페이지 전용 스크립트: 항상 body 끝에 두는 게 이상적이지만, defer면 head에 있어도 괜찮음 -->
     <script src="${jsDetail}" defer></script>
 

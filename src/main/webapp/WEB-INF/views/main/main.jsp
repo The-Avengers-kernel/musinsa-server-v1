@@ -7,6 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MUSINSA - 무신사</title>
 
+    <%-- Resource URLs --%>
+    <c:url value="/resources/js/common/likeToggle.js" var="jsLikeToggle"/>
+
+    <%-- Font Awesome for icons --%>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+
     <%-- Swiper CSS --%>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
 
@@ -178,6 +184,30 @@
             background-color: #f0f0f0;
         }
 
+        /* 좋아요 하트 아이콘 스타일 */
+        .product-like-icon {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 20px;
+            color: #ff4444;
+            transition: transform 0.2s ease;
+        }
+
+        .product-like-icon:hover {
+            transform: scale(1.2);
+        }
+
+        .product-like-icon.empty {
+            color: #ddd;
+        }
+
+        .product-like-icon.filled {
+            color: #ff4444;
+        }
+
         .product-brand {
             font-size: 11px;
             color: #666;
@@ -335,6 +365,10 @@
                                         <div class="placeholder">이미지 없음</div>
                                     </c:otherwise>
                                 </c:choose>
+                                <%-- 좋아요 하트 아이콘 --%>
+                                <i class="fa-heart product-like-icon ${product.isLiked ? 'fas filled' : 'far empty'}"
+                                   data-product-id="${product.id}"
+                                   onclick="event.stopPropagation(); toggleProductLike(this);"></i>
                             </div>
                             <div class="product-brand">${product.brandName}</div>
                             <div class="product-name">${product.name}</div>
@@ -375,6 +409,10 @@
                                         <div class="placeholder">이미지 없음</div>
                                     </c:otherwise>
                                 </c:choose>
+                                <%-- 좋아요 하트 아이콘 --%>
+                                <i class="fa-heart product-like-icon ${product.isLiked ? 'fas filled' : 'far empty'}"
+                                   data-product-id="${product.id}"
+                                   onclick="event.stopPropagation(); toggleProductLike(this);"></i>
                             </div>
                             <div class="product-brand">${product.brandName}</div>
                             <div class="product-name">${product.name}</div>
@@ -400,6 +438,12 @@
         </div>
     </section>
 </main>
+
+<%-- jQuery --%>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<%-- 공통 좋아요 토글 스크립트 --%>
+<script src="${jsLikeToggle}"></script>
 
 <%-- Swiper JS --%>
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
@@ -479,6 +523,41 @@
         },
         speed: 600
     });
+
+    // 메인 페이지 상품 좋아요 토글 함수
+    function toggleProductLike(iconElement) {
+        const $icon = $(iconElement);
+        const productId = $icon.attr('data-product-id');
+
+        console.log('토글 시작 - productId:', productId);
+        console.log('아이콘 엘리먼트:', iconElement);
+
+        if (!productId) {
+            alert('상품 정보를 찾을 수 없습니다.');
+            return;
+        }
+
+        $.ajax({
+            url: '/api/v1/products/' + productId + '/liked',
+            method: 'POST',
+            dataType: 'json',
+            success: function (response) {
+                // response.liked가 true이면 좋아요 상태, false이면 좋아요 해제 상태
+                console.log('좋아요 토글 성공:', response);
+                console.log('liked 값:', response.liked, '타입:', typeof response.liked);
+
+                if (response.liked === true || response.liked === 1) {
+                    $icon.removeClass('far empty').addClass('fas filled');
+                } else {
+                    $icon.removeClass('fas filled').addClass('far empty');
+                }
+            },
+            error: function (xhr) {
+                console.error('좋아요 토글 실패:', xhr);
+                alert('좋아요 처리에 실패했습니다.');
+            }
+        });
+    }
 </script>
 
 </body>
