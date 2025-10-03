@@ -23,7 +23,7 @@ public class Order {
     private String recipientPhone;
     private String recipientName;
     private String recipientAddress;
-    private String postCode;
+    private String postalCode;
 
     private PaymentMethod paymentMethod;
     private Long paymentMethodId;
