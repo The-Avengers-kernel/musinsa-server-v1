@@ -736,7 +736,7 @@
         console.log('전송할 주문 데이터:', orderData);
 
         $.ajax({
-            url: '/order/completion-order',
+            url: '/orders/completion-order',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(orderData),
@@ -745,7 +745,7 @@
 
                 // orderId 값 확인 후 리다이렉트
                 if (response && response.orderId) {
-                    window.location.href = '/order/order-complete/' + response.orderId;
+                    window.location.href = '/orders/order-complete/' + response.orderId;
                 } else {
                     console.error('응답에서 orderId를 찾을 수 없습니다:', response);
                     alert('주문이 완료되었지만 주문 완료 페이지로 이동할 수 없습니다.');
