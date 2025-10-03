@@ -8,7 +8,6 @@ import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepository;
-import com.avengers.musinsa.domain.product.repository.ProductRepositoryImpl;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.search.repository.PopularKeywordRepository;
 import com.avengers.musinsa.domain.review.dto.Request.RequestReview;
