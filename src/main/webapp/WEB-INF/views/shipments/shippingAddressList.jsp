@@ -66,6 +66,11 @@
             cursor: pointer;
         }
 
+        #address-list-container{
+            /* 버튼 높이(52) + 바 패딩(16*2) ≈ 84 + iOS 안전영역 */
+            padding-bottom: calc(84px + env(safe-area-inset-bottom));
+        }
+
         .address-item:first-child {
             border-top: 1px solid #f0f0f0;
         }
@@ -108,7 +113,7 @@
 
         /* 배송지 이름 스타일 */
         .recipientName {
-            font-weight: 700;
+            font-weight: 500;
             font-size: 16px;
             margin-right: 8px;
             color: #111;
@@ -125,8 +130,7 @@
             font-size: 11px;
             font-weight: 400;
             line-height: 14px;
-            overflow: hidden;
-            display: none; /* 기본적으로 숨김 */
+            overflow: hidden /* 기본적으로 숨김 */
         }
         /* 기본 배송지일 경우 태그 노출 */
         .isDefault[data-isdefault="true"] + .tag-default {
@@ -180,16 +184,18 @@
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
             box-sizing: border-box;
             text-align: center;
+            z-index: 100;
         }
         .change-button button {
             width: 100%;
+            height: 50px;
             padding: 15px;
             background-color: #000;
             color: #fff;
             font-size: 16px;
             font-weight: 700;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
         }
     </style>
@@ -204,7 +210,8 @@
     <span style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #888;">🔍</span>
 </div>
 
-<button style="width: 100%; padding: 15px; margin-bottom: 20px; background-color: #fff; border: 1px solid #ddd; border-radius: 5px; font-size: 15px; font-weight: 600; cursor: pointer;">
+<button style="width: 100%; padding: 15px; margin-bottom: 20px; background-color: #fff; border: 1px solid #ddd; border-radius: 5px; font-size: 15px; font-weight: 600; cursor: pointer;"
+    onclick="location.href='/shipping-address-add'">
     배송지 추가하기
 </button>
 
@@ -220,11 +227,11 @@
         <div class="address-content">
             <div class="address-line">
                 <span class="recipientName"></span>
-                <span class="tag_label">기본 배송지</span>
+                <span class="tag-default">기본 배송지</span>
                 <span class="isDefault" data-default=""></span> </div>
 
             <div class="address-info">
-                <span class="postalCode"></span><br>
+                <span class="postalCode"></span>
                 <span class="recipientAddress"></span><br>
                 <span class="recipientPhone"></span>
             </div>
@@ -259,6 +266,13 @@
                 // 데이터가 배열이 아닌 경우를 대비하여 배열 형태로 감싸줍니다. (API 응답 형식에 따라 변경 가능)
                 const addressList = Array.isArray(data) ? data : (data && Array.isArray(data.addresses) ? data.addresses : []);
 
+                // If USER_ID is not provided by JSP, try to infer from the first address item
+                if ((!USER_ID || USER_ID === 'null' || USER_ID === '') && addressList.length > 0 && addressList[0].userId) {
+                    USER_ID = String(addressList[0].userId);
+                    window.USER_ID = USER_ID; // cache for other pages if needed
+                }
+
+
                 if (addressList.length > 0) {
                     addressList.forEach(function(address) {
                         // 템플릿을 복제합니다.
@@ -267,6 +281,8 @@
                         // **배송지 ID**를 라디오 버튼의 value와 숨겨진 요소에 설정
                         $newItem.find('.radio-select').val(address.shippingAddressId);
                         $newItem.find('.shippingAddressId').text(address.shippingAddressId);
+
+                        $newItem.find('data-user-id', address.userId);
 
                         // 복제한 템플릿에 데이터를 채웁니다.
                         $newItem.find('.recipientName').text(address.recipientName);
@@ -301,12 +317,14 @@
                             $(this).find('.radio-select').prop('checked', true);
                         });
 
+
+
                         // 버튼 클릭 이벤트는 별도로 처리하여 버블링 방지
-                        $newItem.find('.action-button').on('click', function(e) {
-                            e.stopPropagation();
-                            const action = $(this).hasClass('modify-button') ? '수정' : '삭제';
-                            alert(`${action} 버튼 클릭: ID ${address.shippingAddressId}`);
-                        });
+                        <%--$newItem.find('.action-button').on('click', function(e) {--%>
+                        <%--    e.stopPropagation();--%>
+                        <%--    const action = $(this).hasClass('modify-button') ? '수정' : '삭제';--%>
+                        <%--    alert(`${action} 버튼 클릭: ID ${address.shippingAddressId}`);--%>
+                        <%--});--%>
                     });
                 } else {
                     $listContainer.text('등록된 배송지 정보가 없습니다.');
@@ -317,6 +335,52 @@
                 $listContainer.text('주소 정보를 불러오는 데 실패했습니다.');
             }
         });
+
+        // 수정 버튼 이벤트
+        $(document).on('click', '.modify-button', function(e){
+            e.stopPropagation();
+            const id = $(this).closest('.address-item').find('.radio-select').val();
+            location.href = '${pageContext.request.contextPath}/shipping-address-edit?shippingAddressId=' + encodeURIComponent(id);
+        });
+
+        // 삭제 버튼 이벤트
+        // Context path and user id constants
+        const CTX = '${pageContext.request.contextPath}';
+        let USER_ID = (('${userId}' !== '' && '${userId}' !== 'null') ? '${userId}' : (window.USER_ID || null));
+        $(document).on('click', '.delete-button', function(e){
+            e.stopPropagation();
+            //const id = $(this).closest('.address-item').find('.radio-select').val();
+            const $item = $(this).closest('.address-item');
+            const id = $item.find('.radio-select').val();
+            const userId = $item.data('user-id') || USER_ID; // fallback to global if needed
+
+            if (confirm('정말 삭제하시겠습니까?')) {
+                if (!userId){
+                    alert('사용자 식별자를 확인할 수 없습니다. 다시 로그인한 후 시도해주세요.');
+                    return;
+                }
+
+                const $btn = $(this);
+                $btn.prop('disabled', true);
+
+                $.ajax({
+                    type: 'DELETE',
+                    url: CTX + '/api/v1/delete/' + encodeURIComponent(id) + '/' + encodeURIComponent(userId),
+                    success: () => {
+                        alert('삭제가 완료되었습니다.');
+                        $item.remove();
+                        if ($('#address-list-container .address-item').length === 0) {
+                            $('#address-list-container').text('등록된 배송지 정보가 없습니다.');
+                        }
+                    },
+                    error: (xhr) => {
+                        alert('삭제 실패: ' + (xhr.responseText || '알 수 없는 오류'));
+                        $btn.prop('disabled', false);
+                    }
+                });
+            }
+        });
+
     });
 
     // 배송지 변경 기능
@@ -347,6 +411,11 @@
             alert('부모 창과의 연결에 문제가 있습니다.');
         }
     }
+
+
+
+
+
 </script>
 
 </body>
