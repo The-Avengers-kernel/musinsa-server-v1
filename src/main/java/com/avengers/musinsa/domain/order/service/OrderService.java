@@ -10,6 +10,7 @@ import com.avengers.musinsa.domain.order.dto.response.*;
 import com.avengers.musinsa.domain.order.entity.Order;
 import com.avengers.musinsa.domain.order.repository.OrderRepository;
 import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
+import com.avengers.musinsa.domain.shipments.entity.Shipment;
 import com.avengers.musinsa.domain.user.dto.UserResponseDto;
 import com.avengers.musinsa.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,39 +32,12 @@ public class OrderService {
         return orderRepository.getUserInfo(userId);
     }
 
-    //주문하기
-    @Transactional
-    public OrderCreateResponse createOrder(Long userId, OrderCreateRequest orderCreateRequest) {
-        // 배송 예정 정보ID, 배송 요청사항 타입ID, 배송 상태 ID와 여러 배송 정보 배송정보 테이블에 저장
-        // 과 동시에 배송테이블 ID 가져오기
-        Long shippingId = orderRepository.createShipment(orderCreateRequest);
-        System.out.println(shippingId);
 
-
-        // 주문 정보 저장 후 주문 ID 가져오기
-        Long userAddressId = orderCreateRequest.getAddressId();
-        orderRepository.createOrder(userId, shippingId, orderCreateRequest.getPayment());
-        Long orderId = orderCreateRequest.getPayment().getOrderId();
-
-        // 주문서 상품 내역 주문한 상품들 순회하며 저장
-        List<OrderCreateRequest.ProductLine> orderProducts = orderCreateRequest.getProduct();
-        for (ProductLine orderProduct : orderProducts) {
-
-            orderRepository.createOrderItems(orderId, orderProduct, orderCreateRequest.getCouponId());
-
-        }
-        System.out.println("orderItems 샹성 완료");
-
-        // 상품 판매 내역 - 해야하는데 주문서 상품 내역 저장과 같은 방식이라 안 함
-        OrderCreateResponse orderCreateResponse = new OrderCreateResponse(orderId);
-
-        return orderCreateResponse;
-    }
-
-public OrderSummaryResponse.OrderSummaryDto getCompletionOrderSummary(Long orderId, Long userId) {
+    public OrderSummaryResponse.OrderSummaryDto getCompletionOrderSummary(Long orderId, Long userId) {
 
         // order 정보 가져오기 - orderCode, orderDate, 가격정보(총 금액, 할인 금액, 배송비, 최종금액)
         Order order = orderRepository.getOrder(orderId);
+        System.out.println("Order ShipmentId: " + order.getShipmentId());
 
         // 회원 정보 가져오기(이름, 이메일, 전화번호) - Buyer(이름, 이메일, 폰번호)
         UserResponseDto.UserNameAndEmailAndMobileDto userNameAndEmailAndMobile = userRepository.findUserNameAndEmailAndMobileById(userId);
@@ -72,13 +46,19 @@ public OrderSummaryResponse.OrderSummaryDto getCompletionOrderSummary(Long order
         //주문한 상품 목록 가져오기
         List<OrderDto.OrderItemInfo> orderItems = orderRepository.findOrderItems(orderId);
 
+        //배송 정보 가져오기
+        Shipment shipment = orderRepository.getShipment(order.getShipmentId());
+        System.out.println("Shipment 정보: " + (shipment != null ? shipment.getRecipientName() : "null"));
+
         //수령인 가져오기
         ShippingAddressDto.shippingAddressDto shippingAddressDto = ShippingAddressDto.shippingAddressDto.builder()
-                .recipientName(order.getRecipientName())
-                .phone(order.getRecipientPhone())
-                .postCode(order.getPostCode())
-                .address(order.getRecipientAddress())
+                .recipientName(shipment.getRecipientName())
+                .phone(shipment.getRecipientPhone())
+                .postCode(shipment.getPostalCode())
+                .address(shipment.getRecipientAddress())
                 .build();
+
+        System.out.println("수령인 정보 = " + shipment.getRecipientAddress());
 
         //가격 설정
         PriceInfoDto.priceInfoDto priceInfoDto = PriceInfoDto.priceInfoDto.builder()
@@ -99,6 +79,30 @@ public OrderSummaryResponse.OrderSummaryDto getCompletionOrderSummary(Long order
                 .build();
 
         return completionOrderSummaryResponse;
+    }
+    //주문하기
+    @Transactional
+    public OrderCreateResponse createOrder(Long userId, OrderCreateRequest orderCreateRequest) {
+        // 배송 예정 정보ID, 배송 요청사항 타입ID, 배송 상태 ID와 여러 배송 정보 배송정보 테이블에 저장
+        // 과 동시에 배송테이블 ID 가져오기
+        Long shippingId = orderRepository.createShipment(orderCreateRequest);
+        System.out.println(shippingId);
+
+
+        // 주문 정보 저장 후 주문 ID 가져오기
+        orderRepository.createOrder(userId, shippingId, orderCreateRequest.getPayment());
+        Long orderId = orderCreateRequest.getPayment().getOrderId();
+
+        // 주문서 상품 내역 주문한 상품들 순회하며 저장
+        List<OrderCreateRequest.ProductLine> orderProducts = orderCreateRequest.getProduct();
+        for (ProductLine orderProduct : orderProducts) {
+            orderRepository.createOrderItems(orderId, orderProduct, orderCreateRequest.getCouponId());
+        }
+
+        // 상품 판매 내역 - 해야하는데 주문서 상품 내역 저장과 같은 방식이라 안 함
+        OrderCreateResponse orderCreateResponse = new OrderCreateResponse(orderId);
+
+        return orderCreateResponse;
     }
 
     //배송지 목록 조회

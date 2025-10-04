@@ -29,6 +29,11 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    public com.avengers.musinsa.domain.shipments.entity.Shipment getShipment(Long shippingId) {
+        return this.orderMapper.getShipment(shippingId);
+    }
+
+    @Override
     public List<OrderDto.OrderItemInfo> findOrderItems(Long orderId) {
         List<OrderDto.OrderItemInfo> orderItemInfoList = this.orderMapper.findOrderItems(orderId);
         System.out.println(orderItemInfoList.getFirst().toString());
@@ -52,22 +57,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public Long createOrder(Long userId, Long shippingId, OrderCreateRequest.Payment payment) {
-        System.out.println("mapper 호출 전 - userId: " + userId + ", shippingId: " + shippingId);
-        System.out.println("payment 정보: " + payment.getPaymentMethodId() + ", " + payment.getTotalAmount());
-        System.out.println(payment.getDiscountAmount());
         orderMapper.createOrder(userId, shippingId, payment);
-        System.out.println("mapper 호출 성공");
-//        try {
-//            orderMapper.createOrder(userId, shippingId, payment);
-//            System.out.println("mapper 호출 성공");
-//        } catch (Exception e) {
-//            System.out.println("mapper 호출 중 예외 발생: " + e.getMessage());
-//            e.printStackTrace();
-//            throw e;
-//        }
-
-        System.out.println("payment.getOrderId(): " + payment.getOrderId());
-        System.out.println("mapper에서 order 생성 완료");
         return payment.getOrderId();
     }
 

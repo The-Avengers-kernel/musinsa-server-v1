@@ -19,10 +19,14 @@ public class Order {
     private User user;
     private Long userId;
 
+    private Shipment shipment;
+    private Long shipmentId;
+
     //배송지 이름
     private String recipientPhone;
     private String recipientName;
     private String recipientAddress;
+    private String recipientDetailAddress;
     private String postCode;
 
     private PaymentMethod paymentMethod;

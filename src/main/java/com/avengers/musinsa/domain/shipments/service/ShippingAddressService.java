@@ -1,6 +1,7 @@
 package com.avengers.musinsa.domain.shipments.service;
 
 import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
+import com.avengers.musinsa.domain.shipments.entity.Shipment;
 import com.avengers.musinsa.domain.shipments.repository.ShippingAddressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ public class ShippingAddressService {
     public List<ShippingAddressOrderDTO> getShippingAddressesUserId(Long userId) {
         return shippingAddressRepository.findByUserId(userId);
     }
+//    public Shipment findByShipmentId(Long shipmentId){
+//        return shippingAddressRepository.findByShipmentId(shipmentId);
+//    }
 
 
 }

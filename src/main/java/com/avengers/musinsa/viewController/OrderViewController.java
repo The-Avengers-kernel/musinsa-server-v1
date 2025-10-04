@@ -30,8 +30,8 @@ public class OrderViewController {
     public ResponseEntity<OrderCreateResponse> createOrder(@RequestBody OrderCreateRequest request,
                                                            @CookieValue(value = "Authorization", required = false) String authorization,
                                                            Model model){
-        Long userId = tokenProviderService.getUserIdFromToken(authorization);
 
+        Long userId = tokenProviderService.getUserIdFromToken(authorization);
         //관련된 정보들 세팅
         request.setUserId(userId);
 
@@ -52,6 +52,7 @@ public class OrderViewController {
             }
 
             Long variantId = variant.getProductVariantId();
+
             productLine.setVariantId(variantId);
 
             // HashMap 생성 후 설정
@@ -61,6 +62,14 @@ public class OrderViewController {
             options.put("color", variant.getColorValue());
             productLine.setColor(variant.getColorValue());
             productLine.setOptions(options);  // ← 생성한 Map을 설정
+
+
+        }
+
+        for(OrderCreateRequest.ProductLine productLine2 : request.getProduct()){
+            System.out.println("ProductLine - variantId: " + productLine2.getVariantId() +
+                    ", size: " + productLine2.getOrderItemSize() +
+                    ", color: " + productLine2.getColor());
         }
 
         OrderCreateResponse orderCreateResponse = orderService.createOrder(userId, request);
@@ -79,9 +88,12 @@ public class OrderViewController {
         System.out.println("리다이랙트가 됨");
         Long userId = tokenProviderService.getUserIdFromToken(auth);
         OrderSummaryResponse.OrderSummaryDto response = orderService.getCompletionOrderSummary(orderId, userId);
-        model.addAttribute("orderData", response);
+        System.out.println("completecomplete");
+
         return "order/orderCompletePage";
     }
+
+
 
 
 

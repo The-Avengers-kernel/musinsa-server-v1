@@ -17,6 +17,7 @@ public class ShippingAddressDto {
         String phone;
         String postCode;
         String address;
+        String detailAddress;
 
     }
 

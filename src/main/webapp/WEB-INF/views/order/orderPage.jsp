@@ -393,7 +393,7 @@
                 <span class="info-label">주소</span>
                 <span class="info-value" id="recipient-address">
                     (<span id="recipient-postcode">${buyerRecipientInfoAdapter.recipientPostCode}</span>)
-                    <span id="recipient-full-address">${buyerRecipientInfoAdapter.recipientAddress}</span>
+                    <span id="recipient-full-address">${buyerRecipientInfoAdapter.recipientAddress} ${buyerRecipientInfoAdapter.recipientDetailAddress}</span>
                 </span>
             </div>
 
@@ -506,6 +506,7 @@
                         <img src="https://image.msscdn.net/musinsaUI/store/order/finance/logo-finance-kakaopay.png" alt="카카오페이" class="payment-icon">
                         <span class="payment-name">카카오페이</span>
                     </div>
+
                     <div class="payment-benefits">
                         <span class="benefit-tag">혜택</span>
                     </div>
@@ -733,9 +734,10 @@
             data: JSON.stringify(orderData),
             success: function(response) {
 
-
                 // orderId 값 확인 후 리다이렉트
                 if (response && response.orderId) {
+                    console.log('요청 성공!!')
+                    console.log('다시 받기 성공!!')
                     window.location.href = '/order/order-complete/' + response.orderId;
                 } else {
                     console.error('응답에서 orderId를 찾을 수 없습니다:', response);

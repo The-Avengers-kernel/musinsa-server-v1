@@ -12,6 +12,8 @@ public interface OrderRepository {
 
     Order getOrder(Long orderId);
 
+    com.avengers.musinsa.domain.shipments.entity.Shipment getShipment(Long shippingId);
+
     List<OrderDto.OrderItemInfo> findOrderItems(Long orderId);
 
     List<ShippingAddressOrderDTO> getShippingAddressesUserId(Long userId);

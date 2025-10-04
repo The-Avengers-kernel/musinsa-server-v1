@@ -20,6 +20,9 @@ public interface OrderMapper {
     // 주문 조회
     Order getOrder(@Param("orderId") Long orderId);
 
+    // 배송 정보 조회
+    com.avengers.musinsa.domain.shipments.entity.Shipment getShipment(@Param("shippingId") Long shippingId);
+
     // 주문 상품 리스트 조회
     List<OrderDto.OrderItemInfo> findOrderItems(@Param("orderId") Long orderId);
 
