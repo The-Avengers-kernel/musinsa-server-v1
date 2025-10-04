@@ -17,7 +17,7 @@ public interface ProductService {
     // productId로 productVariantId 찾기
     List<ProductVariantDetailDto> getProductVariants(Long productId);
 
-    List<RecommendationResponse> getRecommendationProductList(Gender gender);
+    List<RecommendationResponse> getRecommendationProductList(Gender gender, Long userId);
 
 
     Map<Long, List<ProductsInCartInfoResponse.OptionGroup>> getGroupsByProductIds(List<Long> productIds);
@@ -39,7 +39,7 @@ public interface ProductService {
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
 
 
-    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, String sortBy);
+    List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId, String sortBy);
 
 
     // 상품 상세 페이지 카테고리 조회

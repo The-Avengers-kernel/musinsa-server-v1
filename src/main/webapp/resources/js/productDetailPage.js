@@ -297,6 +297,11 @@
         // $('#summaryRatingScore').text(...);
         // $('#summaryReviewCount').text(...);
 
+        // 디버깅: 서버에서 받은 좋아요 상태 확인
+        console.log('=== Product Like Status ===');
+        console.log('isProductLiked:', data.isProductLiked, typeof data.isProductLiked);
+        console.log('전체 data:', data);
+
         // 좋아요 상태
         if (data.isProductLiked) {
             $('.wishlist-icon .heart-icon').removeClass('far').addClass('fas liked');
@@ -378,10 +383,12 @@
         // 스와치
         const colorMapping = {
             'Black': '#000000',
-            'blue': '#4A9BDC',
-            'yellow': '#FFE59D',
-            'green': '#4DAE4D',
-            'red': '#FF0000'
+            'Blue': '#4A9BDC',
+            'Yellow': '#FFE59D',
+            'Green': '#4DAE4D',
+            'Red': '#FF0000',
+            'White' : '#FFFFFF'
+
         };
         const $swatches = $('#colorSwatches').empty();
         colors.forEach((color, idx) => {
@@ -524,27 +531,9 @@
         const productId = getProductId();
         guardRequired(productId, '상품 정보를 불러오지 못했습니다.');
 
-        $.ajax({
-            url: `/api/v1/products/${productId}/liked`,
-            method: 'POST',
-            dataType: 'json',
-            success: function (response) {
-                if (typeof response.likeCount !== 'undefined') {
-                    const $likeCnt = $('#productLikeCnt');
-                    $likeCnt.text(formatKoreanNumber(response.likeCount))
-                        .addClass('like-count-updated');
-                    setTimeout(() => $likeCnt.removeClass('like-count-updated'), 300);
-                }
-                const heart = $('.wishlist-icon .heart-icon');
-                if (response.liked) {
-                    heart.removeClass('far').addClass('fas liked');
-                } else {
-                    heart.removeClass('fas liked').addClass('far');
-                }
-            },
-            error: function (xhr) {
-                console.error('상품 좋아요 실패:', xhr.responseText || xhr);
-            }
+        LikeToggle.toggleProductLike(productId, {
+            heartSelector: '.wishlist-icon .heart-icon',
+            countSelector: '#productLikeCnt'
         });
     }
 
@@ -552,30 +541,9 @@
         const brandId = getBrandId();
         guardRequired(brandId, '브랜드 정보를 불러오지 못했습니다.');
 
-        const apiUrl = '/api/v1/brands/' + brandId + '/liked';
-
-        $.ajax({
-            url: apiUrl,
-            method: 'POST',
-            xhrFields: {withCredentials: true},
-            dataType: 'json',
-            success: function (response) {
-                if (typeof response.likeCount !== 'undefined') {
-                    const $likeCnt = $('#brandLikeCnt');
-                    $likeCnt.text(formatKoreanNumber(response.likeCount))
-                        .addClass('like-count-updated');
-                    setTimeout(() => $likeCnt.removeClass('like-count-updated'), 300);
-                }
-                const heart = $('.brand-wishlist-icon .heart-icon');
-                if (response.liked) {
-                    heart.removeClass('far').addClass('fas liked');
-                } else {
-                    heart.removeClass('fas liked').addClass('far');
-                }
-            },
-            error: function (xhr) {
-                console.error('브랜드 좋아요 실패:', xhr.responseText || xhr);
-            }
+        LikeToggle.toggleBrandLike(brandId, {
+            heartSelector: '.brand-wishlist-icon .heart-icon',
+            countSelector: '#brandLikeCnt'
         });
     }
 

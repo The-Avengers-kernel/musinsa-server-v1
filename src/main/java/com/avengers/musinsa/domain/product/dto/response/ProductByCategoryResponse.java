@@ -14,6 +14,7 @@ public class ProductByCategoryResponse {
     private Integer productLikes;
     private Double ratingAverage;
     private Integer reviewCount;
+    private Boolean isLiked;  // 좋아요 여부
 }
 
 

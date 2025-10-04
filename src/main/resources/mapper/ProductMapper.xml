@@ -2,8 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.avengers.musinsa.mapper.ProductMapper">
-    <select id="findProductById"
-            resultType="com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse">
+    <resultMap id="ProductDetailResultMap" type="com.avengers.musinsa.domain.product.dto.response.ProductDetailResponse">
+        <result property="productId" column="productId"/>
+        <result property="productName" column="productName"/>
+        <result property="productLikeCnt" column="productLikeCnt"/>
+        <result property="price" column="price"/>
+        <result property="brandDiscount" column="brandDiscount"/>
+        <result property="finalprice" column="finalprice"/>
+        <result property="detailSizeImage" column="detailSizeImage"/>
+        <result property="isProductLiked" column="isProductLiked" javaType="java.lang.Boolean"/>
+        <result property="isBrandLiked" column="isBrandLiked" javaType="java.lang.Boolean"/>
+        <result property="brandId" column="brandId"/>
+        <result property="brandName" column="brandName"/>
+        <result property="brandLikeCnt" column="brandLikeCnt"/>
+        <result property="brandImage" column="brandImage"/>
+        <result property="sizeDetailImageId" column="sizeDetailImageId"/>
+        <result property="productSizeDetailImageURL" column="productSizeDetailImageURL"/>
+    </resultMap>
+
+    <select id="findProductById" resultMap="ProductDetailResultMap">
         SELECT p.product_id                                                AS productId,
                p.product_name                                              AS productName,
 
@@ -18,8 +35,8 @@
                p.DETAIL_SIZE_IMAGE                                         AS detailSizeImage,
                p.SIZE_DETAIL_IMAGE_ID                                      AS sizeDetailImageId,
                SDI.IMAGE                                                   AS productSizeDetailImageURL,
-               ubl.LIKED                                                   AS isBrandLiked,
-               upl.LIKED                                                   AS isProductLiked
+               CASE WHEN ubl.LIKED = 1 THEN 1 ELSE 0 END                   AS isBrandLiked,
+               CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END                   AS isProductLiked
         FROM products p
                  JOIN
              brands b ON p.brand_id = b.brand_id
@@ -76,15 +93,26 @@
                      END
     </select>
 
-    <select id="getRecommendationProductList"
-            resultType="com.avengers.musinsa.domain.product.dto.response.RecommendationResponse">
+    <resultMap id="RecommendationResultMap" type="com.avengers.musinsa.domain.product.dto.response.RecommendationResponse">
+        <result property="productId" column="productId"/>
+        <result property="brandId" column="brandId"/>
+        <result property="productName" column="productName"/>
+        <result property="productBrand" column="productBrand"/>
+        <result property="productPrice" column="productPrice"/>
+        <result property="productImage" column="productImage"/>
+        <result property="discountRate" column="discountRate"/>
+        <result property="isLiked" column="isLiked" javaType="java.lang.Boolean"/>
+    </resultMap>
+
+    <select id="getRecommendationProductList" resultMap="RecommendationResultMap">
         SELECT p.product_id                                                AS productId,
                b.brand_id                                                  AS brandId,
                p.product_name                                              AS productName,
                b.brand_name_kr                                             AS productBrand,
                FLOOR(((100 - b.BRAND_DISCOUNT) / 100) * p.price / 10) * 10 AS productPrice,
                img.image_url                                               AS productImage,
-               b.brand_discount                                            as discountRate
+               b.brand_discount                                            as discountRate,
+               CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END                   AS isLiked
 
         FROM products p
                  JOIN brands b
@@ -92,6 +120,9 @@
                  LEFT JOIN product_images img
                            ON p.product_id = img.product_id
                                AND img.image_type = 'MAIN'
+                 LEFT JOIN USER_PRODUCT_LIKES upl
+                           ON upl.PRODUCT_ID = p.PRODUCT_ID
+                               AND upl.user_id = #{userId}
         WHERE p.gender = #{gender}
         ORDER BY p.created_at DESC
             FETCH FIRST 32 ROWS ONLY
@@ -116,8 +147,19 @@
         </foreach>
     </select>
 
-    <select id="getProductsByCategory"
-            resultType="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
+    <resultMap id="ProductByCategoryResultMap" type="com.avengers.musinsa.domain.product.dto.response.ProductByCategoryResponse">
+        <result property="productId" column="productId"/>
+        <result property="productName" column="productName"/>
+        <result property="productImage" column="productImage"/>
+        <result property="brandName" column="brandName"/>
+        <result property="price" column="price"/>
+        <result property="productLikes" column="productLikes"/>
+        <result property="ratingAverage" column="ratingAverage"/>
+        <result property="reviewCount" column="reviewCount"/>
+        <result property="isLiked" column="isLiked" javaType="java.lang.Boolean"/>
+    </resultMap>
+
+    <select id="getProductsByCategory" resultMap="ProductByCategoryResultMap">
         SELECT ranked_products.product_id    as productId,
                ranked_products.product_name  as productName,
                pimg.image_url                as productImage,
@@ -126,7 +168,8 @@
                ranked_products.product_likes as productLikes,
                ranked_products.rating_avg    as ratingAverage,
                ranked_products.review_count  as reviewCount,
-               ranked_products.recommendation_score as recommendationScore
+               ranked_products.recommendation_score as recommendationScore,
+               CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END AS isLiked
 
         FROM (SELECT p.product_id,
                      p.product_name,
@@ -158,6 +201,9 @@
                  JOIN brands b
                       ON b.brand_id = ranked_products.brand_id
                  JOIN product_images pimg ON pimg.product_id = ranked_products.product_id
+                 LEFT JOIN USER_PRODUCT_LIKES upl
+                           ON upl.PRODUCT_ID = ranked_products.product_id
+                               AND upl.user_id = #{userId}
 
         WHERE pimg.image_type = 'MAIN'
         <choose>
@@ -317,8 +363,21 @@
            OR brand_name_eng = #{keyword} LIMIT 1
     </select>
 
-    <select id="findProductsByBrandId"
-            resultType="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
+    <resultMap id="SearchProductInfoResultMap" type="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
+        <result property="brandId" column="brandId"/>
+        <result property="brandNameKr" column="brandNameKr"/>
+        <result property="brandNameEn" column="brandNameEn"/>
+        <result property="productId" column="productId"/>
+        <result property="productImage" column="productImage"/>
+        <result property="productName" column="productName"/>
+        <result property="price" column="price"/>
+        <result property="productLikes" column="productLikes"/>
+        <result property="ratingAverage" column="ratingAverage"/>
+        <result property="reviewCount" column="reviewCount"/>
+        <result property="isLiked" column="isLiked" javaType="java.lang.Boolean"/>
+    </resultMap>
+
+    <select id="findProductsByBrandId" resultMap="SearchProductInfoResultMap">
         SELECT b.brand_id       as brandId,
                b.brand_name_kr  as brandNameKr,
                b.brand_name_eng as brandNameEn,
@@ -328,11 +387,15 @@
                p.price,
                p.product_likes  as productLikes,
                prs.rating_avg   as ratingAverage,
-               prs.review_count as reviewCount
+               prs.review_count as reviewCount,
+               CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END AS isLiked
         FROM products p
                  JOIN brands b ON p.brand_id = b.brand_id
                  LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
                  LEFT JOIN product_review_stats prs ON p.product_id = prs.product_id
+                 LEFT JOIN USER_PRODUCT_LIKES upl
+                           ON upl.PRODUCT_ID = p.PRODUCT_ID
+                               AND upl.user_id = #{userId}
         WHERE p.brand_id = #{brandId}
         <choose>
             <when test="sortBy == 'PRICE_LOW'">
@@ -347,8 +410,7 @@
         </choose>
     </select>
 
-    <select id="findProductsByKeyword"
-            resultType="com.avengers.musinsa.domain.product.dto.search.SearchResponse$ProductInfo">
+    <select id="findProductsByKeyword" resultMap="SearchProductInfoResultMap">
         SELECT b.brand_id as brandId,
         b.brand_name_kr as brandNameKr,
         b.brand_name_eng as brandNameEn,
@@ -358,11 +420,15 @@
         p.price,
         p.product_likes as productLikes,
         prs.rating_avg as ratingAverage,
-        prs.review_count as reviewCount
+        prs.review_count as reviewCount,
+        CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END AS isLiked
         FROM products p
         JOIN brands b ON p.brand_id = b.brand_id
         LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
         LEFT JOIN product_review_stats prs ON p.product_id = prs.product_id
+        LEFT JOIN USER_PRODUCT_LIKES upl
+                  ON upl.PRODUCT_ID = p.PRODUCT_ID
+                      AND upl.user_id = #{userId}
         WHERE (
         <foreach collection="keywords" item="keyword" separator=" OR ">
             p.product_name LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'

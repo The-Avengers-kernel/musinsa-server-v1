@@ -27,13 +27,17 @@ public class ProductController {
     public ProductDetailResponse getDetailProduct(@PathVariable Long productId,
                                                   @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
 
-        if (authorizationHeader == null || authorizationHeader.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization token is missing");
-        } else {
-            Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-
-            return productService.getProductById(productId, userId);
+        Long userId = null;
+        if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
+            try {
+                userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+            } catch (Exception e) {
+                // 토큰이 유효하지 않으면 비로그인으로 처리
+                userId = null;
+            }
         }
+
+        return productService.getProductById(productId, userId);
     }
 
     @GetMapping("/{productId}/options")
@@ -50,19 +54,38 @@ public class ProductController {
 
     // 무신사 추천순
     @GetMapping("/recommendations/{gender}")
-    public List<RecommendationResponse> recommendationProducts(@PathVariable String gender) {
+    public List<RecommendationResponse> recommendationProducts(@PathVariable String gender,
+                                                                @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         Gender g = Gender.valueOf(gender.toUpperCase());
-        return productService.getRecommendationProductList(g);
+        Long userId = null;
+        if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
+            try {
+                userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+            } catch (Exception e) {
+                userId = null;
+            }
+        }
+        return productService.getRecommendationProductList(g, userId);
     }
 
     //카테고리 선택 시 상품 목록 조회되는 화면
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(
             @PathVariable Long categoryId,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy) {
+            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+            @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         System.out.println("category_id = " + categoryId);
         System.out.println("sortBy = " + sortBy);
-        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, sortBy);
+
+        Long userId = null;
+        if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
+            try {
+                userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+            } catch (Exception e) {
+                userId = null;
+            }
+        }
+        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, userId, sortBy);
         return ResponseEntity.ok(products);
     }
 

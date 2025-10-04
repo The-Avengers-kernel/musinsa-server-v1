@@ -19,11 +19,11 @@ public interface ProductMapper {
 
     ProductDetailResponse findProductById(@Param("productId") Long productId, @Param("userId") Long userId);
 
-    List<RecommendationResponse> getRecommendationProductList(@Param("gender") Gender gender);
+    List<RecommendationResponse> getRecommendationProductList(@Param("gender") Gender gender, @Param("userId") Long userId);
 
     List<ProductOptionRow> findOptionsByProductIds(@Param("productIds") List<Long> productIds);
 
-    List<ProductByCategoryResponse> getProductsByCategory(@Param("categoryId") Long categoryId, @Param("sortBy") String sortBy);
+    List<ProductByCategoryResponse> getProductsByCategory(@Param("categoryId") Long categoryId, @Param("userId") Long userId, @Param("sortBy") String sortBy);
 
     List<ProductImage> findProductImageById(Long productId);
 
@@ -52,9 +52,9 @@ public interface ProductMapper {
 
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
 
-    List<SearchResponse.ProductInfo> findProductsByBrandId(@Param("brandId") Long brandId, @Param("sortBy") String sortBy);
+    List<SearchResponse.ProductInfo> findProductsByBrandId(@Param("brandId") Long brandId, @Param("userId") Long userId, @Param("sortBy") String sortBy);
 
-    List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords, @Param("sortBy") String sortBy);
+    List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords, @Param("userId") Long userId, @Param("sortBy") String sortBy);
 
     void saveSearchKeywordLog(String keyword);
 
