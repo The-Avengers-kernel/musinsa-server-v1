@@ -41,4 +41,8 @@ public class CartRepository {
     public void insertNewCartItem(Long userId, AddCartRequest request) {
         cartMapper.insertNewCartItem(userId, request);
     }
+
+    public void deleteCartItems(Long userId, List<Long> cartIds) {
+        cartMapper.deleteCartItems(userId, cartIds);
+    }
 }
