@@ -88,4 +88,9 @@ public class CartService {
         // 장바구니 상품 목록 반환
         return getProductsInCart(userId);
     }
+
+    @Transactional
+    public void deleteCartItems(Long userId, List<Long> cartIds) {
+        cartRepository.deleteCartItems(userId, cartIds);
+    }
 }
