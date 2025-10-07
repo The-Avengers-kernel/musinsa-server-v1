@@ -90,6 +90,31 @@
 
     </insert>
 
+    <insert id="batchCreateOrderItems">
+        insert all
+        <foreach collection="orderProducts" item = "product" separator=" ">
+        INTO ORDER_ITEMS
+        (ORDER_ITEM_ID, PRODUCT_ID, COUPON_ID, ORDER_ID, QUANTITY, UNIT_PRICE, TOTAL_PRICE, DISCOUNT_RATE,
+         DISCOUNTAMOUNT, COLOR, ORDIER_ITEM_SIZE)
+        VALUES (SEQ_ORDER_ITEMS.NEXTVAL,
+                #{product.productId, jdbcType=NUMERIC},
+                #{couponId, jdbcType=NUMERIC},
+                #{orderId, jdbcType=NUMERIC},
+                #{product.quantity, jdbcType=NUMERIC},
+                #{product.finalPrice, jdbcType=NUMERIC},
+                #{product.totalPrice, jdbcType=NUMERIC},
+                #{product.discountRate, jdbcType=NUMERIC},
+                #{product.productDiscountAmount, jdbcType=NUMERIC},
+                #{product.color},
+                #{product.orderItemSize})
+
+        </foreach>
+        select * from dual
+
+    </insert>
+
+
+
     <select id="getOrder" resultType="com.avengers.musinsa.domain.order.entity.Order" parameterType="Long">
         select o.order_id              as orderId,
                o.user_id               as userId,

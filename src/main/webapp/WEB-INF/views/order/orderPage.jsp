@@ -740,9 +740,8 @@
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(orderData),
+
             success: function (response) {
-
-
                 // orderId 값 확인 후 리다이렉트
                 if (response && response.orderId) {
                     window.location.href = '/orders/order-complete/' + response.orderId;

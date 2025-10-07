@@ -38,27 +38,32 @@ public class OrderService {
     //주문하기
     @Transactional
     public OrderCreateResponse createOrder(Long userId, OrderCreateRequest orderCreateRequest) {
-        // 배송 예정 정보ID, 배송 요청사항 타입ID, 배송 상태 ID와 여러 배송 정보 배송정보 테이블에 저장
-        // 과 동시에 배송테이블 ID 가져오기
+        // 배송정보 생성
         Long shippingId = orderRepository.createShipment(orderCreateRequest);
-        System.out.println(shippingId);
 
-        // 주문 정보 저장 후 주문 ID 가져오기
-        Long userAddressId = orderCreateRequest.getAddressId();
+        // 주문 생성
         orderRepository.createOrder(userId, shippingId, orderCreateRequest.getPayment());
         Long orderId = orderCreateRequest.getPayment().getOrderId();
 
-        // 주문서 상품 내역 주문한 상품들 순회하며 저장
+        // ❌ 주문서 상품 내역 주문한 상품들 순회하며 저장
+//        List<OrderCreateRequest.ProductLine> orderProducts = orderCreateRequest.getProduct();
+//        for (ProductLine orderProduct : orderProducts) {
+//
+//            orderRepository.createOrderItems(orderId, orderProduct, orderCreateRequest.getCouponId());
+//
+//            // 재고 감소
+//            productVariantRepository.decrementStock(orderProduct.getVariantId(), orderProduct.getQuantity());
+//
+//        }
+
+        // ✅ 배치 INSERT: 10개 상품 = 1번 DB 왕복
         List<OrderCreateRequest.ProductLine> orderProducts = orderCreateRequest.getProduct();
+        orderRepository.batchCreateOrderItems(orderId, orderProducts, orderCreateRequest.getCouponId());
+
+        // 재고 감소는 여전히 개별 처리 (추후 개선 가능)
         for (ProductLine orderProduct : orderProducts) {
-
-            orderRepository.createOrderItems(orderId, orderProduct, orderCreateRequest.getCouponId());
-
-            // 재고 감소
             productVariantRepository.decrementStock(orderProduct.getVariantId(), orderProduct.getQuantity());
-
         }
-        System.out.println("orderItems 샹성 완료");
 
         // 상품 판매 내역 - 해야하는데 주문서 상품 내역 저장과 같은 방식이라 안 함
         OrderCreateResponse orderCreateResponse = new OrderCreateResponse(orderId);
