@@ -585,6 +585,8 @@
             .createOrderFromCart(ids)
             .done(function (response) {
                 if (response && response.success) {
+                    // 장바구니 뱃지 업데이트 (주문 성공 시 장바구니에서 제거됨)
+                    if (window.updateCartBadge) window.updateCartBadge();
                     window.location.href = BASE + response.redirectUrl;
                 } else {
                     alert((response && response.message) || "주문 처리에 실패했습니다.");
