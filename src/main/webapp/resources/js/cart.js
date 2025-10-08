@@ -154,7 +154,7 @@
             '  <div class="checkbox"><input type="checkbox" class="row-check"' + checked + "></div>" +
             '  <div class="thumb"><img src="' + escapeAttr(img) + '" alt=""></div>' +
             "  <div>" +
-            '    <div class="name"><a href="' + BASE + '/products/' + productId + '">' + escapeHtml(name) + "</a></div>" +
+            '    <div class="name">' + `<a href="${BASE}/products/${productId}">${escapeHtml(name)}</a>` + "</div>" +
             '    <div class="meta">' + escapeHtml(opt) + " / " + qty + "개" + "</div>" +
             '    <div class="price">' + toCurrency(price) + "</div>" +
             "  </div>" +
