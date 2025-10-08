@@ -152,7 +152,7 @@
             'data-cart-id="' + Number(item.userCartId) + '" ' +
             'data-brand="' + escapeAttr(brand) + '">' +
             '  <div class="checkbox"><input type="checkbox" class="row-check"' + checked + "></div>" +
-            '  <div class="thumb"><img src="' + escapeAttr(img) + '" alt=""></div>' +
+            '  <div class="thumb">' + `<a href="${BASE}/products/${productId}"><img src="${escapeAttr(img)}" alt=""></a>`+ "</div>" +
             "  <div>" +
             '    <div class="name">' + `<a href="${BASE}/products/${productId}">${escapeHtml(name)}</a>` + "</div>" +
             '    <div class="meta">' + escapeHtml(opt) + " / " + qty + "개" + "</div>" +
