@@ -9,6 +9,7 @@ import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import com.avengers.musinsa.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -59,14 +60,14 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public void createOrderItems(Long orderId, OrderCreateRequest.ProductLine orderProduct, Long couponId) {
-        System.out.println("orderItem 생성 전");
         orderMapper.createOrderItems(orderId, orderProduct, couponId);
-        System.out.println("orderItem repository 생성");
     }
 
     @Override
     public void batchCreateOrderItems(Long orderId, List<OrderCreateRequest.ProductLine> orderProducts, Long couponId) {
         orderMapper.batchCreateOrderItems(orderId, orderProducts, couponId);
     }
+
+
 
 }

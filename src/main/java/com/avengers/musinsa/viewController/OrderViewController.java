@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Controller
 @RequestMapping("/orders")
@@ -40,38 +41,7 @@ public class OrderViewController {
         //관련된 정보들 세팅
         request.setUserId(userId);
 
-        // variantId 와 옵션 세팅
-        for (OrderCreateRequest.ProductLine productLine : request.getProduct()) {
-            System.out.println(
-                    "productId = " + productLine.getProductId() + " optionName = " + productLine.getOptionName());
-
-            ProductVariantDto variant = productVariantService.findProductVariantByOptionName(
-                    productLine.getProductId(),
-                    productLine.getOptionName()
-            );
-
-            if (variant == null) {
-                throw new IllegalArgumentException(
-                        "상품 옵션을 찾을 수 없습니다. productId: " + productLine.getProductId() +
-                                ", optionName: " + productLine.getOptionName()
-                );
-            }
-
-            Long variantId = variant.getProductVariantId();
-            productLine.setVariantId(variantId);
-
-            // HashMap 생성 후 설정
-            HashMap<String, String> options = new HashMap<>();
-            options.put("size", variant.getSizeValue());
-            productLine.setOrderItemSize(variant.getSizeValue());
-            options.put("color", variant.getColorValue());
-            productLine.setColor(variant.getColorValue());
-            productLine.setOptions(options);  // ← 생성한 Map을 설정
-        }
-
         OrderCreateResponse orderCreateResponse = orderService.createOrder(userId, request);
-        System.out.println("생성된 주문 ID: " + orderCreateResponse.getOrderId());
-        System.out.println("응답 객체: " + orderCreateResponse);
 
         return ResponseEntity.ok(orderCreateResponse);
 

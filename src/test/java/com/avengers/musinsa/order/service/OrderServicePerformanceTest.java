@@ -1,29 +1,25 @@
 package com.avengers.musinsa.order.service;
 
-
+import com.avengers.musinsa.async.AsyncOrderHelper;
 import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest;
 import com.avengers.musinsa.domain.order.dto.request.OrderCreateRequest.ProductLine;
 import com.avengers.musinsa.domain.order.repository.OrderRepository;
-import com.avengers.musinsa.domain.order.service.OrderService;
 import com.avengers.musinsa.domain.product.dto.response.ProductVariantDto;
+import com.avengers.musinsa.domain.product.entity.Product;
 import com.avengers.musinsa.domain.product.repository.ProductVariantRepository;
 import com.avengers.musinsa.domain.product.service.ProductVariantService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @SpringBootTest
-@Transactional
-//@Sql(scripts = "/test-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class OrderServicePerformanceTest{
-
-    @Autowired
-    private OrderService orderService;
+class OrderServicePerformanceTest {
 
     @Autowired
     private OrderRepository orderRepository;
@@ -33,56 +29,156 @@ class OrderServicePerformanceTest{
 
     @Autowired
     private ProductVariantRepository productVariantRepository;
+
+    @Autowired
+    private AsyncOrderHelper asyncOrderHelper;
+
     @Test
-    @DisplayName("장바구니에서 주문 - 1000번 반복 시 createOrder와 createOrderItems 총 시간 측정")
-    void measureCartOrderMethodExecutionTimes() {
-        int iterations = 10000;
+    @DisplayName("개별 UPDATE vs 배치 UPDATE 성능 비교")
+    @Rollback
+    @Transactional
+    void compareSyncVsAsyncBatch() {
+        int iterations = 1000;
 
-        long totalCreateOrderTime = 0;
-        long totalCreateOrderItemsTime = 0;
+        //========== 1단계: 재고 감소만 순수 비교 ==========
+        System.out.println("\n========== [1단계] 재고 감소 순수 비교 ==========");
 
-        double totalOrderStart = System.currentTimeMillis();
+        long individualStockTime = 0;
+        long batchStockTime = 0;
 
+        // 개별 UPDATE 방식
         for (int i = 0; i < iterations; i++) {
-            Long userId = 1L;
+            OrderCreateRequest request = createCartOrderRequest(1L);
+            setVariantInfo(request);
 
-            // 장바구니에서 주문하는 경우의 request 생성
-            OrderCreateRequest request = createCartOrderRequest(userId);
-
-            // Shipment 생성 (측정 제외)
-            Long shippingId = orderRepository.createShipment(request);
-
-            // ★ createOrder 메서드 시간 측정
-            long orderStart = System.currentTimeMillis();
-            orderRepository.createOrder(userId, shippingId, request.getPayment());
-            long orderEnd = System.currentTimeMillis();
-            totalCreateOrderTime += (orderEnd - orderStart);
-
-            Long orderId = request.getPayment().getOrderId();
-
-            // ★ createOrderItems + 재고감소 시간 측정
-            for (ProductLine orderProduct : request.getProduct()) {
-                long itemStart = System.currentTimeMillis();
-
-                // createOrderItems
-                orderRepository.createOrderItems(orderId, orderProduct, request.getCouponId());
-
-                // 재고 감소
-                productVariantRepository.decrementStock(orderProduct.getVariantId(), orderProduct.getQuantity());
-
-                long itemEnd = System.currentTimeMillis();
-                totalCreateOrderItemsTime += (itemEnd - itemStart);
+            long start = System.currentTimeMillis();
+            for (ProductLine product : request.getProduct()) {
+                productVariantRepository.decrementStock(product.getVariantId(), product.getQuantity());
             }
+            long end = System.currentTimeMillis();
+            individualStockTime += (end - start);
         }
 
-        double totalOrderEnd = System.currentTimeMillis();
+        // 배치 UPDATE 방식
+        for (int i = 0; i < iterations; i++) {
+            OrderCreateRequest request = createCartOrderRequest(1L);
+            setVariantInfo(request);
 
-        System.out.println("\n========== 장바구니 주문 1000번 반복 측정 결과 ==========");
-        System.out.println("createOrder 총 시간: " + totalCreateOrderTime + "ms");
-        System.out.println();
-        System.out.println("createOrderItems + 재고감소 총 시간: " + totalCreateOrderItemsTime + "ms");
-        System.out.println();
-        System.out.println("totalOrderTime + 주문처리 총 시간: " + (totalOrderEnd - totalOrderStart) + "ms");
+            long start = System.currentTimeMillis();
+            productVariantRepository.batchDecrementStock(request.getProduct());
+            long end = System.currentTimeMillis();
+            batchStockTime += (end - start);
+        }
+
+        System.out.println("개별 UPDATE 재고 감소 시간: " + individualStockTime + "ms");
+        System.out.println("배치 UPDATE 재고 감소 시간: " + batchStockTime + "ms");
+        System.out.println("재고 감소 시간 차이: " + (individualStockTime - batchStockTime) + "ms");
+        double stockImprovement = ((double) (individualStockTime - batchStockTime) / individualStockTime) * 100;
+        System.out.println("재고 감소 개선율: " + String.format("%.2f", stockImprovement) + "%");
+
+        //========== 2단계: 전체 주문 프로세스 비교 ==========
+        System.out.println("\n========== [2단계] 전체 주문 프로세스 비교 ==========");
+
+        long individualTotalTime = 0;
+
+        for (int i = 0; i < iterations; i++) {
+            long iterationStart = System.currentTimeMillis();
+
+            Long userId = 1L;
+            OrderCreateRequest request = createCartOrderRequest(userId);
+
+            // Variant 조회 및 설정
+            setVariantInfo(request);
+
+            // Shipment, Order 생성
+            Long shippingId = orderRepository.createShipment(request);
+            orderRepository.createOrder(userId, shippingId, request.getPayment());
+            Long orderId = request.getPayment().getOrderId();
+
+            // 배치 INSERT - OrderItems 저장
+            orderRepository.batchCreateOrderItems(orderId, request.getProduct(), request.getCouponId());
+
+            // 개별 UPDATE - 재고 감소
+            for (ProductLine product : request.getProduct()) {
+                productVariantRepository.decrementStock(product.getVariantId(), product.getQuantity());
+            }
+
+            long iterationEnd = System.currentTimeMillis();
+            individualTotalTime += (iterationEnd - iterationStart);
+        }
+
+        long batchTotalTime = 0;
+
+        for (int i = 0; i < iterations; i++) {
+            long iterationStart = System.currentTimeMillis();
+
+            Long userId = 1L;
+            OrderCreateRequest request = createCartOrderRequest(userId);
+
+            // Variant 조회 및 설정
+            setVariantInfo(request);
+
+            // Shipment, Order 생성
+            Long shippingId = orderRepository.createShipment(request);
+            orderRepository.createOrder(userId, shippingId, request.getPayment());
+            Long orderId = request.getPayment().getOrderId();
+
+            // 배치 INSERT - OrderItems 저장
+            orderRepository.batchCreateOrderItems(orderId, request.getProduct(), request.getCouponId());
+
+            // 배치 UPDATE - 재고 감소
+            productVariantRepository.batchDecrementStock(request.getProduct());
+
+            long iterationEnd = System.currentTimeMillis();
+            batchTotalTime += (iterationEnd - iterationStart);
+        }
+
+        System.out.println("개별 UPDATE 전체 주문 시간: " + individualTotalTime + "ms");
+        System.out.println("배치 UPDATE 전체 주문 시간: " + batchTotalTime + "ms");
+        System.out.println("전체 주문 시간 차이: " + (individualTotalTime - batchTotalTime) + "ms");
+        double totalImprovement = ((double) (individualTotalTime - batchTotalTime) / individualTotalTime) * 100;
+        System.out.println("전체 주문 개선율: " + String.format("%.2f", totalImprovement) + "%");
+
+        //========== 최종 결과 출력 ==========
+        printFinalResults(iterations, individualStockTime, batchStockTime, individualTotalTime, batchTotalTime);
+    }
+    private void setVariantInfo(OrderCreateRequest request) {
+        for (ProductLine productLine : request.getProduct()) {
+            ProductVariantDto variant = productVariantService.findProductVariantByOptionName(
+                    productLine.getProductId(),
+                    productLine.getOptionName()
+            );
+            if (variant != null) {
+                productLine.setVariantId(variant.getProductVariantId());
+                productLine.setOrderItemSize(variant.getSizeValue());
+                productLine.setColor(variant.getColorValue());
+                Map<String, String> options = new HashMap<>();
+                options.put("size", variant.getSizeValue());
+                options.put("color", variant.getColorValue());
+                productLine.setOptions(options);
+            }
+        }
+    }
+
+
+    private void printFinalResults(int iterations, long individualStockTime, long batchStockTime,
+                                   long individualTotalTime, long batchTotalTime) {
+        System.out.println("\n========== 최종 성능 비교 결과 ==========");
+        System.out.println("반복 횟수: " + iterations + "회, 상품 개수: 10개\n");
+
+        System.out.println("[ 재고 감소만 비교 ]");
+        System.out.println("개별 UPDATE: " + individualStockTime + "ms");
+        System.out.println("배치 UPDATE: " + batchStockTime + "ms");
+        System.out.println("시간 차이: " + (individualStockTime - batchStockTime) + "ms");
+        double stockImprovement = ((double) (individualStockTime - batchStockTime) / individualStockTime) * 100;
+        System.out.println("개선율: " + String.format("%.2f", stockImprovement) + "%\n");
+
+        System.out.println("[ 전체 주문 프로세스 비교 ]");
+        System.out.println("개별 UPDATE: " + individualTotalTime + "ms");
+        System.out.println("배치 UPDATE: " + batchTotalTime + "ms");
+        System.out.println("시간 차이: " + (individualTotalTime - batchTotalTime) + "ms");
+        double totalImprovement = ((double) (individualTotalTime - batchTotalTime) / individualTotalTime) * 100;
+        System.out.println("개선율: " + String.format("%.2f", totalImprovement) + "%");
         System.out.println("========================================================\n");
     }
 
@@ -92,7 +188,6 @@ class OrderServicePerformanceTest{
         request.setAddressId(1L);
         request.setCouponId(null);
 
-        // Shipping 정보
         OrderCreateRequest.Shipping shipping = new OrderCreateRequest.Shipping();
         shipping.setRecipientName("홍길동");
         shipping.setRecipientPhone("010-1234-5678");
@@ -101,7 +196,6 @@ class OrderServicePerformanceTest{
         shipping.setPostalCode("12345");
         request.setShipping(shipping);
 
-        // Payment 정보
         OrderCreateRequest.Payment payment = new OrderCreateRequest.Payment();
         payment.setTotalAmount(100000);
         payment.setDiscountAmount(0);
@@ -110,50 +204,22 @@ class OrderServicePerformanceTest{
         payment.setPaymentMethodId(1L);
         request.setPayment(payment);
 
-        // 실제 DB의 cart_item에서 product 정보 조회
-        // cartItemIds [1, 3, 5]에 해당하는 상품들을 가져온다고 가정
         List<ProductLine> products = new ArrayList<>();
-
-        // 실제로는 CartRepository에서 조회해야 하지만,
-        // 테스트를 위해 직접 ProductLine 생성
-        List<Long> cartItemIds = Arrays.asList(1L, 3L, 5L, 10L, 11L, 13L, 15L, 16L,18L, 20L);
+        List<Long> cartItemIds = Arrays.asList(1L, 3L, 5L, 10L, 11L, 13L, 15L, 16L, 18L, 20L);
 
         for (Long cartItemId : cartItemIds) {
-            // 실제 구현에서는 cartRepository.findById(cartItemId)로 조회
-            // 여기서는 테스트를 위해 임의의 상품 데이터 생성
             ProductLine productLine = new ProductLine();
-            productLine.setProductId(59999L); // 실제 DB에 존재하는 product_id
-            productLine.setVariantId(3L); // 나중에 조회해서 설정
+            productLine.setProductId(cartItemId);
+            productLine.setVariantId(3L);
             productLine.setFinalPrice(30000);
-            productLine.setOptionName("Red / S"); // 실제 옵션명으로 변경 필요
+            productLine.setOptionName("Red / S");
             productLine.setDiscountRate(0);
             productLine.setQuantity(3);
             productLine.setProductDiscountAmount(0);
-
             products.add(productLine);
         }
 
         request.setProduct(products);
-
-        // Variant 조회 및 설정
-        for (ProductLine productLine : products) {
-            ProductVariantDto variant = productVariantService.findProductVariantByOptionName(
-                    productLine.getProductId(),
-                    productLine.getOptionName()
-            );
-
-            if (variant != null) {
-                productLine.setVariantId(variant.getProductVariantId());
-                productLine.setOrderItemSize(variant.getSizeValue());
-                productLine.setColor(variant.getColorValue());
-
-                Map<String, String> options = new HashMap<>();
-                options.put("size", variant.getSizeValue());
-                options.put("color", variant.getColorValue());
-                productLine.setOptions(options);
-            }
-        }
-
         return request;
     }
 }
