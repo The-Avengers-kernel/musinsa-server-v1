@@ -195,6 +195,73 @@
             }
         });
     }
+
+    // 무한 스크롤 기능
+    let currentPage = 0;
+    let isLoading = false;
+    let hasMoreData = true;
+
+    function loadMoreProducts() {
+        if (isLoading || !hasMoreData) return;
+
+        isLoading = true;
+        currentPage++;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryId = window.location.pathname.split('/').pop();
+        const sortBy = urlParams.get('sortBy') || 'POPULARITY';
+
+        $.ajax({
+            url: '/api/v1/products/category/' + categoryId,
+            method: 'GET',
+            data: {
+                sortBy: sortBy,
+                page: currentPage,
+                size: 12
+            },
+            success: function (products) {
+                if (products.length === 0) {
+                    hasMoreData = false;
+                    return;
+                }
+
+                const $grid = $('.search-grid');
+                products.forEach(function (p) {
+                    let likesHtml = p.productLikes ? '<span class="likes">♥ ' + p.productLikes.toLocaleString() + '</span>' : '';
+                    let starsHtml = p.ratingAverage ? '<span class="stars">★' + p.ratingAverage.toFixed(1) + '(' + p.reviewCount + ')</span>' : '';
+
+                    const productHtml = '<a class="product-card" href="/products/' + p.productId + '">' +
+                        '<div class="product-image">' +
+                        '<img src="' + (p.productImage || '/resources/img/placeholder.png') + '" alt="' + p.productName + '">' +
+                        '<i class="fa-heart product-like-icon ' + (p.isLiked ? 'fas filled' : 'far empty') + '" ' +
+                        'data-product-id="' + p.productId + '" ' +
+                        'onclick="event.preventDefault(); event.stopPropagation(); toggleProductLike(this);"></i>' +
+                        '</div>' +
+                        '<div class="product-brand">' + p.brandName + '</div>' +
+                        '<div class="product-name">' + p.productName + '</div>' +
+                        '<div class="product-price">' +
+                        '<span class="current-price">' + p.price.toLocaleString() + '원</span>' +
+                        '</div>' +
+                        '<div class="likes-and-stars">' + likesHtml + starsHtml + '</div>' +
+                        '</a>';
+                    $grid.append(productHtml);
+                });
+
+                isLoading = false;
+            },
+            error: function (xhr) {
+                console.error('상품 로드 실패:', xhr);
+                isLoading = false;
+            }
+        });
+    }
+
+    // 스크롤 이벤트 리스너
+    $(window).on('scroll', function () {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+            loadMoreProducts();
+        }
+    });
 </script>
 </body>
 </html>

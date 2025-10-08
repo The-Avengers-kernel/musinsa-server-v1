@@ -73,6 +73,8 @@ public class ProductController {
     public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(
             @PathVariable Long categoryId,
             @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "12") int size,
             @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         System.out.println("category_id = " + categoryId);
         System.out.println("sortBy = " + sortBy);
@@ -85,7 +87,7 @@ public class ProductController {
                 userId = null;
             }
         }
-        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, userId, sortBy);
+        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, userId, sortBy, page, size);
         return ResponseEntity.ok(products);
     }
 
@@ -149,11 +151,13 @@ public class ProductController {
     @GetMapping("/search")
     public ResponseEntity<?> searchProducts(@RequestParam("keyword") String keyword,
                                             @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+                                            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                            @RequestParam(value = "size", required = false, defaultValue = "12") int size,
                                             @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         System.out.println(keyword);
         System.out.println("sortBy = " + sortBy);
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-        SearchResponse response = productService.searchProducts(keyword, userId, sortBy);
+        SearchResponse response = productService.searchProducts(keyword, userId, sortBy, page, size);
 
         if (response != null) {
             return ResponseEntity.ok(response);
