@@ -144,16 +144,17 @@
         var opt = item.optionName || "";
         var qty = Number(item.quantity) || 0;
         var price = Number(item.totalPrice) || 0;
+        var productId = Number(item.productId);
 
         return (
             '<div class="item" ' +
-            'data-id="' + Number(item.productId) + '" ' +
+            'data-id="' + productId + '" ' +
             'data-cart-id="' + Number(item.userCartId) + '" ' +
             'data-brand="' + escapeAttr(brand) + '">' +
             '  <div class="checkbox"><input type="checkbox" class="row-check"' + checked + "></div>" +
             '  <div class="thumb"><img src="' + escapeAttr(img) + '" alt=""></div>' +
             "  <div>" +
-            '    <div class="name">' + escapeHtml(name) + "</div>" +
+            '    <div class="name"><a href="' + BASE + '/products/' + productId + '">' + escapeHtml(name) + "</a></div>" +
             '    <div class="meta">' + escapeHtml(opt) + " / " + qty + "개" + "</div>" +
             '    <div class="price">' + toCurrency(price) + "</div>" +
             "  </div>" +

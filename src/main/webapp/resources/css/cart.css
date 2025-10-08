@@ -126,6 +126,15 @@ body {
     font-size: 13px
 }
 
+.name a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.name a:hover {
+    text-decoration: underline;
+}
+
 .meta {
     color: #98a1a8;
     font-size: 13px;
