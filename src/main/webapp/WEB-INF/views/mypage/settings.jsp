@@ -64,13 +64,23 @@
             border-color: #000;
             background: #f9f9f9;
         }
-        .settings-list { list-style:none; padding:0; margin:0; }
-        .settings-list li {
-            padding:16px; border-bottom:1px solid #eee;
-            display:flex; justify-content:space-between; align-items:center;
-            font-size:15px;
+
+        /* 설정 리스트 */
+        .menu-section {
+            background: #fff; border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
         }
-        .settings-list li span { color:#000000; }
+        .menu-item {
+            padding: 15px; border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 14px; color: #333; cursor: pointer;
+        }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item:hover { background: #f9fafb; }
+        .menu-arrow { color: #999; }
+
+
 
         /* 모달 스타일 */
         .modal {
@@ -145,13 +155,16 @@
             </div>
         </div>
         <!-- 설정 리스트 -->
-        <ul class="settings-list">
 
-            <li><span onclick="location.href='/shipping-address-popup'">배송지 관리</span><span>></span></li>
-            <li><span>환불 계좌 관리</span><span>></span></li>
-            <li><span>알림 설정</span><span>></span></li>
-            <li><span>회원 탈퇴</span><span>></span></li>
-        </ul>
+        <section class="menu-section">
+            <div class="menu-item" onclick="location.href='/shipping-address-popup'"><span>배송지 관리</span> <span class="menu-arrow">›</span></div>
+            <div class="menu-item">환불 계좌 관리 <span class="menu-arrow">›</span></div>
+            <div class="menu-item">알림 설정 <span class="menu-arrow">›</span></div>
+            <div class="menu-item">회원 탈퇴 <span class="menu-arrow">›</span></div>
+
+
+        </section>
+
     </section>
 </div>
 
