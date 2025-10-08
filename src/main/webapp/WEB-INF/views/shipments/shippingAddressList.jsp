@@ -205,7 +205,7 @@
 <h1>배송지 정보</h1>
 
 <div style="margin-bottom: 20px; position: relative;">
-    <input type="text" placeholder="배송지 이름, 주소, 연락처로 검색하세요"
+    <input type="text" id="search-input" placeholder="배송지 이름, 주소, 연락처로 검색하세요"
            style="width: 100%; padding: 12px 40px 12px 15px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px;">
     <span style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #888;">🔍</span>
 </div>
@@ -214,6 +214,10 @@
     onclick="location.href='/shipping-address-add'">
     배송지 추가하기
 </button>
+
+<div id="search-empty" style="display:none; padding: 20px 0; color:#666; text-align:center;">
+    검색 결과가 없습니다.
+</div>
 
 <div id="address-list-container">
 </div>
@@ -251,9 +255,49 @@
 
 <script>
     $(document).ready(function () {
+
         const $listContainer = $('#address-list-container');
         // 템플릿에서 복제할 요소를 선택합니다.
         const $template = $('#address-template > .address-item');
+        const $searchInput = $('#search-input');
+
+        // --- 검색 유틸 ---
+        function normalize(str) {
+            return (str || '')
+                .toString()
+                .toLowerCase()
+                .replace(/[\s-]/g, ''); // 공백/하이픈 제거
+        }
+        function debounce(fn, delay) {
+            let t; return function() {
+                const ctx = this, args = arguments;
+                clearTimeout(t); t = setTimeout(function(){ fn.apply(ctx, args); }, delay);
+            };
+        }
+        function filterList(query) {
+            const q = normalize(query);
+            let visibleCount = 0;
+            $('#address-list-container .address-item').each(function(){
+                const $item = $(this);
+                const hay = $item.attr('data-search') || '';
+                const matched = q === '' || hay.indexOf(q) !== -1;
+                $item.toggle(matched);
+                if (matched) visibleCount++;
+            });
+            // 비어있는 상태 메시지 토글
+            if (visibleCount === 0) {
+                $('#search-empty').show();
+            } else {
+                $('#search-empty').hide();
+            }
+        }
+
+        // 입력 시 실시간 필터링 (디바운스)
+        $searchInput.on('input', debounce(function(){
+            filterList($(this).val());
+        }, 120));
+
+
 
         $.ajax({
             // 실제 API URL로 수정해야 합니다. 현재는 예시 '/api/v1/orders/address-list/1'
@@ -289,6 +333,16 @@
                         $newItem.find('.recipientPhone').text(address.recipientPhone);
                         $newItem.find('.postalCode').text(address.postalCode);
                         $newItem.find('.recipientAddress').text(address.recipientAddress);
+
+                        // 검색 인덱스 구성 (이름/주소/우편번호/연락처)
+                        const searchable = [
+                            address.recipientName,
+                            address.recipientAddress,
+                            address.postalCode,
+                            address.recipientPhone
+                        ].join(' ');
+                        $newItem.attr('data-search', normalize(searchable));
+
 
                         // **기본 배송지 처리**
                         const isDefault = address.isDefault;
@@ -326,13 +380,17 @@
                         <%--    alert(`${action} 버튼 클릭: ID ${address.shippingAddressId}`);--%>
                         <%--});--%>
                     });
+                    filterList($searchInput.val());
                 } else {
-                    $listContainer.text('등록된 배송지 정보가 없습니다.');
+                    $listContainer.empty();
+                    $('#search-empty').text('등록된 배송지 정보가 없습니다.').show();
+                    //$listContainer.text('등록된 배송지 정보가 없습니다.');
                 }
             },
             error: function (xhr, status, error) {
                 console.error('주소 정보 로드 오류:', error);
-                $listContainer.text('주소 정보를 불러오는 데 실패했습니다.');
+                $listContainer.empty();
+                $('search-empty').text('주소 정보를 불러오는 데 실패했습니다.').show();
             }
         });
 
@@ -370,7 +428,7 @@
                         alert('삭제가 완료되었습니다.');
                         $item.remove();
                         if ($('#address-list-container .address-item').length === 0) {
-                            $('#address-list-container').text('등록된 배송지 정보가 없습니다.');
+                            $('#search-empty').text('등록된 배송지 정보가 없습니다.').show();
                         }
                     },
                     error: (xhr) => {
@@ -382,6 +440,9 @@
         });
 
     });
+
+    //검색 기능 추가
+
 
     // 배송지 변경 기능
     function changeAddress() {
