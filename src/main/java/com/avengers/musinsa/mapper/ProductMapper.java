@@ -23,7 +23,7 @@ public interface ProductMapper {
 
     List<ProductOptionRow> findOptionsByProductIds(@Param("productIds") List<Long> productIds);
 
-    List<ProductByCategoryResponse> getProductsByCategory(@Param("categoryId") Long categoryId, @Param("userId") Long userId, @Param("sortBy") String sortBy);
+    List<ProductByCategoryResponse> getProductsByCategory(@Param("categoryId") Long categoryId, @Param("userId") Long userId, @Param("sortBy") String sortBy, @Param("offset") int offset, @Param("limit") int limit);
 
     List<ProductImage> findProductImageById(Long productId);
 
@@ -52,9 +52,9 @@ public interface ProductMapper {
 
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
 
-    List<SearchResponse.ProductInfo> findProductsByBrandId(@Param("brandId") Long brandId, @Param("userId") Long userId, @Param("sortBy") String sortBy);
+    List<SearchResponse.ProductInfo> findProductsByBrandId(@Param("brandId") Long brandId, @Param("userId") Long userId, @Param("sortBy") String sortBy, @Param("offset") int offset, @Param("limit") int limit);
 
-    List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords, @Param("userId") Long userId, @Param("sortBy") String sortBy);
+    List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords, @Param("userId") Long userId, @Param("sortBy") String sortBy, @Param("offset") int offset, @Param("limit") int limit);
 
     void saveSearchKeywordLog(String keyword);
 

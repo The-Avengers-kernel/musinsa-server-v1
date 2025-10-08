@@ -220,7 +220,7 @@
                 ORDER BY ranked_products.recommendation_score DESC
             </otherwise>
         </choose>
-        FETCH FIRST 50 ROWS ONLY
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
     </select>
 
     <select id="getProductReviews"
@@ -408,6 +408,7 @@
                 ORDER BY p.product_likes DESC
             </otherwise>
         </choose>
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
     </select>
 
     <select id="findProductsByKeyword" resultMap="SearchProductInfoResultMap">
@@ -445,7 +446,7 @@
                 ORDER BY p.product_likes DESC
             </otherwise>
         </choose>
-        FETCH FIRST 50 ROWS ONLY
+        OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
     </select>
 
     <!--상품 좋아요 토글-->
