@@ -72,12 +72,14 @@ public class ProductController {
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(
             @PathVariable Long categoryId,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "LIKE") String sortBy,
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+            @RequestParam(value = "lastId", required = false) Long lastId,
+            @RequestParam(value = "lastValue", required = false) Integer lastValue,
             @RequestParam(value = "size", required = false, defaultValue = "12") int size,
             @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         System.out.println("category_id = " + categoryId);
         System.out.println("sortBy = " + sortBy);
+        System.out.println("lastId = " + lastId + ", lastValue = " + lastValue);
 
         Long userId = null;
         if (authorizationHeader != null && !authorizationHeader.isEmpty()) {
@@ -87,7 +89,8 @@ public class ProductController {
                 userId = null;
             }
         }
-        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, userId, sortBy, page, size);
+        List<ProductByCategoryResponse> products = productService.getProductsByCategoryCursor(
+                categoryId, userId, sortBy, lastId, lastValue, size);
         return ResponseEntity.ok(products);
     }
 
@@ -150,7 +153,7 @@ public class ProductController {
     // 상품 검색에 따른 상품 목록 조회
     @GetMapping("/search")
     public ResponseEntity<?> searchProducts(@RequestParam("keyword") String keyword,
-                                            @RequestParam(value = "sortBy", required = false, defaultValue = "LIKE") String sortBy,
+                                            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
                                             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                             @RequestParam(value = "size", required = false, defaultValue = "12") int size,
                                             @CookieValue(value = "Authorization", required = false) String authorizationHeader) {

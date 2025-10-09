@@ -220,8 +220,9 @@
         });
     }
 
-    // 무한 스크롤 기능
-    let currentPage = 0;
+    // 커서 기반 무한 스크롤 기능
+    let lastId = null;
+    let lastValue = null;
     let isLoading = false;
     let hasMoreData = true;
 
@@ -229,21 +230,30 @@
         if (isLoading || !hasMoreData) return;
 
         isLoading = true;
-        currentPage++;
 
         const urlParams = new URLSearchParams(window.location.search);
         const keyword = urlParams.get('keyword') || '';
         const sortBy = urlParams.get('sortBy') || 'LIKE';
 
+        const requestData = {
+            keyword: keyword,
+            sortBy: sortBy,
+            size: 12
+        };
+
+        // 첫 페이지가 아니면 커서 값 추가 (page 대신)
+        if (lastId !== null && lastValue !== null) {
+            requestData.lastId = lastId;
+            requestData.lastValue = lastValue;
+            requestData.page = 1; // 더미 값 (기존 API 호환)
+        } else {
+            requestData.page = 0; // 첫 페이지
+        }
+
         $.ajax({
             url: '/api/v1/products/search',
             method: 'GET',
-            data: {
-                keyword: keyword,
-                sortBy: sortBy,
-                page: currentPage,
-                size: 12
-            },
+            data: requestData,
             success: function (result) {
                 let products = [];
                 if (result.brandInfo && result.brandInfo.products) {
@@ -255,6 +265,17 @@
                 if (products.length === 0) {
                     hasMoreData = false;
                     return;
+                }
+
+                // 마지막 상품의 커서 값 업데이트
+                const lastProduct = products[products.length - 1];
+                lastId = lastProduct.productId;
+
+                // sortBy에 따라 lastValue 설정
+                if (sortBy === 'PRICE_LOW' || sortBy === 'PRICE_HIGH') {
+                    lastValue = lastProduct.price;
+                } else {
+                    lastValue = lastProduct.productLikes;
                 }
 
                 const $grid = $('.search-grid');
