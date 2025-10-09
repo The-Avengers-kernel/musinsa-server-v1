@@ -62,7 +62,7 @@
         <!-- 키워드/결과 수 -->
         <div class="headline">
             "<strong><c:out value='${keyword != null ? keyword : result.searchKeyword}'/></strong>"
-            검색 결과 <span class="count"><fmt:formatNumber value="${result.totalCount}" pattern="#,###"/></span>개
+           검색 결과
         </div>
 
         <!-- 정렬 옵션 -->

@@ -54,7 +54,7 @@
         <!-- 검색 화면의 headline 스타일 재사용 -->
         <div class="headline">
             "<strong id="categoryTitle"></strong>"
-            결과 <span class="count"><fmt:formatNumber value="${fn:length(products)}" pattern="#,###"/></span>개
+            결과
         </div>
 
         <!-- 정렬 옵션 -->
