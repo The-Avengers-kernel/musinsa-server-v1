@@ -132,11 +132,11 @@ public class ProductRepositoryImpl implements ProductRepository {
         productMapper.saveSearchKeywordLog(keyword);
     }
 
-    //검색 시 브랜드 로그 테이블에 검색 정보 저장하기.
-    @Override
-    public void saveSearchBrandLog(String brand) {
-        productMapper.saveSearchBrandLog(brand);
-    }
+//    //검색 시 브랜드 로그 테이블에 검색 정보 저장하기.
+//    @Override
+//    public void saveSearchBrandLog(String brand) {
+//        productMapper.saveSearchBrandLog(brand);
+//    }
 
 
     //상품 좋아요 토글

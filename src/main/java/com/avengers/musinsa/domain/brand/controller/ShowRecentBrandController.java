@@ -1,8 +1,5 @@
 package com.avengers.musinsa.domain.brand.controller;
 
-
-
-import ch.qos.logback.core.model.Model;
 import com.avengers.musinsa.domain.brand.dto.BrandDto;
 import com.avengers.musinsa.domain.brand.service.BrandServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +27,7 @@ public class ShowRecentBrandController {
 
 
     @GetMapping("/recent-keyword/{user_id}")
-    public List<BrandDto> recentBrands(@PathVariable("user_id") Long userId, Model model) {
-            return brandServiceImpl.getRecentVisitBrands(userId);
+    public List<BrandDto> recentBrands(@PathVariable("user_id") Long userId) {
+        return brandServiceImpl.getRecentVisitBrands(userId);
     }
 }

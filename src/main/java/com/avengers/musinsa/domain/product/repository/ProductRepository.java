@@ -71,7 +71,7 @@ public interface ProductRepository {
     void saveSearchKeywordLog(String keyword);
 
     //검색 시 브랜드 로그 테이블에 검색 정보 저장하기.
-    void saveSearchBrandLog(String brand);
+   // void saveSearchBrandLog(String brand);
 
 
     //상품 좋아요 토글

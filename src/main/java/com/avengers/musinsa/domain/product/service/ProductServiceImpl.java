@@ -232,7 +232,7 @@ public class ProductServiceImpl implements ProductService {
     public SearchResponse searchProducts(String keyword, Long userId, String sortBy, int page, int size) {
 
         String processedKeyword = preprocessKeyword(keyword);
-        searchLogService.saveSearchKeywordLog(keyword, userId);
+        //searchLogService.saveSearchKeywordLog(keyword, userId);
         System.out.println("검색어 : " + processedKeyword);
         System.out.println("정렬 : " + sortBy);
 
@@ -246,8 +246,6 @@ public class ProductServiceImpl implements ProductService {
             // 브랜드 검색인 경우
             BrandResponse brand = brandList.getFirst();
 
-            // 브랜드 검석 기록 저장
-//            searchLogService.saveSearchBrandLog(brand, userId);
 
             // 브랜드 상품 불러오기
             List<SearchResponse.ProductInfo> brandProducts =
