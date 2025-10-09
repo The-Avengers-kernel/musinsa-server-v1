@@ -42,9 +42,7 @@
             color: #ff4444;
         }
 
-        .product-image {
-            position: relative;
-        }
+        /* 인라인 스타일 오버라이드 제거 - CSS 파일에서 관리 */
     </style>
 </head>
 <body>
@@ -262,6 +260,7 @@
             loadMoreProducts();
         }
     });
+
 </script>
 </body>
 </html>
