@@ -20,4 +20,6 @@ public interface CartMapper {
     void insertNewCartItem(@Param("userId") Long userId, @Param("request") AddCartRequest request);
 
     void updateCartItemQuantity(@Param("cartId") Long cartId, @Param("newQuantity") int newQuantity);
+
+    void deleteCartItems(@Param("userId") Long userId, @Param("cartIds") List<Long> cartIds);
 }

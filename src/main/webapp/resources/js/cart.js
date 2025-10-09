@@ -80,6 +80,14 @@
                 data: JSON.stringify({type: "FROM_CART", cartItemIds: cartItemIds}),
             });
         },
+        deleteCartItems: function (cartIds) {
+            return $.ajax({
+                url: BASE + "/api/v1/carts",
+                type: "DELETE",
+                contentType: "application/json",
+                data: JSON.stringify(cartIds),
+            });
+        },
     };
 
     // ===== Group / Index =====
@@ -259,21 +267,30 @@
     function removeByCartIds(cartIds) {
         if (!cartIds || cartIds.length === 0) return;
 
-        var rmSet = new Set(cartIds.map(Number));
-        state.raw = state.raw.filter(function (it) {
-            return !rmSet.has(Number(it.userCartId));
-        });
+        // 서버에 삭제 요청
+        api.deleteCartItems(cartIds)
+            .done(function() {
+                var rmSet = new Set(cartIds.map(Number));
+                state.raw = state.raw.filter(function (it) {
+                    return !rmSet.has(Number(it.userCartId));
+                });
 
-        // 선택도 정리
-        rmSet.forEach(function (cid) {
-            state.selected.delete(cid);
-        });
+                // 선택도 정리
+                rmSet.forEach(function (cid) {
+                    state.selected.delete(cid);
+                });
 
-        recalc();
-        render();
+                recalc();
+                render();
 
-        // 장바구니 뱃지 업데이트
-        if (window.updateCartBadge) window.updateCartBadge();
+                // 장바구니 뱃지 업데이트
+                if (window.updateCartBadge) window.updateCartBadge();
+            })
+            .fail(function(xhr) {
+                console.error("장바구니 삭제 실패:", xhr);
+                alert("장바구니 삭제에 실패했습니다.");
+            });
+
     }
 
     function removeBrand(brand) {

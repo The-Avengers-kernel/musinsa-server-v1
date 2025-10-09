@@ -87,4 +87,14 @@
         SET CART_QUANTITY = #{newQuantity}
         WHERE USER_CART_ID = #{cartId}
     </update>
+
+    <!--    장바구니 아이템 삭제-->
+    <delete id="deleteCartItems">
+        DELETE FROM USER_CARTS
+        WHERE USER_ID = #{userId}
+        AND USER_CART_ID IN
+        <foreach collection="cartIds" item="cartId" open="(" separator="," close=")">
+            #{cartId}
+        </foreach>
+    </delete>
 </mapper>
