@@ -32,8 +32,11 @@ public class CartService {
         CartItemDto existingItem = cartRepository.findCartItemByVariantId(userId, request);
 
         if (existingItem != null) {
-            // 4. 상품이 이미 있으면: 수량 업데이트
-
+            // 같은 상품, 같은 옵션, 같은 수량일 경우
+            if (existingItem.getQuantity().equals(request.getQuantity())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "DUPLICATE_ITEM");
+            }
+            // 4. 수량만 다를 경우, 기존 수량 업데이트
             cartRepository.updateCartItemQuantity(existingItem.getCartId(), request.getQuantity());
         } else {
             // 5. 상품이 없으면: 새로 추가
