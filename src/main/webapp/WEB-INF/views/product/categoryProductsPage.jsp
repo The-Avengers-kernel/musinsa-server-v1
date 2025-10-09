@@ -138,7 +138,7 @@
 
         // 현재 URL에서 sortBy 파라미터 읽기
         const urlParams = new URLSearchParams(window.location.search);
-        const currentSort = urlParams.get('sortBy') || 'LIKE';
+        const currentSort = urlParams.get('sortBy') || 'POPULARITY';
 
         // 현재 정렬 버튼에 active 클래스 추가
         const sortButtons = document.querySelectorAll('.sort-btn');
@@ -207,7 +207,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const categoryId = window.location.pathname.split('/').pop();
-        const sortBy = urlParams.get('sortBy') || 'LIKE';
+        const sortBy = urlParams.get('sortBy') || 'POPULARITY';
 
         $.ajax({
             url: '/api/v1/products/category/' + categoryId,

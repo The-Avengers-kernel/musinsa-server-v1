@@ -21,6 +21,84 @@ body {
     border: 1px solid #e9ecef; /* 테두리 추가 */
 }
 
+/* 🚀 [추가] 대분류 카테고리 (이미지 상단의 '뷰티' 아래 메뉴들) */
+.category-main-menu {
+    border-bottom: 1px solid #e9ecef; /* 하단 구분선 */
+    padding: 10px 0;
+    margin-bottom: 15px;
+    white-space: nowrap; /* 메뉴 항목 줄 바꿈 방지 */
+    overflow-x: auto; /* 내용이 많아질 경우 가로 스크롤 허용 */
+}
+.category-main-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 25px; /* 항목 간 간격 */
+}
+.category-main-menu li a {
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    color: #495057;
+    padding: 8px 0;
+    position: relative;
+    transition: color 0.2s;
+}
+.category-main-menu li a:hover {
+    color: #212529;
+}
+.category-main-menu li a.active {
+    color: #111;
+    font-weight: 700;
+}
+/* 선택된 항목 밑줄 */
+.category-main-menu li a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -11px; /* border-bottom 위에 위치하도록 조정 */
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #111;
+}
+
+/* 🚀 [추가] 소분류 카테고리 (이미지 중간의 '전체, 립밤/메이크업' 메뉴들) */
+.category-sub-menu {
+    padding: 15px 0;
+    margin-bottom: 10px;
+}
+.category-sub-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap; /* 내용이 많으면 다음 줄로 넘어가도록 */
+    gap: 8px; /* 항목 간 간격 */
+}
+.category-sub-menu li a {
+    display: block;
+    padding: 6px 14px;
+    border: 1px solid #e9ecef;
+    border-radius: 999px; /* 둥근 알약 모양 */
+    text-decoration: none;
+    font-size: 13px;
+    color: #495057;
+    background: #fff;
+    transition: all 0.2s;
+}
+.category-sub-menu li a:hover {
+    border-color: #adb5bd;
+    color: #212529;
+}
+.category-sub-menu li a.active {
+    border-color: #111;
+    color: #111;
+    font-weight: 600;
+    background: #fff;
+}
+
+
 /* 검색 헤더(필요시 사용) */
 .search-header {
     display: flex;
@@ -56,7 +134,7 @@ body {
     margin: 6px 0 4px;
 }
 
-/*  정렬 옵션 스타일 */
+/* 정렬 옵션 스타일 */
 .sort-options {
     display: inline-flex;
     gap: 5px; /* 버튼 사이 간격 추가 */

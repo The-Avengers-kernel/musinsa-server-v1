@@ -1,28 +1,27 @@
-/* ===== 홈 파일 톤에 맞춘 보조 스타일(전면 교체본) ===== */
+/* ===== 홈 파일 톤에 맞춘 보조 스타일(검색.css와 동일 톤) ===== */
 html {
     overflow-y: scroll; /* 스크롤바 항상 표시하여 너비 변동 방지 */
 }
 
 body {
     font-family: 'Noto Sans KR', sans-serif;
-    background: #f8f9fa;
+    background: #ffffff;
     margin: 0;
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 30px 20px;
+    padding: 0 20px 30px;
 }
 
 .section {
-    background: #fff;
-    border-radius: 8px;
+    background: #fafafa;
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+    border: 1px solid #e9ecef; /* 테두리 추가 */
 }
 
-/* 검색 헤더 */
+/* 검색 헤더(필요시 사용) */
 .search-header {
     display: flex;
     align-items: center;
@@ -50,63 +49,75 @@ body {
     cursor: pointer;
 }
 
+/* 헤드라인 (검색 화면과 동일) */
 .headline {
     font-size: 16px;
     font-weight: 700;
     margin: 6px 0 4px;
 }
 
-/* 정렬 옵션 */
+/* 정렬 옵션 스타일 */
 .sort-options {
     display: inline-flex;
-    gap: 0;
-    margin: 18px 0 20px;
-    padding: 3px;
-    background: #f1f3f5;
-    border-radius: 10px;
+    gap: 5px; /* 버튼 사이 간격 추가 */
+    margin: 18px 0 18px 0;
+    padding: 0; /* 내부 패딩 제거 */
+    background: #ffffff; /* 배경색 흰색으로 변경 */
+    border-radius: 0;
 }
 
 .sort-btn {
-    padding: 10px 20px;
-    font-size: 14px;
+    /* 탭 모양을 위한 설정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 50px; /* 최소 너비 설정 (텍스트가 짧을 경우) */
+    height: 30px; /* 높이 고정 */
+    padding: 0 16px;
+    font-size: 13px; /* 텍스트 크기 증가 */
     font-weight: 500;
-    color: #495057;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
+    letter-spacing: normal;
+
+    /* 기본 상태 (Inactive) */
+    color: #868e96; /* 회색 텍스트 */
+    background: #fff;
+    border: 1px solid #e9ecef; /* 얇은 회색 테두리 */
+    border-radius: 4px; /* 둥근 사각형 */
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s; /* 부드러운 전환 효과 */
     position: relative;
-    letter-spacing: -0.3px;
 }
 
 .sort-btn:hover:not(.active) {
-    color: #212529;
+    color: #495057; /* 호버 시 약간 진하게 */
+    border-color: #ced4da;
 }
 
 .sort-btn.active {
+    /* 선택된 상태 */
     background: #fff;
-    color: #212529;
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    color: #111; /* 검은색 텍스트 */
+    font-weight: 700; /* 텍스트 굵게 */
+    border: 1px solid #111; /* 검은색 진한 테두리 */
+    box-shadow: none; /* 그림자 제거 */
 }
 
-/* 브랜드 정보 블록(brandInfo 있을 때) */
+/* 브랜드 박스는 현재 페이지에선 미사용이지만 톤 유지를 위해 포함 */
 .brand-box {
     display: flex;
     align-items: center;
-    gap: 16px;  /* 12px → 16px로 증가 (또는 20px, 24px 등) */
+    background: #ffffff;
+    gap: 15px;
     padding: 10px 12px;
-    border: 1px solid #e9ecef;
     border-radius: 8px;
-    margin: 10px 0;
+    margin: 20px 0 0 0;
+    border: 1px solid #e9ecef;
 }
 
 .brand-box img {
-    width: 30px;   /* 크기 축소 */
-    height: 30px;  /* 크기 축소 */
+    width: 30px;
+    height: 30px;
     object-fit: contain;
-    border-radius: 8px;
     filter: invert(1);
 }
 
@@ -124,15 +135,13 @@ body {
     border-radius: 999px;
 }
 
-/* ===== 붙는 그리드 ===== */
+/* ===== '붙는' 그리드 (검색 화면 동일) ===== */
+/* [데스크톱] 한 줄에 6개 아이템 유동 너비 */
 .search-grid {
     display: grid;
-    grid-template-columns: repeat(6, 200px); /* 고정 크기 */
-    justify-content: center; /* 중앙 정렬 */
-    column-gap: 0; /* 가로 틈 없음 */
-    row-gap: 28px; /* 세로만 간격 */
-    margin-top: 14px;
-    background: #fff; /* 서브픽셀 라인 방지 */
+    grid-template-columns: repeat(6, 1fr); /* 6개의 균일한 너비 컬럼 */
+    justify-content: center;
+    gap: 28px 0; /* row-gap 28px, column-gap 0 */
 }
 
 
@@ -141,6 +150,8 @@ body {
     margin: 0;
     padding: 0;
     position: relative;
+    text-decoration: none;
+    color: inherit;
     display: flex;
     flex-direction: column;
     width: 100%; /* 명시적 너비 */
@@ -148,92 +159,88 @@ body {
 
 /* 이미지는 타일 사이 경계선만 */
 .product-image {
-    width: 200px !important; /* 고정 크기 */
-    height: 249px !important; /* 고정 크기 */
-    min-width: 180px !important; /* 최소 크기 */
-    min-height: 180px !important; /* 최소 크기 */
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: #f0f0f0; /* 로딩 중 배경색 */
-    position: relative;
+    width: 100%; /* 그리드 칸에 맞게 꽉 차도록 */
+    aspect-ratio: 200/249; /* 고정 비율 유지 */
+    background: #f0f0f0;
     overflow: hidden;
-    flex-shrink: 0; /* 크기 축소 방지 */
-    box-sizing: border-box !important;
+    position: relative;
+    /* 그리드 경계선 기본값 (데스크톱/모바일 공통) */
+    border-right: 1px solid #e9ecef;
+    border-bottom: 1px solid #e9ecef;
 }
-
 .product-image img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    display: block;
 }
 
-/* 줄 마지막 아이템은 오른쪽 경계선 제거(반응형 대응) */
+
+/* [데스크톱] 줄 마지막 아이템 (6n)은 오른쪽 경계선 제거 */
 .product-card:nth-child(6n) .product-image {
     border-right: 0;
 }
 
-
 /* 텍스트는 살짝 안쪽으로 */
+
 .product-brand,
 .product-name,
 .product-price {
     padding: 0 6px;
 }
 
+.likes-and-stars {
+    padding: 0 6px;
+}
 .product-brand {
     font-size: 11px;
     color: #666;
-    margin: 6px 0 4px;
+    margin: 6px 0 2px;
 }
-
 .product-name {
     font-size: 12px;
     font-weight: 500;
     line-height: 1.3;
     margin-bottom: 2px;
 }
-
 .product-price {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-}
-
-.current-price {
+    font-size: 12px;
     font-weight: 700;
-    font-size: 12px;
+    color: #111;
 }
-
-.likes {
+.likes-and-stars {
+    display: flex;
+    justify-content: space-between;
     font-size: 12px;
-    color: #ff0000;
+    color: #ff0000; /* 좋아요 */
 }
-
-
 .stars {
-    font-size: 12px;
     color: #FA9200;
 }
 
+/* ============================== */
+/* 📱 모바일 반응형: 최대 너비 768px */
+/* ============================== */
+@media (max-width: 768px) {
+    /* 컨테이너 패딩 조정 */
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 
-.likes-and-stars {
-    padding: 0 6px;
+    /* 6열 -> 2열 유동 그리드로 변경 */
+    .search-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2개의 균일한 너비 컬럼 */
+        gap: 0; /* 모바일에서도 '붙는' 디자인 유지를 위해 gap 0 */
+        row-gap: 0; /* 세로 간격도 0으로 변경 (붙는 디자인) */
+    }
+
+    /* 데스크톱 6n 제거 규칙 초기화 */
+    .product-card:nth-child(6n) .product-image {
+        border-right: 1px solid #e9ecef; /* 다시 살려줍니다. */
+    }
+
+    /* 모바일 2열: 짝수 번째 아이템 (오른쪽 끝)의 경계선 제거 */
+    .product-card:nth-child(2n) .product-image {
+        border-right: 0;
+    }
 }
-
-.empty {
-    color: #868e96;
-    text-align: center;
-}
-
-/* aspect-ratio로 자동 관리되므로 미디어 쿼리 불필요 */
-
-/* 섹션 좌우 패딩을 좀 더 타이트하게(선택)
-.section { padding-left: 0; padding-right: 0; }
-*/
