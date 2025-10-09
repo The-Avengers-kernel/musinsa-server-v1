@@ -57,10 +57,6 @@ body {
     margin: 6px 0 4px;
 }
 
-.headline .count {
-    color: #1c7ed6;
-}
-
 /* 정렬 옵션 */
 .sort-options {
     display: inline-flex;
