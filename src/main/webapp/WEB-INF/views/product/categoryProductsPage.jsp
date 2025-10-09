@@ -42,9 +42,7 @@
             color: #ff4444;
         }
 
-        .product-image {
-            position: relative;
-        }
+        /* 인라인 스타일 오버라이드 제거 - CSS 파일에서 관리 */
     </style>
 </head>
 <body>
@@ -56,7 +54,7 @@
         <!-- 검색 화면의 headline 스타일 재사용 -->
         <div class="headline">
             "<strong id="categoryTitle"></strong>"
-            결과 <span class="count"><fmt:formatNumber value="${fn:length(products)}" pattern="#,###"/></span>개
+            결과
         </div>
 
         <!-- 정렬 옵션 -->
@@ -262,6 +260,7 @@
             loadMoreProducts();
         }
     });
+
 </script>
 </body>
 </html>

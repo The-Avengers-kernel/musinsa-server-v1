@@ -291,6 +291,7 @@
                 console.error("장바구니 삭제 실패:", xhr);
                 alert("장바구니 삭제에 실패했습니다.");
             });
+
     }
 
     function removeBrand(brand) {
