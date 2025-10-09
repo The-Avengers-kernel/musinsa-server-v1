@@ -14,7 +14,6 @@ public class SearchViewController {
 
     @GetMapping(value = {"", "/"}, params = "!keyword")
     public String searchEntry(Model model) {
-        System.out.println("searchEntry 에러 발생");
         model.addAttribute("forceFragment", true);
         return "search/recentSearches";
     }
@@ -34,7 +33,6 @@ public class SearchViewController {
     //검색창 팝업 띄우는 뷰 컨트롤러
     @GetMapping({"/overlay", "/recent/view"})
     public String searchOverlay(Model model) {
-        System.out.println("searchOverlay 에러 발생");
         model.addAttribute("forceFragment", true);
         return "search/recentSearches";
     }

@@ -529,6 +529,7 @@ CREATE TABLE reviews
     content          VARCHAR2(200) NULL,
     purchase_options VARCHAR2(50)  NULL,
     help_count       NUMBER(10)    NULL,
+    rating           NUMBER(2)     NULL,
     created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
