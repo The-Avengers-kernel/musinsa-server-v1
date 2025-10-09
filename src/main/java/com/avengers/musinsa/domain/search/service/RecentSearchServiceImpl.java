@@ -2,11 +2,10 @@ package com.avengers.musinsa.domain.search.service;
 
 import com.avengers.musinsa.domain.search.repository.RecentSearchRepository;
 import com.avengers.musinsa.domain.search.response.SearchKeywordResponseDTO;
-import com.avengers.musinsa.domain.search.repository.RecentSearchRepository;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +15,7 @@ public class RecentSearchServiceImpl implements RecentSearchService {
 
     @Override
     public List<SearchKeywordResponseDTO> getRecentSearches(Long userId) {
-        return recentSearchRepository.findRecentSearches(userId);
+        List<SearchKeywordResponseDTO> searches = recentSearchRepository.findRecentSearches(userId);
+        return searches != null ? searches : Collections.emptyList();
     }
 }

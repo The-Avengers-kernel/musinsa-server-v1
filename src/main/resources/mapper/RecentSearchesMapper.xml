@@ -8,10 +8,16 @@
         <!--현재 조인해야 하는 테이블 : user, brand, product, recent_visit_brand?, search_keyword-->
         <!--최근 검색어 + 브랜드/상품 조인-->
         <!--중복 제거 코드 + 줄바꿈 제거 + 공백 제거-->
-        select SEARCH_TEXT as searchText
-        from SEARCH_KEYWORD_LOGS
-        where USER_ID = #{user_id}
-        ORDER BY SEARCH_DATETIME desc
+        SELECT search_text AS searchText
+        FROM (
+            SELECT
+                search_text,
+                MAX(search_datetime) AS latest_search_time
+            FROM search_keyword_logs
+            WHERE user_id = #{user_id}
+            GROUP BY search_text
+        )
+        ORDER BY latest_search_time DESC
         FETCH FIRST 10 ROWS ONLY
     </select>
 

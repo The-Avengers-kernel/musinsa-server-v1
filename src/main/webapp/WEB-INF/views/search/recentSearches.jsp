@@ -52,8 +52,7 @@
                     <div class="loading-text">로딩 중...</div>
                 </ul>
             </section>
-
-            <section class="search-section" id="recentBrandSection" aria-labelledby="recentBrandTitle">
+<!--<section class="search-section" id="recentBrandSection" aria-labelledby="recentBrandTitle">
                 <div class="search-section-header">
                     <h3 id="recentBrandTitle">최근 방문한 브랜드</h3>
                     <button class="clear-all-btn" id="deleteAllRecentBrandsBtn" type="button">모두삭제</button>
@@ -61,7 +60,8 @@
                 <ul class="brand-list" id="recentBrandTags">
                     <div class="loading-text">로딩 중...</div>
                 </ul>
-            </section>
+            </section> -->
+
 
             <section class="search-section" id="popularKeywordSection" aria-labelledby="popularKeywordTitle">
                 <div class="search-section-header">
