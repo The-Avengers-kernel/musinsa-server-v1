@@ -54,8 +54,7 @@
         UPDATE USER_CARTS
         SET CART_OPTION=#{productOptionName},
             CART_QUANTITY=#{quantity}
-        WHERE USER_ID = #{userId}
-          AND PRODUCT_ID = #{productId}
+        WHERE USER_CART_ID = #{userCartId}
     </update>
 
     <!--    userId와 productVariantId를 이용해 장바구니 찾기-->

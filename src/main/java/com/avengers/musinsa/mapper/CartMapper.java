@@ -13,7 +13,7 @@ public interface CartMapper {
 
     ProductOptionInfo productOptionInfo(Long userId, Long productId, Map<Integer, String> productOptions);
 
-    void updateProductOption(Long userId, Long productId, String productOptionName, Integer quantity);
+    void updateProductOption(Long userCartId, String productOptionName, Integer quantity);
 
     CartItemDto findCartItemByVariantId(@Param("userId") Long userId, @Param("request") AddCartRequest request);
 
