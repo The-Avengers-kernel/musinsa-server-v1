@@ -3,12 +3,18 @@
 <mapper namespace="com.avengers.musinsa.mapper.PopularKeywordMapper">
     <select id="selectTrendingKeywords" resultType="com.avengers.musinsa.domain.search.dto.ResultDTO">
         SELECT
-            RANK() OVER (ORDER BY DAILY_COUNT DESC) AS rank,
-            KEYWORD
-        FROM SEARCH_KEYWORDS sk
-        WHERE IS_TRENDING = 'Y'
-          AND sk.UPDATED_AT >= SYSDATE - (30/1440)
-            FETCH FIRST 10 ROWS ONLY
+            ranked.rank,
+            ranked.keyword
+        FROM (
+            SELECT
+                ROW_NUMBER() OVER (ORDER BY sk.daily_count DESC, sk.keyword ASC) AS rank,
+                sk.keyword
+            FROM search_keywords sk
+            WHERE sk.is_trending = 'Y'
+              AND sk.updated_at >= SYSDATE - (30/1440)
+        ) ranked
+        WHERE ranked.rank &lt;= 10
+        ORDER BY ranked.rank
     </select>
 
     <select id="selectTrendingKeywordsUpdatedAt" resultType="java.lang.String">
