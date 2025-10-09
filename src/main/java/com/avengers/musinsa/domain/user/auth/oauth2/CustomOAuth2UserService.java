@@ -1,6 +1,5 @@
 package com.avengers.musinsa.domain.user.auth.oauth2;
 
-import com.avengers.musinsa.domain.enums.UserActiveStatus;
 import com.avengers.musinsa.domain.user.dto.UserDTO;
 import com.avengers.musinsa.domain.user.auth.oauth2.dto.CustomOAuth2User;
 import com.avengers.musinsa.domain.user.auth.oauth2.dto.NaverResponse;

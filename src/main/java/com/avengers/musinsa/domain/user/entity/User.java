@@ -1,11 +1,7 @@
 package com.avengers.musinsa.domain.user.entity;
 
-import com.avengers.musinsa.domain.enums.UserActiveStatus;
 import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.*;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Getter

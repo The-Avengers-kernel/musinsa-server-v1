@@ -21,8 +21,8 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
 
     hikari:
-      maximum-pool-size: 20        # 최대 커넥션 수
-      minimum-idle: 10             # 유지할 최소 유휴 커넥션 수
+      maximum-pool-size: 200        # 최대 커넥션 수
+      minimum-idle: 50             # 유지할 최소 유휴 커넥션 수
 
 
   # H2 콘솔 설정
@@ -64,7 +64,7 @@ mybatis:
   type-aliases-package: ${MYBATIS_TYPE_ALIASES_PACKAGE}
 
 logging:
-  level:
-    com.avengers.musinsa.mapper: DEBUG
-    com.zaxxer.hikari.HikariConfig: DEBUG
-    com.zaxxer.hikari: DEBUG
+#  level:
+#    com.avengers.musinsa.mapper: DEBUG
+#    com.zaxxer.hikari.HikariConfig: DEBUG
+#    com.zaxxer.hikari: DEBUG

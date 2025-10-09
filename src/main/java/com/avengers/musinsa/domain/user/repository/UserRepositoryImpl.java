@@ -14,4 +14,15 @@ public class UserRepositoryImpl implements UserRepository{
     public UserResponseDto.UserNameAndEmailAndMobileDto findUserNameAndEmailAndMobileById(Long userId) {
         return userMapper.findUserNameAndEmailAndMobileById(userId);
     }
+
+    @Override
+    public boolean existsById(long userId) {
+        return userMapper.existsById(userId);
+    }
+
+    @Override
+    public void insertTestUser(long userId, String name, String nickname, String socialType) {
+        userMapper.insertTestUser(userId, name,nickname, socialType);
+
+    }
 }

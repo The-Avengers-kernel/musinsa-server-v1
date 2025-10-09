@@ -4,11 +4,11 @@ import com.avengers.musinsa.domain.brand.dto.response.BrandResponse;
 import com.avengers.musinsa.domain.brand.repository.BrandRepository;
 import com.avengers.musinsa.domain.product.dto.response.*;
 import com.avengers.musinsa.domain.product.dto.search.SearchResponse;
+import com.avengers.musinsa.domain.product.entity.Product;
 import com.avengers.musinsa.domain.product.entity.ProductCategory;
 import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepository;
-import com.avengers.musinsa.domain.product.repository.ProductRepositoryImpl;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
 import com.avengers.musinsa.domain.review.dto.Request.RequestReview;
 import com.avengers.musinsa.domain.review.dto.ReviewMeta;
@@ -16,6 +16,7 @@ import com.avengers.musinsa.domain.review.repository.ReviewRepository;
 import com.avengers.musinsa.domain.search.service.SearchLogService;
 import com.avengers.musinsa.domain.user.dto.ProductsInCartInfoResponse;
 
+import com.avengers.musinsa.mapper.ProductMapper;
 import com.avengers.musinsa.mapper.ReviewMapper;
 import java.util.*;
 
@@ -34,6 +35,7 @@ public class ProductServiceImpl implements ProductService {
     private final ReviewRepository reviewRepository;
     private final SearchLogService searchLogService;
     private final ReviewMapper reviewMapper;
+    private final ProductMapper productMapper;
 
     @Override
     public ProductDetailResponse getProductById(Long productId, Long userId) {
@@ -302,14 +304,17 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    @Transactional
     public ProductLikeResponse ProductLikeToggle(Long userId, Long productId) {
         UserProductStatus status = productRepository.getUserProductStatus(userId, productId);
         //레코드가 없을 때
         if (status == null) {
             //user_product_like 테이블에 레코드 추가
             productRepository.insertUserProductLike(userId, productId);
+
             //brands 테이블 좋아요 수 +1
             productRepository.plusProductLikeCnt(productId);
+
             //레코드 추가 후 회원과 브랜드의 현재 좋아요 상태를 반환
             return productRepository.getIsLikedProduct(userId, productId);
         }
@@ -329,5 +334,87 @@ public class ProductServiceImpl implements ProductService {
             return productRepository.getIsLikedProduct(userId, productId);
         }
     }
+
+
+    @Transactional
+    @Override
+    public ProductLikeResponse ProductLikeToggleByLock(Long userId, Long productId) {
+        UserProductStatus userLikeStatus = productRepository.getUserProductStatus(userId, productId);
+
+        Product product = productRepository.findProductByIdWithLock(productId);
+
+        // ✅ null 체크 추가!
+        if (product == null || product.getProductLikes() == null) {
+            throw new RuntimeException("상품을 찾을 수 없거나 좋아요 수가 null입니다");
+        }
+
+        Long currentLikeCnt = Long.valueOf(product.getProductLikes());
+
+        if (userLikeStatus == null) {
+            productRepository.insertUserProductLike(userId, productId);
+            Long updatedLikeCnt = currentLikeCnt + 1;
+            productRepository.updateProductLikeCnt(productId, updatedLikeCnt);
+            return productRepository.getIsLikedProduct(userId, productId);
+        } else {
+            Integer previousLikedStatus = userLikeStatus.getLiked();
+            productRepository.switchProductLike(userId, productId);
+
+            Long updatedLikeCnt;
+            if (previousLikedStatus != null && previousLikedStatus == 1) {
+                updatedLikeCnt = currentLikeCnt - 1;
+            } else {
+                updatedLikeCnt = currentLikeCnt + 1;
+            }
+
+            productRepository.updateProductLikeCnt(productId, updatedLikeCnt);
+            return productRepository.getIsLikedProduct(userId, productId);
+        }
+    }
+
+    @Transactional
+    @Override
+    public ProductLikeResponse ProductLikeToggleByRMW(Long userId, Long productId) {
+
+        UserProductStatus userLikeStatus = productRepository.getUserProductStatus(userId, productId);
+
+        // 최초 좋아요
+        if (userLikeStatus == null) {
+            productRepository.insertUserProductLike(userId, productId);
+
+            //Read
+            Long currentLikeCount = productRepository.getProductLikeCnt(productId);
+
+            //Modify
+            Long updatedLikeCount = currentLikeCount + 1;
+            productRepository.setProductLikeCnt(productId, updatedLikeCount);
+
+            //Write
+            return productRepository.getIsLikedProduct(userId, productId);
+        }
+
+        // 좋아요 토글 (활성화 ↔ 비활성화)
+        else {
+            Integer previousLikedStatus = userLikeStatus.getLiked();
+            productRepository.switchProductLike(userId, productId);
+
+            Long currentLikeCount = productRepository.getProductLikeCnt(productId);
+            Long updatedLikeCount;
+
+            // 좋아요 취소 (1 → 0)
+            if (previousLikedStatus != null && previousLikedStatus == 1) {
+                updatedLikeCount = currentLikeCount - 1;
+            }
+            // 좋아요 재활성화 (0 → 1)
+            else {
+                updatedLikeCount = currentLikeCount + 1;
+            }
+
+            productRepository.setProductLikeCnt(productId, updatedLikeCount);
+
+            return productRepository.getIsLikedProduct(userId, productId);
+        }
+    }
+
+
 
 }

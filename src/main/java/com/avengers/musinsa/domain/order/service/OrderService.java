@@ -56,43 +56,12 @@ public class OrderService {
         // 3. 주문 상품 배치 저장
         orderRepository.batchCreateOrderItems(orderId, request.getProduct(), request.getCouponId());
 
-//        List<OrderCreateRequest.ProductLine> orderProducts = request.getProduct();
-//        for (ProductLine orderProduct : orderProducts) {
-//
-//            orderRepository.createOrderItems(orderId, orderProduct, request.getCouponId());
-//
-//            // 재고 감소
-//            productVariantRepository.decrementStock(orderProduct.getVariantId(), orderProduct.getQuantity());
-//
-//        }
-
         // 4. 재고 감소
         productVariantRepository.batchDecrementStock(request.getProduct());
 
         return new OrderCreateResponse(orderId);
     }
 
-//    private void setVariantInfo(OrderCreateRequest request) {
-//        for (ProductLine productLine : request.getProduct()) {
-//            ProductVariantDto variant = productVariantRepository.findProductVariantByOptionName(
-//                    productLine.getProductId(),
-//                    productLine.getOptionName()
-//            );
-//
-//            if (variant == null) {
-//                throw new IllegalArgumentException("상품 옵션을 찾을 수 없습니다.");
-//            }
-//
-//            productLine.setVariantId(variant.getProductVariantId());
-//            productLine.setOrderItemSize(variant.getSizeValue());
-//            productLine.setColor(variant.getColorValue());
-//
-//            Map<String, String> options = new HashMap<>();
-//            options.put("size", variant.getSizeValue());
-//            options.put("color", variant.getColorValue());
-//            productLine.setOptions(options);
-//        }
-//    }
 
     private void setVariantInfo(OrderCreateRequest request) {
         // 배치 조회

@@ -513,4 +513,64 @@
         FROM PRODUCT_VARIANTS pv
         WHERE pv.PRODUCT_ID = #{productId}
     </select>
+
+    <select id="getProductLikeCnt" resultType="Long">
+        select PRODUCTS.PRODUCT_LIKES
+        from products
+        where PRODUCT_ID = #{productId}
+
+    </select>
+
+    <update id="resetProductLikeCnt" parameterType="long">
+        UPDATE PRODUCTS SET PRODUCT_LIKES = 0 WHERE PRODUCT_ID = #{productId}
+    </update>
+
+    <delete id="deleteAllUserProductLikes" parameterType="long">
+        DELETE FROM USER_PRODUCT_LIKES WHERE PRODUCT_ID = #{productId}
+    </delete>
+
+
+
+    <select id="countUserProductLikes" resultType="int">
+        SELECT COUNT(*)
+        FROM user_product_likes
+        WHERE product_id = #{productId}
+          AND liked = 1
+    </select>
+    
+
+    <select id="countUserProductLikesByUser" resultType="int">
+        SELECT COUNT(*)
+        FROM USER_PRODUCT_LIKES
+        WHERE PRODUCT_ID = #{productId}
+          AND USER_ID = #{userId}
+          AND LIKED = 1
+    </select>
+
+
+    <update id="setProductLikeCnt">
+        UPDATE PRODUCTS
+        SET PRODUCT_LIKES = #{likeCount}
+        WHERE PRODUCT_ID = #{productId}
+    </update>
+
+    <!-- ProductMapper.xml -->
+
+    <!-- 비관적 락으로 상품 조회 -->
+    <select id="findProductByIdWithLock" resultType="com.avengers.musinsa.domain.product.entity.Product">
+        SELECT
+        product_id as productId,
+        product_likes as productLikes
+        FROM products
+        WHERE product_id = #{productId}
+        FOR UPDATE  <!-- 비관적 락! -->
+    </select>
+
+    <!-- 좋아요 수 업데이트 -->
+    <update id="updateProductLikeCnt">
+        UPDATE products
+        SET product_likes = #{likeCnt}
+        WHERE product_id = #{productId}
+    </update>
+
 </mapper>

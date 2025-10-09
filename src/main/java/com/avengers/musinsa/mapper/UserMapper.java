@@ -17,4 +17,8 @@ public interface UserMapper {
     User findByUserId(@Param("userId") Long userId);
 
     UserResponseDto.UserNameAndEmailAndMobileDto findUserNameAndEmailAndMobileById(@Param("userId") Long userId);
+
+    boolean existsById(long userId);
+
+    void insertTestUser(long userId, String name, String nickname, String socialType);
 }
