@@ -262,6 +262,86 @@
         OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
     </select>
 
+    <!-- 커서 기반 페이지네이션 -->
+    <select id="getProductsByCategoryCursor" resultMap="ProductByCategoryResultMap">
+        SELECT ranked_products.product_id as productId,
+        ranked_products.product_name as productName,
+        pimg.image_url as productImage,
+        b.brand_name_kr as brandName,
+        ranked_products.price as price,
+        ranked_products.product_likes as productLikes,
+        ranked_products.rating_avg as ratingAverage,
+        ranked_products.review_count as reviewCount,
+        ranked_products.recommendation_score as recommendationScore,
+        CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END AS isLiked
+
+        FROM (SELECT p.product_id,
+        p.product_name,
+        p.brand_id,
+        p.price,
+        p.product_likes,
+        prs.rating_avg,
+        prs.review_count,
+        -- 가중치 계산
+        (
+        NVL(order_stats.total_orders, 0) * 10.0 +
+        NVL(prs.rating_avg, 3.0) * 5.0 +
+        NVL(p.product_likes, 0) * 2.0
+        ) AS recommendation_score
+        FROM products p
+
+        -- 주문 통계 (상품별 총 주문 수)
+        LEFT JOIN (SELECT oi.product_id, COUNT(oi.order_item_id) AS total_orders
+        FROM order_items oi
+        JOIN orders o ON o.order_id = oi.order_id
+        WHERE o.order_status NOT IN ('취소', '반품완료')
+        GROUP BY oi.product_id) order_stats
+        ON order_stats.product_id = p.product_id
+
+        -- 리뷰 평점 통계
+        LEFT JOIN (SELECT prs.product_id, prs.review_count, prs.rating_avg
+        FROM product_review_stats prs) prs ON p.product_id = prs.product_id
+        WHERE p.product_category_id = #{categoryId}) ranked_products
+        JOIN brands b
+        ON b.brand_id = ranked_products.brand_id
+        JOIN product_images pimg ON pimg.product_id = ranked_products.product_id
+        LEFT JOIN USER_PRODUCT_LIKES upl
+        ON upl.PRODUCT_ID = ranked_products.product_id
+        AND upl.user_id = #{userId}
+
+        WHERE pimg.image_type = 'MAIN'
+        <if test="lastId != null">
+            AND (
+                <choose>
+                    <when test="sortBy == 'PRICE_LOW'">
+                        ranked_products.price > #{lastValue}
+                        OR (ranked_products.price = #{lastValue} AND ranked_products.product_id > #{lastId})
+                    </when>
+                    <when test="sortBy == 'PRICE_HIGH'">
+                        ranked_products.price &lt; #{lastValue}
+                        OR (ranked_products.price = #{lastValue} AND ranked_products.product_id &lt; #{lastId})
+                    </when>
+                    <when test="sortBy == 'LIKE'">
+                        ranked_products.product_likes &lt; #{lastValue}
+                        OR (ranked_products.product_likes = #{lastValue} AND ranked_products.product_id &lt; #{lastId})
+                    </when>
+                </choose>
+            )
+        </if>
+        <choose>
+            <when test="sortBy == 'PRICE_LOW'">
+                ORDER BY ranked_products.price ASC, ranked_products.product_id ASC
+            </when>
+            <when test="sortBy == 'PRICE_HIGH'">
+                ORDER BY ranked_products.price DESC, ranked_products.product_id DESC
+            </when>
+            <when test="sortBy == 'LIKE'">
+                ORDER BY ranked_products.product_likes DESC, ranked_products.product_id DESC
+            </when>
+        </choose>
+        FETCH FIRST #{size} ROWS ONLY
+    </select>
+
     <select id="getProductReviews"
             resultType="com.avengers.musinsa.domain.product.dto.response.ProductReviewsResponse">
         SELECT r.REVIEW_ID        AS reviewId,
@@ -444,9 +524,9 @@
             <when test="sortBy == 'PRICE_HIGH'">
                 ORDER BY p.price DESC
             </when>
-            <otherwise>
+            <when test="sortBy == 'LIKE'">
                 ORDER BY p.product_likes DESC
-            </otherwise>
+            </when>
         </choose>
         OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
     </select>
@@ -482,11 +562,121 @@
             <when test="sortBy == 'PRICE_HIGH'">
                 ORDER BY p.price DESC
             </when>
-            <otherwise>
+            <when test="sortBy == 'LIKE'">
                 ORDER BY p.product_likes DESC
-            </otherwise>
+            </when>
         </choose>
         OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
+    </select>
+
+    <!-- 커서 기반 브랜드 검색 -->
+    <select id="findProductsByBrandIdCursor" resultMap="SearchProductInfoResultMap">
+        SELECT b.brand_id as brandId,
+        b.brand_name_kr as brandNameKr,
+        b.brand_name_eng as brandNameEn,
+        p.product_id as productId,
+        pi.image_url as productImage,
+        p.product_name as productName,
+        p.price,
+        p.product_likes as productLikes,
+        prs.rating_avg as ratingAverage,
+        prs.review_count as reviewCount,
+        CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END AS isLiked
+        FROM products p
+        JOIN brands b ON p.brand_id = b.brand_id
+        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
+        LEFT JOIN product_review_stats prs ON p.product_id = prs.product_id
+        LEFT JOIN USER_PRODUCT_LIKES upl
+        ON upl.PRODUCT_ID = p.PRODUCT_ID
+        AND upl.user_id = #{userId}
+        WHERE p.brand_id = #{brandId}
+        <if test="lastId != null">
+            AND (
+                <choose>
+                    <when test="sortBy == 'PRICE_LOW'">
+                        p.price > #{lastValue}
+                        OR (p.price = #{lastValue} AND p.product_id > #{lastId})
+                    </when>
+                    <when test="sortBy == 'PRICE_HIGH'">
+                        p.price &lt; #{lastValue}
+                        OR (p.price = #{lastValue} AND p.product_id &lt; #{lastId})
+                    </when>
+                    <when test="sortBy == 'LIKE'">
+                        p.product_likes &lt; #{lastValue}
+                        OR (p.product_likes = #{lastValue} AND p.product_id &lt; #{lastId})
+                    </when>
+                </choose>
+            )
+        </if>
+        <choose>
+            <when test="sortBy == 'PRICE_LOW'">
+                ORDER BY p.price ASC, p.product_id ASC
+            </when>
+            <when test="sortBy == 'PRICE_HIGH'">
+                ORDER BY p.price DESC, p.product_id DESC
+            </when>
+            <when test="sortBy == 'LIKE'">
+                ORDER BY p.product_likes DESC, p.product_id DESC
+            </when>
+        </choose>
+        FETCH FIRST #{size} ROWS ONLY
+    </select>
+
+    <!-- 커서 기반 키워드 검색 -->
+    <select id="findProductsByKeywordCursor" resultMap="SearchProductInfoResultMap">
+        SELECT b.brand_id as brandId,
+        b.brand_name_kr as brandNameKr,
+        b.brand_name_eng as brandNameEn,
+        p.product_id as productId,
+        pi.image_url as productImage,
+        p.product_name as productName,
+        p.price,
+        p.product_likes as productLikes,
+        prs.rating_avg as ratingAverage,
+        prs.review_count as reviewCount,
+        CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END AS isLiked
+        FROM products p
+        JOIN brands b ON p.brand_id = b.brand_id
+        LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.image_type = 'MAIN'
+        LEFT JOIN product_review_stats prs ON p.product_id = prs.product_id
+        LEFT JOIN USER_PRODUCT_LIKES upl
+        ON upl.PRODUCT_ID = p.PRODUCT_ID
+        AND upl.user_id = #{userId}
+        WHERE (
+        <foreach collection="keywords" item="keyword" separator=" OR ">
+            p.product_name LIKE '%' || #{keyword, jdbcType=VARCHAR} || '%'
+        </foreach>
+        )
+        <if test="lastId != null">
+            AND (
+                <choose>
+                    <when test="sortBy == 'PRICE_LOW'">
+                        p.price > #{lastValue}
+                        OR (p.price = #{lastValue} AND p.product_id > #{lastId})
+                    </when>
+                    <when test="sortBy == 'PRICE_HIGH'">
+                        p.price &lt; #{lastValue}
+                        OR (p.price = #{lastValue} AND p.product_id &lt; #{lastId})
+                    </when>
+                    <when test="sortBy == 'LIKE'">
+                        p.product_likes &lt; #{lastValue}
+                        OR (p.product_likes = #{lastValue} AND p.product_id &lt; #{lastId})
+                    </when>
+                </choose>
+            )
+        </if>
+        <choose>
+            <when test="sortBy == 'PRICE_LOW'">
+                ORDER BY p.price ASC, p.product_id ASC
+            </when>
+            <when test="sortBy == 'PRICE_HIGH'">
+                ORDER BY p.price DESC, p.product_id DESC
+            </when>
+            <when test="sortBy == 'LIKE'">
+                ORDER BY p.product_likes DESC, p.product_id DESC
+            </when>
+        </choose>
+        FETCH FIRST #{size} ROWS ONLY
     </select>
 
     <!--상품 좋아요 토글-->

@@ -43,6 +43,9 @@ public interface ProductRepository {
 
     List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId, String sortBy, int offset, int limit);
 
+    // 커서 기반 페이지네이션
+    List<ProductByCategoryResponse> getProductsByCategoryCursor(Long categoryId, Long userId, String sortBy, Long lastId, Integer lastValue, int size);
+
 
     List<ProductImage> findProductImageById(Long productId);
 
@@ -66,6 +69,12 @@ public interface ProductRepository {
     List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId, Long userId, String sortBy, int offset, int limit);
 
     List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords, Long userId, String sortBy, int offset, int limit);
+
+    // 커서 기반 검색 (브랜드)
+    List<SearchResponse.ProductInfo> findProductsByBrandIdCursor(Long brandId, Long userId, String sortBy, Long lastId, Integer lastValue, int size);
+
+    // 커서 기반 검색 (키워드)
+    List<SearchResponse.ProductInfo> findProductsByKeywordCursor(String[] keywords, Long userId, String sortBy, Long lastId, Integer lastValue, int size);
 
     //검색 시 검색어 로그 테이블에 검색 정보 저장하기.
     void saveSearchKeywordLog(String keyword);
