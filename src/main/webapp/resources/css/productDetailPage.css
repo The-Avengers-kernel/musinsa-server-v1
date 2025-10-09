@@ -110,8 +110,11 @@ a {
     flex-direction: column;
     gap: var(--space-16);
     padding-top: var(--space-16);
+    padding-inline: var(--space-16); /* 좌우 패딩 추가 */
     min-width: 400px;
     background: var(--bg-app);
+    max-width: var(--container-max); /* 최대 너비 제한 */
+    margin-inline: auto; /* 중앙 정렬 */
 }
 
 /* Left column */
@@ -166,7 +169,8 @@ a {
 /* ---------- Images section ---------- */
 .product-images-section {
     display: flex;
-    gap: var(--space-12);
+    gap: 0;  /* 간격 제거 */
+    margin-left: 170px;
     background: var(--bg-app);
 }
 
@@ -197,6 +201,7 @@ a {
 
 .preview-item.active {
     border-color: #000;
+    margin-right: 10px;
 }
 
 .preview-item img {
@@ -209,14 +214,14 @@ a {
 .main-image-container {
     order: 1;
     background: var(--bg-card);
-    padding-inline: var(--space-10);
     width: 100%;
     max-width: 1000px;
-    margin-inline: auto;
+    margin-left: 0px;  /* margin 제거 */
+    margin-right: 150px;
 }
 
 /* Desktop: thumbs column on the left */
-@media (min-width: 769px) {
+@media  {
     .product-images-section {
         align-items: flex-start;
     }
