@@ -51,6 +51,7 @@
             font-size: 17px;
             font-weight: bold;
             z-index: 10;
+            margin-left : 14px;
         }
         .banner-brand {
             position: absolute;
