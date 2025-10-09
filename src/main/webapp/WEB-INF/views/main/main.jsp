@@ -19,13 +19,12 @@
     <style>
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f8f9fa;
+            background-color: #ffffff;
             margin: 0;
-            padding: 0;
         }
         /* 배너를 컨테이너 밖으로 확장하여 양옆 공백 제거 */
         .section-banner {
-            margin: -20px -20px 0 -20px; /* 컨테이너의 padding을 상쇄 */
+            margin: -20px -21px 0 -21px; /* 컨테이너의 padding을 상쇄 */
         }
 
         .banner-swiper {
@@ -51,6 +50,7 @@
             font-size: 17px;
             font-weight: bold;
             z-index: 10;
+            padding-left: 13px;
         }
         .banner-brand {
             position: absolute;
@@ -64,7 +64,7 @@
 
         .banner-swiper img {
             width: 100%;
-            height: 400px;
+            height: 450px;
             object-fit: cover;
             object-position: center;
             border-radius: 0;
@@ -81,17 +81,18 @@
         .banner-next { right: 10px; }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 30px 20px;
+            padding: 0 40px;
+            background: #fafafa;
         }
 
         .section {
             margin-bottom: 50px;
             background: white;
-            border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+            border-top: 0;
         }
 
         .section-title {
@@ -348,8 +349,6 @@
             </div>
         </section>
 
-
-        </div>
         <!-- 남성 아이템 -->
         <h3 class="sub-title">남성 아이템 추천</h3>
         <div class="swiper men-swiper">
