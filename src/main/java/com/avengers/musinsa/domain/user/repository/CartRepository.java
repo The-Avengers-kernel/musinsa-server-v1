@@ -23,9 +23,9 @@ public class CartRepository {
         return cartMapper.productOptionInfo(userId, productId, productOptions);
     }
 
-    public void updateProductOption(Long userId, Long productId, String productOptionName,
+    public void updateProductOption(Long userCartId, String productOptionName,
                                     Integer quantity) {
-        cartMapper.updateProductOption(userId, productId, productOptionName, quantity);
+        cartMapper.updateProductOption(userCartId, productOptionName, quantity);
     }
 
     // userId와 productVariantId로 이전에 장바구니를 추가했는지 확인하는 메서드
