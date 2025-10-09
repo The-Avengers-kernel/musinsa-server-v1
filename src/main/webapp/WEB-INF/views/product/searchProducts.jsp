@@ -65,13 +65,6 @@
            검색 결과
         </div>
 
-        <!-- 정렬 옵션 -->
-        <div class="sort-options">
-            <button class="sort-btn" data-sort="LIKE">좋아요순</button>
-            <button class="sort-btn" data-sort="PRICE_LOW">낮은 가격순</button>
-            <button class="sort-btn" data-sort="PRICE_HIGH">높은 가격순</button>
-        </div>
-
         <!-- 브랜드 정보(brandInfo 있을 때만 노출) -->
         <c:if test="${not empty result.brandInfo}">
             <a class="brand-box" href='<c:url value='/brands/${result.brandInfo.brandId}'/>'>
@@ -88,6 +81,13 @@
                 </div>
             </a>
         </c:if>
+
+        <!-- 정렬 옵션 -->
+        <div class="sort-options">
+            <button class="sort-btn" data-sort="LIKE">좋아요순</button>
+            <button class="sort-btn" data-sort="PRICE_LOW">낮은 가격순</button>
+            <button class="sort-btn" data-sort="PRICE_HIGH">높은 가격순</button>
+        </div>
 
         <%-- 어떤 리스트를 쓸지 선택 --%>
         <c:choose>
