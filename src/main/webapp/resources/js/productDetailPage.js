@@ -477,6 +477,9 @@
             success: function () {
                 console.log('장바구니 추가 제품 정보 : ', cartData);
                 alert('장바구니에 상품을 추가했습니다.');
+
+                // 장바구니 뱃지 업데이트
+                if (window.updateCartBadge) window.updateCartBadge();
             },
             error: function (xhr) {
                 console.error('장바구니 추가 실패:', xhr.responseText || xhr);

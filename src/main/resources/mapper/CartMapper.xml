@@ -83,8 +83,7 @@
 
     <!--    장바구니수량업데이트-->
     <update id="updateCartItemQuantity">
-        UPDATE
-            USER_CARTS
+        UPDATE USER_CARTS
         SET CART_QUANTITY = #{newQuantity}
         WHERE USER_CART_ID = #{cartId}
     </update>
