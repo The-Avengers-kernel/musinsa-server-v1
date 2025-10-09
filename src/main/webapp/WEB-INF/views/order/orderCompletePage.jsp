@@ -79,7 +79,10 @@
                         <div class="mu-card__title">결제/금액 정보</div>
                         <dl class="mu-kv">
                             <dt>총 상품 금액</dt>
-                            <dd><fmt:formatNumber value="${orderData.priceInfoDto.totalPrice}" type="number"/>원</dd>
+                            <dd><fmt:formatNumber
+                                    value="${orderData.priceInfoDto.totalPrice + orderData.priceInfoDto.orderDiscountAmount}"
+                                    type="number"/>원
+                            </dd>
                             <dt>할인 금액</dt>
                             <dd><fmt:formatNumber value="${orderData.priceInfoDto.orderDiscountAmount}"
                                                   type="number"/>원
@@ -93,7 +96,7 @@
                         <div class="mu-divider"></div>
                         <div class="mu-total">
                             <span>최종 결제금액</span>
-                            <strong><fmt:formatNumber value="${orderData.priceInfoDto.finalPrice}"
+                            <strong><fmt:formatNumber value="${orderData.priceInfoDto.totalPrice}"
                                                       type="number"/>원</strong>
                         </div>
                     </section>
@@ -137,7 +140,7 @@
                                                 <div class="mu-qty"> ${it.quantity}개</div>
                                                 <div class="mu-item-price">
                                                     <div class="mu-line-sum"><fmt:formatNumber
-                                                            value="${it.totalPrice - (it.totalPrice * (empty it.discountRate ? 0 : it.discountRate)) / 100}"
+                                                            value="${it.totalPrice}"
                                                             type="number"/>원
                                                     </div>
                                                 </div>
