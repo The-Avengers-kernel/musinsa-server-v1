@@ -84,12 +84,12 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 40px;
-            background: #fafafa;
+            background: #ffffff;
         }
 
         .section {
-            margin-bottom: 50px;
-            background: white;
+            margin-bottom: 0;
+            background: #fafafa;
             padding: 20px;
             border: 1px solid #e9ecef;
             border-top: 0;
