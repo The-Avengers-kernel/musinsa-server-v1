@@ -18,4 +18,21 @@ public class RecentSearchServiceImpl implements RecentSearchService {
         List<SearchKeywordResponseDTO> searches = recentSearchRepository.findRecentSearches(userId);
         return searches != null ? searches : Collections.emptyList();
     }
+
+    @Override
+    public void deleteAllRecentSearches(Long userId) {
+        recentSearchRepository.deleteAllRecentSearches(userId);
+    }
+
+    @Override
+    public void deleteRecentSearchKeyword(Long userId, String keyword) {
+        if (keyword == null) {
+            return;
+        }
+        String normalized = keyword.trim();
+        if (normalized.isEmpty()) {
+            return;
+        }
+        recentSearchRepository.deleteRecentSearchKeyword(userId, normalized);
+    }
 }
