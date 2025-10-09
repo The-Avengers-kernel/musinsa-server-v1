@@ -50,18 +50,18 @@
 
 <main class="container">
     <section class="section">
+        <div class="filter-bar">
+            <!-- 검색 화면의 headline 스타일 재사용 -->
+            <div class="headline">
+                "<strong id="categoryTitle"></strong>" 결과
+            </div>
 
-        <!-- 검색 화면의 headline 스타일 재사용 -->
-        <div class="headline">
-            "<strong id="categoryTitle"></strong>"
-            결과
-        </div>
-
-        <!-- 정렬 옵션 -->
-        <div class="sort-options">
-            <button class="sort-btn" data-sort="LIKE">좋아요순</button>
-            <button class="sort-btn" data-sort="PRICE_LOW">낮은 가격순</button>
-            <button class="sort-btn" data-sort="PRICE_HIGH">높은 가격순</button>
+            <!-- 정렬 옵션 -->
+            <div class="sort-options">
+                <button class="sort-btn" data-sort="LIKE">좋아요순</button>
+                <button class="sort-btn" data-sort="PRICE_LOW">낮은 가격순</button>
+                <button class="sort-btn" data-sort="PRICE_HIGH">높은 가격순</button>
+            </div>
         </div>
 
         <c:choose>
