@@ -274,11 +274,11 @@
         }
 
         .points-input button.cancel {
-            background-color: #000fff;
+            background-color: #2934e6;
         }
 
         .points-input button.cancel:hover {
-            background-color: #000fff;
+            background-color: #323232;
         }
 
         .order-button {
@@ -378,7 +378,7 @@
             font-size: 12px;
             font-weight: 400;
             background-color: transparent;
-            color: #000fff;
+            color: #008dff;
             border: 1px solid #e0e0e0;
         }
     </style>
