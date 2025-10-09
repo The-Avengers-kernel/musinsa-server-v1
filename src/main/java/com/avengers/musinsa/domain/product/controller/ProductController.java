@@ -72,7 +72,7 @@ public class ProductController {
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(
             @PathVariable Long categoryId,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "LIKE") String sortBy,
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "size", required = false, defaultValue = "12") int size,
             @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
@@ -150,7 +150,7 @@ public class ProductController {
     // 상품 검색에 따른 상품 목록 조회
     @GetMapping("/search")
     public ResponseEntity<?> searchProducts(@RequestParam("keyword") String keyword,
-                                            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+                                            @RequestParam(value = "sortBy", required = false, defaultValue = "LIKE") String sortBy,
                                             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                             @RequestParam(value = "size", required = false, defaultValue = "12") int size,
                                             @CookieValue(value = "Authorization", required = false) String authorizationHeader) {

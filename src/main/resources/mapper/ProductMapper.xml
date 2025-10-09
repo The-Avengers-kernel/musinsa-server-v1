@@ -252,7 +252,7 @@
             <when test="sortBy == 'PRICE_HIGH'">
                 ORDER BY ranked_products.price DESC
             </when>
-            <when test="sortBy == 'POPULARITY'">
+            <when test="sortBy == 'LIKE'">
                 ORDER BY ranked_products.product_likes DESC
             </when>
             <otherwise>
