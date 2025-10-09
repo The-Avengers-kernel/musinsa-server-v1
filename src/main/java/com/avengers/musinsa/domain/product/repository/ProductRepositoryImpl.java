@@ -74,6 +74,11 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public List<ProductByCategoryResponse> getProductsByCategoryCursor(Long categoryId, Long userId, String sortBy, Long lastId, Integer lastValue, int size) {
+        return productMapper.getProductsByCategoryCursor(categoryId, userId, sortBy, lastId, lastValue, size);
+    }
+
+    @Override
     public List<ProductImage> findProductImageById(Long productId) {
         return productMapper.findProductImageById(productId);
     }
@@ -124,6 +129,18 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords, Long userId, String sortBy, int offset, int limit) {
         return productMapper.findProductsByKeyword(keywords, userId, sortBy, offset, limit);
+    }
+
+    // 커서 기반 검색 (브랜드)
+    @Override
+    public List<SearchResponse.ProductInfo> findProductsByBrandIdCursor(Long brandId, Long userId, String sortBy, Long lastId, Integer lastValue, int size) {
+        return productMapper.findProductsByBrandIdCursor(brandId, userId, sortBy, lastId, lastValue, size);
+    }
+
+    // 커서 기반 검색 (키워드)
+    @Override
+    public List<SearchResponse.ProductInfo> findProductsByKeywordCursor(String[] keywords, Long userId, String sortBy, Long lastId, Integer lastValue, int size) {
+        return productMapper.findProductsByKeywordCursor(keywords, userId, sortBy, lastId, lastValue, size);
     }
 
     //검색 시 검색어 로그 테이블에 검색 정보 저장하기.

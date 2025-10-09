@@ -216,6 +216,19 @@ public class ProductServiceImpl implements ProductService {
         return result;
     }
 
+    @Override
+    public List<ProductByCategoryResponse> getProductsByCategoryCursor(Long categoryId, Long userId, String sortBy, Long lastId, Integer lastValue, int size) {
+        log.info("커서 기반 카테고리 상품 조회 - categoryId: {}, sortBy: {}, lastId: {}, lastValue: {}",
+                 categoryId, sortBy, lastId, lastValue);
+
+        List<ProductByCategoryResponse> result = productRepository.getProductsByCategoryCursor(
+                categoryId, userId, sortBy, lastId, lastValue, size);
+
+        log.info("조회 결과 개수: {}", result != null ? result.size() : 0);
+
+        return result;
+    }
+
     // 상품 상세 페이지 카테고리 조회
     @Override
     public ProductCategoryListResponse getProductCategories(Long productId) {
@@ -289,6 +302,56 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    // 상품 검색 (커서 기반)
+    @Override
+    public SearchResponse searchProductsCursor(String keyword, Long userId, String sortBy, Long lastId, Integer lastValue, int size) {
+        String processedKeyword = preprocessKeyword(keyword);
+        System.out.println("커서 기반 검색어 : " + processedKeyword);
+        System.out.println("정렬 : " + sortBy);
+
+        // 브랜드 검색 먼저 시도
+        List<BrandResponse> brandList = brandRepository.findByBrandName(processedKeyword);
+
+        if (!brandList.isEmpty()) {
+            // 브랜드 검색인 경우
+            BrandResponse brand = brandList.getFirst();
+
+            // 브랜드 상품 불러오기 (커서 기반)
+            List<SearchResponse.ProductInfo> brandProducts =
+                    productRepository.findProductsByBrandIdCursor(brand.getBrandId(), userId, sortBy, lastId, lastValue, size);
+
+            SearchResponse.BrandInfo brandInfo = SearchResponse.BrandInfo.builder()
+                    .brandId(brand.getBrandId())
+                    .brandNameKr(brand.getBrandNameKr())
+                    .brandNameEn(brand.getBrandNameEn())
+                    .brandImage(brand.getBrandImage())
+                    .brandLikes(brand.getBrandLikes())
+                    .totalCount(brandProducts.size())
+                    .products(brandProducts)
+                    .build();
+
+            return SearchResponse.builder()
+                    .searchKeyword(keyword)
+                    .brandInfo(brandInfo)
+                    .build();
+        } else {
+            // 상품 검색인 경우 (커서 기반)
+            String[] keywords = keyword.trim().split("\\s+");
+            List<SearchResponse.ProductInfo> products =
+                    productRepository.findProductsByKeywordCursor(keywords, userId, sortBy, lastId, lastValue, size);
+
+            if (!products.isEmpty()) {
+                return SearchResponse.builder()
+                        .searchKeyword(keyword)
+                        .brandInfo(null)
+                        .totalCount(products.size())
+                        .products(products)
+                        .build();
+            } else {
+                return null;
+            }
+        }
+    }
 
     private String preprocessKeyword(String keyword) {
         System.out.println(keyword);

@@ -20,8 +20,8 @@
 
     <insert id="insertShippingAddress"
             parameterType="com.avengers.musinsa.domain.shipments.dto.ShippingAddressCreateDTO">
-        <selectKey keyProperty="shippingAddressId" resultType="long" order="BEFORE">
-            SELECT USER_ADDRESSES_SEQ.NEXTVAL FROM dual
+        <selectKey keyProperty="shippingAddressId" resultType="Long" order="BEFORE">
+           SELECT SEQ_USER_ADDRESSES.NEXTVAL FROM dual
         </selectKey>
 
         INSERT INTO user_addresses
