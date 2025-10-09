@@ -10,9 +10,23 @@ body, ul, li, a, i, button {
 
 .musinsa-header {
     background-color: #1a1a1a; /* 어두운 배경색 */
+    max-width: 1400px;
+    margin: 0 auto;
     color: #fff;
     font-family: 'Noto Sans KR', sans-serif;
     width: 100%;
+
+    position: fixed; /* 스크롤 시 고정 */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; /* 다른 요소 위로 */
+    height: 55px;
+}
+
+/* 본문이 가려지지 않게 여백 추가 */
+body {
+    padding-top: 55px; /* 헤더 높이 + 여유 */
 }
 
 .musinsa-header .inner {
