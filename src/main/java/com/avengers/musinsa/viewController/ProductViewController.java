@@ -31,7 +31,7 @@ public class ProductViewController {
     @GetMapping()
     public String searchPage(
             @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "LIKE") String sortBy,
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "size", required = false, defaultValue = "12") int size,
             @CookieValue(value = "Authorization", required = false) String authorization,
@@ -55,7 +55,7 @@ public class ProductViewController {
     @GetMapping("/category/{categoryId}")
     public String getProductsByCategory(
             @PathVariable Long categoryId,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "LIKE") String sortBy,
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "size", required = false, defaultValue = "12") int size,
             @CookieValue(value = "Authorization", required = false) String authorization,

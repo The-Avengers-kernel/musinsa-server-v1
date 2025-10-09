@@ -59,9 +59,9 @@
 
         <!-- 정렬 옵션 -->
         <div class="sort-options">
-            <button class="sort-btn" data-sort="POPULARITY">인기순</button>
-            <button class="sort-btn" data-sort="PRICE_LOW">낮은 가격</button>
-            <button class="sort-btn" data-sort="PRICE_HIGH">높은 가격</button>
+            <button class="sort-btn" data-sort="LIKE">좋아요순</button>
+            <button class="sort-btn" data-sort="PRICE_LOW">낮은 가격순</button>
+            <button class="sort-btn" data-sort="PRICE_HIGH">높은 가격순</button>
         </div>
 
         <c:choose>
@@ -138,7 +138,7 @@
 
         // 현재 URL에서 sortBy 파라미터 읽기
         const urlParams = new URLSearchParams(window.location.search);
-        const currentSort = urlParams.get('sortBy') || 'POPULARITY';
+        const currentSort = urlParams.get('sortBy') || 'LIKE';
 
         // 현재 정렬 버튼에 active 클래스 추가
         const sortButtons = document.querySelectorAll('.sort-btn');
@@ -207,7 +207,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const categoryId = window.location.pathname.split('/').pop();
-        const sortBy = urlParams.get('sortBy') || 'POPULARITY';
+        const sortBy = urlParams.get('sortBy') || 'LIKE';
 
         $.ajax({
             url: '/api/v1/products/category/' + categoryId,
