@@ -153,13 +153,7 @@
                         <span class="discounted-price" id="productTotalPrice" aria-label="할인가"></span>
                     </div>
 
-                    <div class="final-price-wrapper">
-                        <span class="final-price-amount" id="finalPrice" aria-label="최대혜택가"></span>
-                        <button type="button" class="max-benefit-label" id="benefitDetailToggle" aria-expanded="false"
-                                aria-controls="benefitDetail">
-                            최대혜택가 자세히 ▼
-                        </button>
-                    </div>
+
 
                     <!-- 혜택 상세(토글) -->
                     <div id="benefitDetail" class="benefit-detail" hidden></div>
