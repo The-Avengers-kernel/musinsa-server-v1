@@ -30,4 +30,12 @@ public class RecentSearchRepository {
 
         return new ArrayList<>(deduplicated.values());
     }
+
+    public void deleteAllRecentSearches(Long userId) {
+        searchMapper.deleteRecentSearches(userId);
+    }
+
+    public void deleteRecentSearchKeyword(Long userId, String keyword) {
+        searchMapper.deleteRecentSearchKeyword(userId, keyword);
+    }
 }

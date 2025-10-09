@@ -55,4 +55,15 @@
         current_timestamp
         )
     </insert>
+
+    <delete id="deleteRecentSearches">
+        DELETE FROM search_keyword_logs
+        WHERE user_id = #{userId}
+    </delete>
+
+    <delete id="deleteRecentSearchKeyword">
+        DELETE FROM search_keyword_logs
+        WHERE user_id = #{userId}
+          AND search_text = #{keyword}
+    </delete>
 </mapper>

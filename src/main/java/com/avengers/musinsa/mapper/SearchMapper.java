@@ -12,6 +12,10 @@ public interface SearchMapper {
 
     List<SearchKeywordResponseDTO> getRecentSearches(@Param("user_id") Long userId);
 
+    void deleteRecentSearches(@Param("userId") Long userId);
+
+    void deleteRecentSearchKeyword(@Param("userId") Long userId, @Param("keyword") String keyword);
+
     //검색 로그 저장 - 자동생성된 ID를 엔티티에 설정
     void insertSearchLog(SearchLog searchLog);
 
