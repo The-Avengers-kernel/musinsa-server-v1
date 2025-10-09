@@ -102,7 +102,7 @@ FETCH FIRST 12 ROWS ONLY;
 **정렬별 커서 사용:**
 - **PRICE_LOW**: lastValue = price (ASC)
 - **PRICE_HIGH**: lastValue = price (DESC)
-- **POPULARITY**: lastValue = product_likes (DESC)
+- **LIKE**: lastValue = product_likes (DESC)
 
 ## 코드 예시
 
@@ -122,7 +122,7 @@ function loadMoreProducts() {
 
     const urlParams = new URLSearchParams(window.location.search);
     const categoryId = window.location.pathname.split('/').pop();
-    const sortBy = urlParams.get('sortBy') || 'POPULARITY';
+    const sortBy = urlParams.get('sortBy') || 'LIKE';
 
     const requestData = {
         sortBy: sortBy,
@@ -152,7 +152,7 @@ function loadMoreProducts() {
             // sortBy에 따라 lastValue 설정
             if (sortBy === 'PRICE_LOW' || sortBy === 'PRICE_HIGH') {
                 lastValue = lastProduct.price;
-            } else if (sortBy === 'POPULARITY') {
+            } else if (sortBy === 'LIKE') {
                 lastValue = lastProduct.productLikes;
             }
 
@@ -173,7 +173,7 @@ function loadMoreProducts() {
 @GetMapping("/category/{categoryId}")
 public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(
         @PathVariable Long categoryId,
-        @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+        @RequestParam(value = "sortBy", required = false, defaultValue = "LIKE") String sortBy,
         @RequestParam(value = "lastId", required = false) Long lastId,
         @RequestParam(value = "lastValue", required = false) Integer lastValue,
         @RequestParam(value = "size", required = false, defaultValue = "12") int size,
@@ -247,7 +247,7 @@ public List<ProductByCategoryResponse> getProductsByCategoryCursor(
                     ranked_products.price &lt; #{lastValue}
                     OR (ranked_products.price = #{lastValue} AND ranked_products.product_id &lt; #{lastId})
                 </when>
-                <when test="sortBy == 'POPULARITY'">
+                <when test="sortBy == 'LIKE'">
                     ranked_products.product_likes &lt; #{lastValue}
                     OR (ranked_products.product_likes = #{lastValue} AND ranked_products.product_id &lt; #{lastId})
                 </when>
@@ -263,7 +263,7 @@ public List<ProductByCategoryResponse> getProductsByCategoryCursor(
         <when test="sortBy == 'PRICE_HIGH'">
             ORDER BY ranked_products.price DESC, ranked_products.product_id DESC
         </when>
-        <when test="sortBy == 'POPULARITY'">
+        <when test="sortBy == 'LIKE'">
             ORDER BY ranked_products.product_likes DESC, ranked_products.product_id DESC
         </when>
     </choose>
@@ -290,7 +290,7 @@ WHERE price < 50000
 - 가격이 50000보다 작은 상품 **OR**
 - 가격이 정확히 50000이면서 ID가 100보다 작은 상품
 
-#### POPULARITY (인기순)
+#### LIKE (좋아요순)
 ```sql
 WHERE product_likes < 1000
    OR (product_likes = 1000 AND product_id < 100)

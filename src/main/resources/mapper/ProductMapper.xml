@@ -321,7 +321,7 @@
                         ranked_products.price &lt; #{lastValue}
                         OR (ranked_products.price = #{lastValue} AND ranked_products.product_id &lt; #{lastId})
                     </when>
-                    <when test="sortBy == 'POPULARITY'">
+                    <when test="sortBy == 'LIKE'">
                         ranked_products.product_likes &lt; #{lastValue}
                         OR (ranked_products.product_likes = #{lastValue} AND ranked_products.product_id &lt; #{lastId})
                     </when>
@@ -335,7 +335,7 @@
             <when test="sortBy == 'PRICE_HIGH'">
                 ORDER BY ranked_products.price DESC, ranked_products.product_id DESC
             </when>
-            <when test="sortBy == 'POPULARITY'">
+            <when test="sortBy == 'LIKE'">
                 ORDER BY ranked_products.product_likes DESC, ranked_products.product_id DESC
             </when>
         </choose>
@@ -524,9 +524,9 @@
             <when test="sortBy == 'PRICE_HIGH'">
                 ORDER BY p.price DESC
             </when>
-            <otherwise>
+            <when test="sortBy == 'LIKE'">
                 ORDER BY p.product_likes DESC
-            </otherwise>
+            </when>
         </choose>
         OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
     </select>
@@ -562,9 +562,9 @@
             <when test="sortBy == 'PRICE_HIGH'">
                 ORDER BY p.price DESC
             </when>
-            <otherwise>
+            <when test="sortBy == 'LIKE'">
                 ORDER BY p.product_likes DESC
-            </otherwise>
+            </when>
         </choose>
         OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
     </select>
@@ -601,10 +601,10 @@
                         p.price &lt; #{lastValue}
                         OR (p.price = #{lastValue} AND p.product_id &lt; #{lastId})
                     </when>
-                    <otherwise>
+                    <when test="sortBy == 'LIKE'">
                         p.product_likes &lt; #{lastValue}
                         OR (p.product_likes = #{lastValue} AND p.product_id &lt; #{lastId})
-                    </otherwise>
+                    </when>
                 </choose>
             )
         </if>
@@ -615,9 +615,9 @@
             <when test="sortBy == 'PRICE_HIGH'">
                 ORDER BY p.price DESC, p.product_id DESC
             </when>
-            <otherwise>
+            <when test="sortBy == 'LIKE'">
                 ORDER BY p.product_likes DESC, p.product_id DESC
-            </otherwise>
+            </when>
         </choose>
         FETCH FIRST #{size} ROWS ONLY
     </select>
@@ -658,10 +658,10 @@
                         p.price &lt; #{lastValue}
                         OR (p.price = #{lastValue} AND p.product_id &lt; #{lastId})
                     </when>
-                    <otherwise>
+                    <when test="sortBy == 'LIKE'">
                         p.product_likes &lt; #{lastValue}
                         OR (p.product_likes = #{lastValue} AND p.product_id &lt; #{lastId})
-                    </otherwise>
+                    </when>
                 </choose>
             )
         </if>
@@ -672,9 +672,9 @@
             <when test="sortBy == 'PRICE_HIGH'">
                 ORDER BY p.price DESC, p.product_id DESC
             </when>
-            <otherwise>
+            <when test="sortBy == 'LIKE'">
                 ORDER BY p.product_likes DESC, p.product_id DESC
-            </otherwise>
+            </when>
         </choose>
         FETCH FIRST #{size} ROWS ONLY
     </select>

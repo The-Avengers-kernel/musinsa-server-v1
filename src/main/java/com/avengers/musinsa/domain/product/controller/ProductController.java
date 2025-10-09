@@ -72,7 +72,7 @@ public class ProductController {
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductByCategoryResponse>> getProductsByCategory(
             @PathVariable Long categoryId,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "LIKE") String sortBy,
             @RequestParam(value = "lastId", required = false) Long lastId,
             @RequestParam(value = "lastValue", required = false) Integer lastValue,
             @RequestParam(value = "size", required = false, defaultValue = "12") int size,
@@ -150,17 +150,26 @@ public class ProductController {
     }
 
 
-    // 상품 검색에 따른 상품 목록 조회
+    // 상품 검색에 따른 상품 목록 조회 (커서 기반 지원)
     @GetMapping("/search")
     public ResponseEntity<?> searchProducts(@RequestParam("keyword") String keyword,
-                                            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+                                            @RequestParam(value = "sortBy", required = false, defaultValue = "LIKE") String sortBy,
                                             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                             @RequestParam(value = "size", required = false, defaultValue = "12") int size,
+                                            @RequestParam(value = "lastId", required = false) Long lastId,
+                                            @RequestParam(value = "lastValue", required = false) Integer lastValue,
                                             @CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         System.out.println(keyword);
         System.out.println("sortBy = " + sortBy);
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-        SearchResponse response = productService.searchProducts(keyword, userId, sortBy, page, size);
+
+        SearchResponse response;
+        // 커서 값이 있으면 커서 기반, 없으면 OFFSET 기반
+        if (lastId != null && lastValue != null) {
+            response = productService.searchProductsCursor(keyword, userId, sortBy, lastId, lastValue, size);
+        } else {
+            response = productService.searchProducts(keyword, userId, sortBy, page, size);
+        }
 
         if (response != null) {
             return ResponseEntity.ok(response);
