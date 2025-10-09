@@ -5,6 +5,7 @@ import com.avengers.musinsa.domain.shipments.dto.ShippingAddressOrderDTO;
 import com.avengers.musinsa.domain.shipments.repository.ShippingAddressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class ShippingAddressService {
     }
 
     //  배송지 추가
+    @Transactional
     public void insertShippingAddress(ShippingAddressCreateDTO shippingAddressCreate) {
 
         if (Boolean.TRUE.equals(shippingAddressCreate.getIsDefault())) {
