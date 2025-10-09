@@ -79,10 +79,17 @@
                 <div class="item" data-id="${item.productId}">
                     <div class="checkbox"><input type="checkbox" disabled/></div>
                     <div class="thumb">
-                        <img src="<c:out value='${item.imageUrl}'/>" alt="상품 이미지"/>
+                        <a href="${pageContext.request.contextPath}/products/${item.productId}">
+                            <img src="<c:out value='${item.imageUrl}'/>" alt="상품 이미지"/>
+                        </a>
                     </div>
                     <div>
-                        <div class="name"><c:out value="${item.productName}"/></div>
+                        <!--상품명 누르면 상품상세화면으로 이동-->
+                        <div class="name">
+                            <a href="${pageContext.request.contextPath}/products/${item.productId}">
+                            <c:out value="${item.productName}"/>
+                            </a>
+                        </div>
                         <div class="meta">
                             <c:out value="${item.optionName}"/> / <c:out value="${item.quantity}"/>개
                         </div>

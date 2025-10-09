@@ -122,8 +122,16 @@ body {
 
 
 .name {
-    font-weight: 600;
+    font-weight: 500;
     font-size: 13px
+}
+
+.name a {
+    color: inherit;
+}
+
+.name a:hover {
+    color: dimgray;
 }
 
 .meta {
