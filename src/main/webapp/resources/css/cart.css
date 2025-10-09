@@ -1,18 +1,22 @@
 /* General Body & Main Content Styles */
+
 body {
     font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #f8f9fa;
+    background: #ffffff;
     margin: 0;
     padding: 0;
+    height: 100%;
 }
 
-/* ===== Page container ===== */
 .container {
-    max-width: 1180px;
+    background: #fafafa;
+    width: 100%;
+    max-width: 1400px; /* 헤더와 동일 */
     margin: 0 auto;
-    padding: 24px 16px
+    padding: 25px 30px 20px 30px; /* 상 10px, 좌우 20px, 하 20px */ /* 헤더 패딩과 동일하게 맞춰도 됨 */
+    border: 1px solid #e9ecef;
+    box-sizing: border-box;
 }
-
 /* 이하 장바구니 전용 스타일 그대로 유지 */
 .page-title {
     font-weight: 700;
@@ -155,12 +159,11 @@ body {
 
 .btn-opt {
     border-radius: 5px;
-    margin-left: 32px;
+    margin-left: 0;
     margin-bottom: 15px;
-    margin-right: 2px;
-    width: 716px;
-    height: 25px
-
+    margin-right: 0;
+    width: 850px;
+    height: 25px;
 }
 
 .x-btn {
