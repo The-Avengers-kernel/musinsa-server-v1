@@ -129,7 +129,7 @@
 
         LEFT JOIN USER_PRODUCT_LIKES upl
         ON upl.PRODUCT_ID = p.PRODUCT_ID
-        AND upl.user_id = #{userId}
+        AND upl.user_id = #{userId, jdbcType=VARCHAR}
 
         LEFT JOIN (SELECT oi.PRODUCT_ID, SUM(oi.QUANTITY) AS total_sales
         FROM ORDER_ITEMS oi
@@ -312,20 +312,20 @@
         WHERE pimg.image_type = 'MAIN'
         <if test="lastId != null">
             AND (
-                <choose>
-                    <when test="sortBy == 'PRICE_LOW'">
-                        ranked_products.price > #{lastValue}
-                        OR (ranked_products.price = #{lastValue} AND ranked_products.product_id > #{lastId})
-                    </when>
-                    <when test="sortBy == 'PRICE_HIGH'">
-                        ranked_products.price &lt; #{lastValue}
-                        OR (ranked_products.price = #{lastValue} AND ranked_products.product_id &lt; #{lastId})
-                    </when>
-                    <when test="sortBy == 'LIKE'">
-                        ranked_products.product_likes &lt; #{lastValue}
-                        OR (ranked_products.product_likes = #{lastValue} AND ranked_products.product_id &lt; #{lastId})
-                    </when>
-                </choose>
+            <choose>
+                <when test="sortBy == 'PRICE_LOW'">
+                    ranked_products.price > #{lastValue}
+                    OR (ranked_products.price = #{lastValue} AND ranked_products.product_id > #{lastId})
+                </when>
+                <when test="sortBy == 'PRICE_HIGH'">
+                    ranked_products.price &lt; #{lastValue}
+                    OR (ranked_products.price = #{lastValue} AND ranked_products.product_id &lt; #{lastId})
+                </when>
+                <when test="sortBy == 'LIKE'">
+                    ranked_products.product_likes &lt; #{lastValue}
+                    OR (ranked_products.product_likes = #{lastValue} AND ranked_products.product_id &lt; #{lastId})
+                </when>
+            </choose>
             )
         </if>
         <choose>
@@ -592,20 +592,20 @@
         WHERE p.brand_id = #{brandId}
         <if test="lastId != null">
             AND (
-                <choose>
-                    <when test="sortBy == 'PRICE_LOW'">
-                        p.price > #{lastValue}
-                        OR (p.price = #{lastValue} AND p.product_id > #{lastId})
-                    </when>
-                    <when test="sortBy == 'PRICE_HIGH'">
-                        p.price &lt; #{lastValue}
-                        OR (p.price = #{lastValue} AND p.product_id &lt; #{lastId})
-                    </when>
-                    <when test="sortBy == 'LIKE'">
-                        p.product_likes &lt; #{lastValue}
-                        OR (p.product_likes = #{lastValue} AND p.product_id &lt; #{lastId})
-                    </when>
-                </choose>
+            <choose>
+                <when test="sortBy == 'PRICE_LOW'">
+                    p.price > #{lastValue}
+                    OR (p.price = #{lastValue} AND p.product_id > #{lastId})
+                </when>
+                <when test="sortBy == 'PRICE_HIGH'">
+                    p.price &lt; #{lastValue}
+                    OR (p.price = #{lastValue} AND p.product_id &lt; #{lastId})
+                </when>
+                <when test="sortBy == 'LIKE'">
+                    p.product_likes &lt; #{lastValue}
+                    OR (p.product_likes = #{lastValue} AND p.product_id &lt; #{lastId})
+                </when>
+            </choose>
             )
         </if>
         <choose>
@@ -649,20 +649,20 @@
         )
         <if test="lastId != null">
             AND (
-                <choose>
-                    <when test="sortBy == 'PRICE_LOW'">
-                        p.price > #{lastValue}
-                        OR (p.price = #{lastValue} AND p.product_id > #{lastId})
-                    </when>
-                    <when test="sortBy == 'PRICE_HIGH'">
-                        p.price &lt; #{lastValue}
-                        OR (p.price = #{lastValue} AND p.product_id &lt; #{lastId})
-                    </when>
-                    <when test="sortBy == 'LIKE'">
-                        p.product_likes &lt; #{lastValue}
-                        OR (p.product_likes = #{lastValue} AND p.product_id &lt; #{lastId})
-                    </when>
-                </choose>
+            <choose>
+                <when test="sortBy == 'PRICE_LOW'">
+                    p.price > #{lastValue}
+                    OR (p.price = #{lastValue} AND p.product_id > #{lastId})
+                </when>
+                <when test="sortBy == 'PRICE_HIGH'">
+                    p.price &lt; #{lastValue}
+                    OR (p.price = #{lastValue} AND p.product_id &lt; #{lastId})
+                </when>
+                <when test="sortBy == 'LIKE'">
+                    p.product_likes &lt; #{lastValue}
+                    OR (p.product_likes = #{lastValue} AND p.product_id &lt; #{lastId})
+                </when>
+            </choose>
             )
         </if>
         <choose>
