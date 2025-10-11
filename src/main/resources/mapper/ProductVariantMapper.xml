@@ -21,14 +21,23 @@
         SET stock_quantity = stock_quantity - #{quantity}
         WHERE product_variant_id = #{productVariantId}
     </update>
-    
+
     <update id="batchDecrementStock">
-        <foreach collection="products" item="product" open="BEGIN" close="END;" separator="">
-            UPDATE PRODUCT_VARIANTS
-            SET stock_quantity = stock_quantity - #{product.quantity}
-            WHERE product_variant_id = #{product.variantId}
-            AND stock_quantity >= #{product.quantity};
+        UPDATE PRODUCT_VARIANTS
+        SET stock_quantity = CASE product_variant_id
+        <foreach collection="products" item="product" separator=" ">
+            WHEN #{product.variantId} THEN stock_quantity - #{product.quantity}
         </foreach>
+        END
+        WHERE product_variant_id IN
+        <foreach collection="products" item="product" open="(" close=")" separator=",">
+            #{product.variantId}
+        </foreach>
+        AND stock_quantity >= CASE product_variant_id
+        <foreach collection="products" item="product" separator=" ">
+            WHEN #{product.variantId} THEN #{product.quantity}
+        </foreach>
+        END
     </update>
 
     <select id="findProductVariantsByOptionNames" resultType="com.avengers.musinsa.domain.product.dto.response.ProductVariantDto">

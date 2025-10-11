@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @SpringBootTest
-class AtomicUpdateVsPessimisticLockTest {
+class PessimisticLockTest {
 
     @Autowired
     private ProductService productService;
@@ -32,21 +32,20 @@ class AtomicUpdateVsPessimisticLockTest {
         System.out.println("동시 요청 수: " + THREAD_COUNT + "명");
         System.out.println("=".repeat(80) + "\n");
 
+//        // 1. 원자적 UPDATE 방식 테스트
+//        long atomicTime = testAtomicUpdate();
+//
+//        Thread.sleep(1000);  // 잠시 대기
 
-        // 1. 비관적 락 방식 테스트
+        // 2. 비관적 락 방식 테스트
         long pessimisticTime = testPessimisticLock();
 
-        Thread.sleep(1500);  // 잠시 대기
-
-        // 2. 원자적 UPDATE 방식 테스트
-        long atomicTime = testAtomicUpdate();
-
         // 3. 결과 비교
-        printComparison(atomicTime, pessimisticTime);
+//        printComparison(atomicTime, pessimisticTime);
     }
 
     private long testAtomicUpdate() throws InterruptedException {
-        System.out.println("원자적 UPDATE 방식 테스트 시작...");
+        System.out.println("[1] 원자적 UPDATE 방식 테스트 시작...");
 
         // ✅ 초기화 추가!
         productMapper.resetProductLikeCnt(TEST_PRODUCT_ID);
@@ -94,7 +93,7 @@ class AtomicUpdateVsPessimisticLockTest {
     }
 
     private long testPessimisticLock() throws InterruptedException {
-        System.out.println("비관적 락 방식 테스트 시작...");
+        System.out.println("[2] 비관적 락 방식 테스트 시작...");
 
         // ✅ 초기화 추가!
         productMapper.resetProductLikeCnt(TEST_PRODUCT_ID);

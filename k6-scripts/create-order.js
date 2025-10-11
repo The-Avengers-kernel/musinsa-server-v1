@@ -3,9 +3,12 @@ import { check, sleep } from 'k6';
 
 export const options = {
 
-    duration: '5m',
-    vus: 1000 ,
-
+    // duration: '5m',
+    // vus: 1000 ,
+    stages: [
+        { duration: '1m', target: 50 },   // 30초 동안 0→100명으로 증가
+        { duration: '1m', target: 100 }   // 1분 동안 100명 유지
+    ],
     thresholds: {
         http_req_duration: ['p(95)<5000'],
         http_req_failed: ['rate<0.1'],
@@ -142,7 +145,7 @@ export default function() {
         {
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': 'Authorization=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Im5hdmVyIGRzZjJpUnR6UkZOTHBuS05DQXEtRVk4SzJjOHhZZUYxcl9ZOC01MUVGTVUiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzU5ODkwNzM1LCJleHAiOjE3NTk5NzcxMzV9.fF9VuIKZdBTBVpKX9HDd50q51oDXNyWkjFU6SNe79aU'
+                'Cookie': 'Authorization=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Im5hdmVyIGRzZjJpUnR6UkZOTHBuS05DQXEtRVk4SzJjOHhZZUYxcl9ZOC01MUVGTVUiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzYwMDY0Nzk0LCJleHAiOjE3NjAxNTExOTR9.Y_4w860lK_OAyBqnpw4pZaHTuDn28kFLuBgk0QVJmIQ'
             }
         }
     );
