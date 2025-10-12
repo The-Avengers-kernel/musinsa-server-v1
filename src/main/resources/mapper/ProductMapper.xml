@@ -566,7 +566,7 @@
         FOR UPDATE  <!-- 비관적 락! -->
     </select>
 
-    <!-- 좋아요 수 업데이트 -->
+    <!-- 비관적 락 방식을 위한 좋아요 수 업데이트 -->
     <update id="updateProductLikeCnt">
         UPDATE products
         SET product_likes = #{likeCnt}

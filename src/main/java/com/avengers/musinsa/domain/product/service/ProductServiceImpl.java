@@ -341,20 +341,28 @@ public class ProductServiceImpl implements ProductService {
     public ProductLikeResponse ProductLikeToggleByLock(Long userId, Long productId) {
         UserProductStatus userLikeStatus = productRepository.getUserProductStatus(userId, productId);
 
+        // 상품 조회하면서 락 걸기
         Product product = productRepository.findProductByIdWithLock(productId);
 
-        // ✅ null 체크 추가!
+        // null 체크 추가
         if (product == null || product.getProductLikes() == null) {
             throw new RuntimeException("상품을 찾을 수 없거나 좋아요 수가 null입니다");
         }
 
+        // 1. 좋아요 개수 읽어오기
         Long currentLikeCnt = Long.valueOf(product.getProductLikes());
 
         if (userLikeStatus == null) {
+            // 좋아요 이력 테이블에 데이터 추가
             productRepository.insertUserProductLike(userId, productId);
+
+            //2. 좋아요 + 1
             Long updatedLikeCnt = currentLikeCnt + 1;
+
+            //3. 좋아요 업데이트 하기
             productRepository.updateProductLikeCnt(productId, updatedLikeCnt);
             return productRepository.getIsLikedProduct(userId, productId);
+
         } else {
             Integer previousLikedStatus = userLikeStatus.getLiked();
             productRepository.switchProductLike(userId, productId);

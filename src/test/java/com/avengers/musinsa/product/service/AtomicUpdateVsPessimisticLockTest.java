@@ -48,7 +48,7 @@ class AtomicUpdateVsPessimisticLockTest {
     private long testAtomicUpdate() throws InterruptedException {
         System.out.println("원자적 UPDATE 방식 테스트 시작...");
 
-        // ✅ 초기화 추가!
+        // 초기화 추가
         productMapper.resetProductLikeCnt(TEST_PRODUCT_ID);
         productMapper.deleteAllUserProductLikes(TEST_PRODUCT_ID);
 
@@ -96,7 +96,7 @@ class AtomicUpdateVsPessimisticLockTest {
     private long testPessimisticLock() throws InterruptedException {
         System.out.println("비관적 락 방식 테스트 시작...");
 
-        // ✅ 초기화 추가!
+        // 초기화 추가
         productMapper.resetProductLikeCnt(TEST_PRODUCT_ID);
         productMapper.deleteAllUserProductLikes(TEST_PRODUCT_ID);
 
