@@ -31,7 +31,9 @@ public class ProductViewController {
     @GetMapping()
     public String searchPage(
             @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "LIKE") String sortBy,
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "12") int size,
             @CookieValue(value = "Authorization", required = false) String authorization,
             Model model
     ) {
@@ -42,7 +44,7 @@ public class ProductViewController {
             } catch (Exception ignore) { /* 비로그인/만료 등은 null 로 */ }
         }
 
-        SearchResponse result = productService.searchProducts(keyword, userId, sortBy);
+        SearchResponse result = productService.searchProducts(keyword, userId, sortBy, page, size);
 
         model.addAttribute("keyword", keyword);
         model.addAttribute("result", result);
@@ -53,7 +55,9 @@ public class ProductViewController {
     @GetMapping("/category/{categoryId}")
     public String getProductsByCategory(
             @PathVariable Long categoryId,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "POPULARITY") String sortBy,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "LIKE") String sortBy,
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "12") int size,
             @CookieValue(value = "Authorization", required = false) String authorization,
             Model model) {
         Long userId = null;
@@ -63,7 +67,7 @@ public class ProductViewController {
             } catch (Exception ignore) { /* 비로그인/만료 등은 null 로 */ }
         }
 
-        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, userId, sortBy);
+        List<ProductByCategoryResponse> products = productService.getProductsByCategory(categoryId, userId, sortBy, page, size);
         model.addAttribute("products", products);
         return "product/categoryProductsPage";
     }

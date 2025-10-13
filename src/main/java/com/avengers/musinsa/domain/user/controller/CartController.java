@@ -96,4 +96,16 @@ public class CartController {
         }
     }
 
+    //장바구니 아이템 삭제
+    @DeleteMapping("/carts")
+    public void deleteCartItems(
+            @CookieValue(value = "Authorization", required = false) String authorizationHeader,
+            @RequestBody List<Long> cartIds) {
+        if (authorizationHeader == null || authorizationHeader.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorization token is missing");
+        }
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        cartService.deleteCartItems(userId, cartIds);
+    }
+
 }

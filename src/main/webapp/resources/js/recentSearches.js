@@ -24,7 +24,8 @@
         brandSection: null,
         popularSection: null,
         recentListEl: null,
-        brandListEl: null
+        brandListEl: null,
+        recentKeywords: []
     };
 
     function ensureOverlayMarkup() {
@@ -98,6 +99,7 @@
 
         const closeBtn = state.overlayEl.querySelector('#closeOverlayBtn');
         const submitBtn = state.overlayEl.querySelector('#searchSubmitBtn');
+        const searchForm = state.overlayEl.querySelector('form');
 
         if (closeBtn) {
             closeBtn.addEventListener('click', closeOverlay);
@@ -105,6 +107,13 @@
 
         if (submitBtn) {
             submitBtn.addEventListener('click', handleSearchSubmit);
+        }
+
+        if (searchForm) {
+            searchForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                handleSearchSubmit(event);
+            });
         }
 
         if (state.searchInput) {
@@ -239,18 +248,23 @@
     }
 
     function loadRecentKeywords() {
-        if (isLoggedIn() && getUserId()) {
+        if (isLoggedIn()) {
             const url = new URL(contextPath + '/api/v1/search/recent', win.location.origin);
-            url.searchParams.set('userId', getUserId());
 
             fetch(url, {credentials: 'include'})
-                .then(handleJsonResponse)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('status ' + response.status);
+                    }
+                    return handleJsonResponse(response);
+                })
                 .then(function (data) {
                     const list = Array.isArray(data) ? data : (data && data.data ? data.data : []);
                     renderRecentKeywords(list);
                 })
                 .catch(function () {
-                    renderRecentKeywords([]);
+                    // 서버 응답이 없으면 로컬 저장소 기반으로라도 보여준다.
+                    renderRecentKeywords(getLocalRecentKeywords());
                 });
         } else {
             renderRecentKeywords(getLocalRecentKeywords());
@@ -275,10 +289,12 @@
 
         if (normalized.length === 0) {
             state.recentSection.classList.add('is-hidden');
+            state.recentKeywords = [];
             return;
         }
 
         state.recentSection.classList.remove('is-hidden');
+        state.recentKeywords = normalized;
         normalized.forEach(function (keyword) {
             const li = doc.createElement('li');
             li.className = 'search-tag';
@@ -407,6 +423,28 @@
         executeSearch();
     }
 
+    function saveSearchLog(keyword) {
+        if (!keyword) {
+            return;
+        }
+
+        // 서버 API는 /api/v1/search/search-logs 에 매핑되어 있으므로 정확한 경로로 호출한다.
+        fetch(contextPath + '/api/v1/search/search-logs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ keyword }),
+            credentials: 'include'
+        }).then(function (response) {
+            if (!response.ok) {
+                throw new Error('status ' + response.status);
+            }
+        }).catch(function (err) {
+            console.error('검색어 저장 실패:', err);
+            // 서버에 저장하지 못하더라도 사용자는 즉시 기록을 확인할 수 있어야 하므로 로컬에 보관한다.
+            saveLocalRecentKeyword(keyword);
+        });
+    }
+
     function executeSearch() {
         if (!state.searchInput) {
             return;
@@ -420,10 +458,10 @@
 
         state.currentKeyword = keyword;
         if (isLoggedIn()) {
-            loadRecentKeywords();
+            upsertRecentKeyword(keyword); // 서버 응답을 기다리지 않고 즉시 표시
+            saveSearchLog(keyword);
         } else {
             saveLocalRecentKeyword(keyword);
-            renderRecentKeywords(getLocalRecentKeywords());
         }
         //메인 상품 리스트 페이지로 이동
         win.location.href = contextPath + '/products?keyword=' + encodeURIComponent(keyword);
@@ -638,6 +676,25 @@
         }
     }
 
+    function upsertRecentKeyword(keyword) {
+        if (!keyword) {
+            return;
+        }
+        const normalized = keyword.trim();
+        if (!normalized) {
+            return;
+        }
+
+        const existing = Array.isArray(state.recentKeywords) ? state.recentKeywords : [];
+        const updated = [normalized].concat(existing.filter(function (item) {
+            return item !== normalized;
+        })).slice(0, 10);
+
+        state.recentKeywords = updated;
+        renderRecentKeywords(updated);
+        saveLocalRecentKeywords(updated);
+    }
+
     function saveLocalRecentKeyword(keyword) {
         if (!keyword) {
             return;
@@ -646,7 +703,9 @@
             return item !== keyword;
         });
         list.unshift(keyword);
-        saveLocalRecentKeywords(list.slice(0, 10));
+        const limited = list.slice(0, 10);
+        saveLocalRecentKeywords(limited);
+        renderRecentKeywords(limited);
     }
 
     function getLocalRecentKeywords() {

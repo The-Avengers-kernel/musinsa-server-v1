@@ -65,7 +65,8 @@ html, body {
 
 body {
     font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Dotum', sans-serif;
-    background: var(--bg-app);
+    background: #ffffff;
+    margin: 0;
     color: var(--text-body);
     font-size: var(--fz-14);
 }
@@ -100,8 +101,12 @@ a {
 
 /* ---------- Layout ---------- */
 .container {
-    max-width: var(--container-max);
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 0 30px 30px;
     margin-inline: auto;
+    background: #fafafa;
+    border: 1px solid #e9ecef;
 }
 
 /* Main layout: mobile first column, desktop row */
@@ -110,8 +115,11 @@ a {
     flex-direction: column;
     gap: var(--space-16);
     padding-top: var(--space-16);
+    padding-inline: var(--space-16); /* 좌우 패딩 추가 */
     min-width: 400px;
     background: var(--bg-app);
+    max-width: var(--container-max); /* 최대 너비 제한 */
+    margin-inline: auto; /* 중앙 정렬 */
 }
 
 /* Left column */
@@ -129,8 +137,7 @@ a {
 
 .product-info-sticky {
     background: var(--bg-card);
-    padding: var(--space-24) var(--space-20);
-    margin: 0;
+    padding: 20px;
     border-radius: var(--radius-sm);
     word-break: break-word;
     max-height: none;
@@ -166,7 +173,8 @@ a {
 /* ---------- Images section ---------- */
 .product-images-section {
     display: flex;
-    gap: var(--space-12);
+    gap: 0;  /* 간격 제거 */
+    margin-left: 170px;
     background: var(--bg-app);
 }
 
@@ -192,11 +200,14 @@ a {
 }
 
 .preview-item:hover {
-    border-color: #666;
+    border: 2px solid #000000;
+    border-radius: 0;
 }
 
 .preview-item.active {
-    border-color: #000;
+    border: 2px solid #000000;
+    border-radius: 0;
+    margin-right: 10px;
 }
 
 .preview-item img {
@@ -209,14 +220,14 @@ a {
 .main-image-container {
     order: 1;
     background: var(--bg-card);
-    padding-inline: var(--space-10);
     width: 100%;
     max-width: 1000px;
-    margin-inline: auto;
+    margin-left: 0px;  /* margin 제거 */
+    margin-right: 150px;
 }
 
 /* Desktop: thumbs column on the left */
-@media (min-width: 769px) {
+@media  {
     .product-images-section {
         align-items: flex-start;
     }

@@ -11,6 +11,8 @@ import com.avengers.musinsa.domain.user.repository.CartRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import com.avengers.musinsa.mapper.CartMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,8 +34,11 @@ public class CartService {
         CartItemDto existingItem = cartRepository.findCartItemByVariantId(userId, request);
 
         if (existingItem != null) {
-            // 4. 상품이 이미 있으면: 수량 업데이트
-
+            // 같은 상품, 같은 옵션, 같은 수량일 경우
+            if (existingItem.getQuantity().equals(request.getQuantity())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "DUPLICATE_ITEM");
+            }
+            // 4. 수량만 다를 경우, 기존 수량 업데이트
             cartRepository.updateCartItemQuantity(existingItem.getCartId(), request.getQuantity());
         } else {
             // 5. 상품이 없으면: 새로 추가
@@ -81,11 +86,38 @@ public class CartService {
             String message = "최대 " + availableQuantity + "개의 상품만 구매할 수 있습니다.";
             throw new ResponseStatusException(HttpStatus.CONFLICT, "QUANTITY_4091" + message);
         }
+        String newOptionName = productOptionInfo.getOptionName();
 
-        // 외의 경우 장바구니의 해당 상품 옵션 변경
-        cartRepository.updateProductOption(userId, productId, productOptionInfo.getOptionName(), updateQuantity);
+        // 동일 옵션 중복 여부 확인
+        List<ProductsInCartInfoResponse> cartItems = cartRepository.getProductsInCart(userId);
 
-        // 장바구니 상품 목록 반환
+        // 현재 수정하려는 장바구니 항목의 userCartId 찾기
+        Long userCartId = cartItems.stream()
+                .filter(item -> item.getProductId().equals(productId))
+                .map(ProductsInCartInfoResponse::getUserCartId)
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "장바구니 항목을 찾을 수 없습니다."));
+
+        Optional<ProductsInCartInfoResponse> duplicate = cartItems.stream()
+                .filter(item -> !item.getUserCartId().equals(userCartId)) // 현재 수정 대상 제외
+                .filter(item -> item.getOptionName().equals(newOptionName)) // 동일 옵션 체크
+                .findFirst();
+
+        if (duplicate.isPresent()) {
+            // 장바구니 내 기존 동일 옵션 항목 삭제
+            cartRepository.deleteCartItems(userId, List.of(duplicate.get().getUserCartId()));
+            // 수정 대상 항목은 업데이트
+            cartRepository.updateProductOption(userCartId, newOptionName, updateQuantity);
+        } else {
+            // 중복 없으면 수정 대상 업데이트
+            cartRepository.updateProductOption(userCartId, newOptionName, updateQuantity);
+        }
+        // 5. 최신 장바구니 반환
         return getProductsInCart(userId);
+    }
+
+    @Transactional
+    public void deleteCartItems(Long userId, List<Long> cartIds) {
+        cartRepository.deleteCartItems(userId, cartIds);
     }
 }

@@ -3,19 +3,19 @@
 <c:set var="isFragment" value="${(param.fragment eq 'true') or (forceFragment eq true)}" />
 
 <c:if test="${not isFragment}">
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUSINSA - 검색</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/header.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-</head>
-<body>
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MUSINSA - 검색</title>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/header.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    </head>
+    <body>
 
-<%@ include file="../main/header.jsp" %>
+    <%@ include file="../main/header.jsp" %>
 </c:if>
 
 <div id="searchOverlay" class="search-overlay" role="dialog" aria-modal="true" aria-labelledby="recentSearchTitle">
@@ -52,8 +52,7 @@
                     <div class="loading-text">로딩 중...</div>
                 </ul>
             </section>
-
-            <section class="search-section" id="recentBrandSection" aria-labelledby="recentBrandTitle">
+<!--<section class="search-section" id="recentBrandSection" aria-labelledby="recentBrandTitle">
                 <div class="search-section-header">
                     <h3 id="recentBrandTitle">최근 방문한 브랜드</h3>
                     <button class="clear-all-btn" id="deleteAllRecentBrandsBtn" type="button">모두삭제</button>
@@ -61,7 +60,8 @@
                 <ul class="brand-list" id="recentBrandTags">
                     <div class="loading-text">로딩 중...</div>
                 </ul>
-            </section>
+            </section> -->
+
 
             <section class="search-section" id="popularKeywordSection" aria-labelledby="popularKeywordTitle">
                 <div class="search-section-header">
@@ -88,6 +88,6 @@
 </div>
 
 <c:if test="${not isFragment}">
-</body>
-</html>
+    </body>
+    </html>
 </c:if>

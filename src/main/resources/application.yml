@@ -63,6 +63,7 @@ mybatis:
   mapper-locations: ${MYBATIS_MAPPER_LOCATIONS}
   type-aliases-package: ${MYBATIS_TYPE_ALIASES_PACKAGE}
 
+
 logging:
 #  level:
 #    com.avengers.musinsa.mapper: DEBUG

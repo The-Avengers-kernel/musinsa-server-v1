@@ -23,7 +23,10 @@ public interface ProductMapper {
 
     List<ProductOptionRow> findOptionsByProductIds(@Param("productIds") List<Long> productIds);
 
-    List<ProductByCategoryResponse> getProductsByCategory(@Param("categoryId") Long categoryId, @Param("userId") Long userId, @Param("sortBy") String sortBy);
+    List<ProductByCategoryResponse> getProductsByCategory(@Param("categoryId") Long categoryId, @Param("userId") Long userId, @Param("sortBy") String sortBy, @Param("offset") int offset, @Param("limit") int limit);
+
+    // 커서 기반 페이지네이션
+    List<ProductByCategoryResponse> getProductsByCategoryCursor(@Param("categoryId") Long categoryId, @Param("userId") Long userId, @Param("sortBy") String sortBy, @Param("lastId") Long lastId, @Param("lastValue") Integer lastValue, @Param("size") int size);
 
     List<ProductImage> findProductImageById(Long productId);
 
@@ -52,9 +55,15 @@ public interface ProductMapper {
 
     ProductDetailDescriptionResponse getProductDetailDescription(Long productId);
 
-    List<SearchResponse.ProductInfo> findProductsByBrandId(@Param("brandId") Long brandId, @Param("userId") Long userId, @Param("sortBy") String sortBy);
+    List<SearchResponse.ProductInfo> findProductsByBrandId(@Param("brandId") Long brandId, @Param("userId") Long userId, @Param("sortBy") String sortBy, @Param("offset") int offset, @Param("limit") int limit);
 
-    List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords, @Param("userId") Long userId, @Param("sortBy") String sortBy);
+    List<SearchResponse.ProductInfo> findProductsByKeyword(@Param("keywords") String[] keywords, @Param("userId") Long userId, @Param("sortBy") String sortBy, @Param("offset") int offset, @Param("limit") int limit);
+
+    // 커서 기반 검색 (브랜드)
+    List<SearchResponse.ProductInfo> findProductsByBrandIdCursor(@Param("brandId") Long brandId, @Param("userId") Long userId, @Param("sortBy") String sortBy, @Param("lastId") Long lastId, @Param("lastValue") Integer lastValue, @Param("size") int size);
+
+    // 커서 기반 검색 (키워드)
+    List<SearchResponse.ProductInfo> findProductsByKeywordCursor(@Param("keywords") String[] keywords, @Param("userId") Long userId, @Param("sortBy") String sortBy, @Param("lastId") Long lastId, @Param("lastValue") Integer lastValue, @Param("size") int size);
 
     void saveSearchKeywordLog(String keyword);
 

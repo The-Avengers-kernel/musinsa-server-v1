@@ -42,9 +42,7 @@
             color: #ff4444;
         }
 
-        .product-image {
-            position: relative;
-        }
+        /* 인라인 스타일 오버라이드 제거 - CSS 파일에서 관리 */
     </style>
 </head>
 <body>
@@ -52,18 +50,18 @@
 
 <main class="container">
     <section class="section">
+        <div class="filter-bar">
+            <!-- 검색 화면의 headline 스타일 재사용 -->
+            <div class="headline">
+                "<strong id="categoryTitle"></strong>" 결과
+            </div>
 
-        <!-- 검색 화면의 headline 스타일 재사용 -->
-        <div class="headline">
-            "<strong id="categoryTitle"></strong>"
-            결과 <span class="count"><fmt:formatNumber value="${fn:length(products)}" pattern="#,###"/></span>개
-        </div>
-
-        <!-- 정렬 옵션 -->
-        <div class="sort-options">
-            <button class="sort-btn" data-sort="POPULARITY">인기순</button>
-            <button class="sort-btn" data-sort="PRICE_LOW">낮은 가격</button>
-            <button class="sort-btn" data-sort="PRICE_HIGH">높은 가격</button>
+            <!-- 정렬 옵션 -->
+            <div class="sort-options">
+                <button class="sort-btn" data-sort="LIKE">좋아요순</button>
+                <button class="sort-btn" data-sort="PRICE_LOW">낮은 가격순</button>
+                <button class="sort-btn" data-sort="PRICE_HIGH">높은 가격순</button>
+            </div>
         </div>
 
         <c:choose>
@@ -73,7 +71,10 @@
             <c:otherwise>
                 <div class="search-grid">
                     <c:forEach var="p" items="${products}">
-                        <a class="product-card" href="<c:url value='/products/${p.productId}'/>">
+                        <a class="product-card" href="<c:url value='/products/${p.productId}'/>"
+                           data-product-id="${p.productId}"
+                           data-price="${p.price}"
+                           data-likes="${p.productLikes}">
                             <div class="product-image">
                                 <c:choose>
                                     <c:when test="${not empty p.productImage}">
@@ -140,7 +141,7 @@
 
         // 현재 URL에서 sortBy 파라미터 읽기
         const urlParams = new URLSearchParams(window.location.search);
-        const currentSort = urlParams.get('sortBy') || 'POPULARITY';
+        const currentSort = urlParams.get('sortBy') || 'LIKE';
 
         // 현재 정렬 버튼에 active 클래스 추가
         const sortButtons = document.querySelectorAll('.sort-btn');
@@ -195,6 +196,113 @@
             }
         });
     }
+
+    // 커서 기반 무한 스크롤 기능
+    let lastId = null;
+    let lastValue = null;
+    let isLoading = false;
+    let hasMoreData = true;
+
+    // 페이지 로드 시 이미 렌더링된 마지막 상품의 커서 정보 추출
+    $(document).ready(function() {
+        const productCards = $('.product-card');
+        if (productCards.length > 0) {
+            const lastCard = productCards.last();
+            lastId = parseInt(lastCard.attr('data-product-id'));
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const sortBy = urlParams.get('sortBy') || 'LIKE';
+
+            // sortBy에 따라 lastValue 설정
+            if (sortBy === 'PRICE_LOW' || sortBy === 'PRICE_HIGH') {
+                lastValue = parseInt(lastCard.attr('data-price'));
+            } else {
+                lastValue = parseInt(lastCard.attr('data-likes'));
+            }
+
+            console.log('초기 커서 설정:', {lastId, lastValue, sortBy});
+        }
+    });
+
+    function loadMoreProducts() {
+        if (isLoading || !hasMoreData) return;
+
+        isLoading = true;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryId = window.location.pathname.split('/').pop();
+        const sortBy = urlParams.get('sortBy') || 'LIKE';
+
+        const requestData = {
+            sortBy: sortBy,
+            size: 12
+        };
+
+        // 첫 페이지가 아니면 커서 값 추가
+        if (lastId !== null && lastValue !== null) {
+            requestData.lastId = lastId;
+            requestData.lastValue = lastValue;
+        }
+
+        $.ajax({
+            url: '/api/v1/products/category/' + categoryId,
+            method: 'GET',
+            data: requestData,
+            success: function (products) {
+                if (products.length === 0) {
+                    hasMoreData = false;
+                    return;
+                }
+
+                // 마지막 상품의 커서 값 업데이트
+                const lastProduct = products[products.length - 1];
+                lastId = lastProduct.productId;
+
+                // sortBy에 따라 lastValue 설정
+                if (sortBy === 'PRICE_LOW' || sortBy === 'PRICE_HIGH') {
+                    lastValue = lastProduct.price;
+                } else if (sortBy === 'LIKE') {
+                    lastValue = lastProduct.productLikes;
+                }
+
+                const $grid = $('.search-grid');
+                products.forEach(function (p) {
+                    let likesHtml = p.productLikes ? '<span class="likes">♥ ' + p.productLikes.toLocaleString() + '</span>' : '';
+                    let starsHtml = p.ratingAverage ? '<span class="stars">★' + p.ratingAverage.toFixed(1) + '(' + p.reviewCount + ')</span>' : '';
+
+                    const productHtml = '<a class="product-card" href="/products/' + p.productId + '">' +
+                        '<div class="product-image">' +
+                        '<img src="' + (p.productImage || '/resources/img/placeholder.png') + '" alt="' + p.productName + '">' +
+                        '<i class="fa-heart product-like-icon ' + (p.isLiked ? 'fas filled' : 'far empty') + '" ' +
+                        'data-product-id="' + p.productId + '" ' +
+                        'onclick="event.preventDefault(); event.stopPropagation(); toggleProductLike(this);"></i>' +
+                        '</div>' +
+                        '<div class="product-brand">' + p.brandName + '</div>' +
+                        '<div class="product-name">' + p.productName + '</div>' +
+                        '<div class="product-price">' +
+                        '<span class="current-price">' + p.price.toLocaleString() + '원</span>' +
+                        '</div>' +
+                        '<div class="likes-and-stars">' + likesHtml + starsHtml + '</div>' +
+                        '</a>';
+                    $grid.append(productHtml);
+                });
+
+                isLoading = false;
+            },
+            error: function (xhr) {
+                console.error('상품 로드 실패:', xhr);
+                isLoading = false;
+            }
+        });
+    }
+
+    // 스크롤 이벤트 리스너
+    $(window).on('scroll', function () {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+            loadMoreProducts();
+        }
+    });
+
 </script>
 </body>
 </html>

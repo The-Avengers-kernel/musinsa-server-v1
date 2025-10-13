@@ -477,10 +477,19 @@
             success: function () {
                 console.log('장바구니 추가 제품 정보 : ', cartData);
                 alert('장바구니에 상품을 추가했습니다.');
+
+                // 장바구니 뱃지 업데이트
+                if (window.updateCartBadge) window.updateCartBadge();
             },
             error: function (xhr) {
                 console.error('장바구니 추가 실패:', xhr.responseText || xhr);
-                alert('장바구니 추가에 실패했습니다.');
+
+                //동일 옵션 + 동일 수량일 경우
+                if(xhr.responseText && xhr.responseText.includes("DUPLICATE_ITEM")){
+                    alert("선택하신 상품은 이미 장바구니에 있습니다.");
+                }else{
+                    alert('장바구니 추가에 실패했습니다.');
+                }
             }
         });
     }

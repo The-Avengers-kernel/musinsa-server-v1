@@ -54,8 +54,7 @@
         UPDATE USER_CARTS
         SET CART_OPTION=#{productOptionName},
             CART_QUANTITY=#{quantity}
-        WHERE USER_ID = #{userId}
-          AND PRODUCT_ID = #{productId}
+        WHERE USER_CART_ID = #{userCartId}
     </update>
 
     <!--    userId와 productVariantId를 이용해 장바구니 찾기-->
@@ -83,9 +82,18 @@
 
     <!--    장바구니수량업데이트-->
     <update id="updateCartItemQuantity">
-        UPDATE
-            USER_CARTS
+        UPDATE USER_CARTS
         SET CART_QUANTITY = #{newQuantity}
         WHERE USER_CART_ID = #{cartId}
     </update>
+
+    <!--    장바구니 아이템 삭제-->
+    <delete id="deleteCartItems">
+        DELETE FROM USER_CARTS
+        WHERE USER_ID = #{userId}
+        AND USER_CART_ID IN
+        <foreach collection="cartIds" item="cartId" open="(" separator="," close=")">
+            #{cartId}
+        </foreach>
+    </delete>
 </mapper>

@@ -69,8 +69,13 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId, String sortBy) {
-        return productMapper.getProductsByCategory(categoryId, userId, sortBy);
+    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId, String sortBy, int offset, int limit) {
+        return productMapper.getProductsByCategory(categoryId, userId, sortBy, offset, limit);
+    }
+
+    @Override
+    public List<ProductByCategoryResponse> getProductsByCategoryCursor(Long categoryId, Long userId, String sortBy, Long lastId, Integer lastValue, int size) {
+        return productMapper.getProductsByCategoryCursor(categoryId, userId, sortBy, lastId, lastValue, size);
     }
 
     @Override
@@ -116,14 +121,26 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId, Long userId, String sortBy) {
-        return productMapper.findProductsByBrandId(brandId, userId, sortBy);
+    public List<SearchResponse.ProductInfo> findProductsByBrandId(Long brandId, Long userId, String sortBy, int offset, int limit) {
+        return productMapper.findProductsByBrandId(brandId, userId, sortBy, offset, limit);
     }
 
     // 검색어로 상품 목록 찾기
     @Override
-    public List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords, Long userId, String sortBy) {
-        return productMapper.findProductsByKeyword(keywords, userId, sortBy);
+    public List<SearchResponse.ProductInfo> findProductsByKeyword(String[] keywords, Long userId, String sortBy, int offset, int limit) {
+        return productMapper.findProductsByKeyword(keywords, userId, sortBy, offset, limit);
+    }
+
+    // 커서 기반 검색 (브랜드)
+    @Override
+    public List<SearchResponse.ProductInfo> findProductsByBrandIdCursor(Long brandId, Long userId, String sortBy, Long lastId, Integer lastValue, int size) {
+        return productMapper.findProductsByBrandIdCursor(brandId, userId, sortBy, lastId, lastValue, size);
+    }
+
+    // 커서 기반 검색 (키워드)
+    @Override
+    public List<SearchResponse.ProductInfo> findProductsByKeywordCursor(String[] keywords, Long userId, String sortBy, Long lastId, Integer lastValue, int size) {
+        return productMapper.findProductsByKeywordCursor(keywords, userId, sortBy, lastId, lastValue, size);
     }
 
     //검색 시 검색어 로그 테이블에 검색 정보 저장하기.
@@ -132,11 +149,11 @@ public class ProductRepositoryImpl implements ProductRepository {
         productMapper.saveSearchKeywordLog(keyword);
     }
 
-    //검색 시 브랜드 로그 테이블에 검색 정보 저장하기.
-    @Override
-    public void saveSearchBrandLog(String brand) {
-        productMapper.saveSearchBrandLog(brand);
-    }
+//    //검색 시 브랜드 로그 테이블에 검색 정보 저장하기.
+//    @Override
+//    public void saveSearchBrandLog(String brand) {
+//        productMapper.saveSearchBrandLog(brand);
+//    }
 
 
     //상품 좋아요 토글

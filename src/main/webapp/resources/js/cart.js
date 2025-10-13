@@ -80,6 +80,14 @@
                 data: JSON.stringify({type: "FROM_CART", cartItemIds: cartItemIds}),
             });
         },
+        deleteCartItems: function (cartIds) {
+            return $.ajax({
+                url: BASE + "/api/v1/carts",
+                type: "DELETE",
+                contentType: "application/json",
+                data: JSON.stringify(cartIds),
+            });
+        },
     };
 
     // ===== Group / Index =====
@@ -144,16 +152,17 @@
         var opt = item.optionName || "";
         var qty = Number(item.quantity) || 0;
         var price = Number(item.totalPrice) || 0;
+        var productId = Number(item.productId);
 
         return (
             '<div class="item" ' +
-            'data-id="' + Number(item.productId) + '" ' +
+            'data-id="' + productId + '" ' +
             'data-cart-id="' + Number(item.userCartId) + '" ' +
             'data-brand="' + escapeAttr(brand) + '">' +
             '  <div class="checkbox"><input type="checkbox" class="row-check"' + checked + "></div>" +
-            '  <div class="thumb"><img src="' + escapeAttr(img) + '" alt=""></div>' +
+            '  <div class="thumb">' + `<a href="${BASE}/products/${productId}"><img src="${escapeAttr(img)}" alt=""></a>`+ "</div>" +
             "  <div>" +
-            '    <div class="name">' + escapeHtml(name) + "</div>" +
+            '    <div class="name">' + `<a href="${BASE}/products/${productId}">${escapeHtml(name)}</a>` + "</div>" +
             '    <div class="meta">' + escapeHtml(opt) + " / " + qty + "개" + "</div>" +
             '    <div class="price">' + toCurrency(price) + "</div>" +
             "  </div>" +
@@ -259,18 +268,30 @@
     function removeByCartIds(cartIds) {
         if (!cartIds || cartIds.length === 0) return;
 
-        var rmSet = new Set(cartIds.map(Number));
-        state.raw = state.raw.filter(function (it) {
-            return !rmSet.has(Number(it.userCartId));
-        });
+        // 서버에 삭제 요청
+        api.deleteCartItems(cartIds)
+            .done(function() {
+                var rmSet = new Set(cartIds.map(Number));
+                state.raw = state.raw.filter(function (it) {
+                    return !rmSet.has(Number(it.userCartId));
+                });
 
-        // 선택도 정리
-        rmSet.forEach(function (cid) {
-            state.selected.delete(cid);
-        });
+                // 선택도 정리
+                rmSet.forEach(function (cid) {
+                    state.selected.delete(cid);
+                });
 
-        recalc();
-        render();
+                recalc();
+                render();
+
+                // 장바구니 뱃지 업데이트
+                if (window.updateCartBadge) window.updateCartBadge();
+            })
+            .fail(function(xhr) {
+                console.error("장바구니 삭제 실패:", xhr);
+                alert("장바구니 삭제에 실패했습니다.");
+            });
+
     }
 
     function removeBrand(brand) {
@@ -566,6 +587,8 @@
             .createOrderFromCart(ids)
             .done(function (response) {
                 if (response && response.success) {
+                    // 장바구니 뱃지 업데이트 (주문 성공 시 장바구니에서 제거됨)
+                    if (window.updateCartBadge) window.updateCartBadge();
                     window.location.href = BASE + response.redirectUrl;
                 } else {
                     alert((response && response.message) || "주문 처리에 실패했습니다.");

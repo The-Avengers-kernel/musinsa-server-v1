@@ -10,6 +10,7 @@ import com.avengers.musinsa.domain.product.entity.ProductImage;
 import com.avengers.musinsa.domain.product.entity.Gender;
 import com.avengers.musinsa.domain.product.repository.ProductRepository;
 import com.avengers.musinsa.domain.product.dto.ProductOptionRow;
+import com.avengers.musinsa.domain.search.repository.PopularKeywordRepository;
 import com.avengers.musinsa.domain.review.dto.Request.RequestReview;
 import com.avengers.musinsa.domain.review.dto.ReviewMeta;
 import com.avengers.musinsa.domain.review.repository.ReviewRepository;
@@ -34,8 +35,8 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
     private final ReviewRepository reviewRepository;
     private final SearchLogService searchLogService;
+    private final PopularKeywordRepository popularKeywordRepository;
     private final ReviewMapper reviewMapper;
-    private final ProductMapper productMapper;
 
     @Override
     public ProductDetailResponse getProductById(Long productId, Long userId) {
@@ -204,14 +205,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId, String sortBy) {
+    public List<ProductByCategoryResponse> getProductsByCategory(Long categoryId, Long userId, String sortBy, int page, int size) {
         log.info("카테고리 ID로 상품 조회 시작: {}", categoryId);
         log.info("정렬 기준: {}", sortBy);
 
-        List<ProductByCategoryResponse> result = productRepository.getProductsByCategory(categoryId, userId, sortBy);
+        int offset = page * size;
+        List<ProductByCategoryResponse> result = productRepository.getProductsByCategory(categoryId, userId, sortBy, offset, size);
 
         log.info("조회 결과 개수: {}", result != null ? result.size() : 0);
         log.debug("조회 결과: {}", result);
+
+        return result;
+    }
+
+    @Override
+    public List<ProductByCategoryResponse> getProductsByCategoryCursor(Long categoryId, Long userId, String sortBy, Long lastId, Integer lastValue, int size) {
+        log.info("커서 기반 카테고리 상품 조회 - categoryId: {}, sortBy: {}, lastId: {}, lastValue: {}",
+                 categoryId, sortBy, lastId, lastValue);
+
+        List<ProductByCategoryResponse> result = productRepository.getProductsByCategoryCursor(
+                categoryId, userId, sortBy, lastId, lastValue, size);
+
+        log.info("조회 결과 개수: {}", result != null ? result.size() : 0);
 
         return result;
     }
@@ -229,12 +244,14 @@ public class ProductServiceImpl implements ProductService {
 
     // 상품 검색
     @Override
-    public SearchResponse searchProducts(String keyword, Long userId, String sortBy) {
+    public SearchResponse searchProducts(String keyword, Long userId, String sortBy, int page, int size) {
 
         String processedKeyword = preprocessKeyword(keyword);
-        searchLogService.saveSearchKeywordLog(keyword, userId);
+        //searchLogService.saveSearchKeywordLog(keyword, userId);
         System.out.println("검색어 : " + processedKeyword);
         System.out.println("정렬 : " + sortBy);
+
+        int offset = page * size;
 
         // 브랜드 검색 먼저 시도
         // 브랜드 두 개 검색될 경우도 고려하여 코드 작성
@@ -249,7 +266,7 @@ public class ProductServiceImpl implements ProductService {
 
             // 브랜드 상품 불러오기
             List<SearchResponse.ProductInfo> brandProducts =
-                    productRepository.findProductsByBrandId(brand.getBrandId(), userId, sortBy);
+                    productRepository.findProductsByBrandId(brand.getBrandId(), userId, sortBy, offset, size);
 
             SearchResponse.BrandInfo brandInfo = SearchResponse.BrandInfo.builder()
                     .brandId(brand.getBrandId())
@@ -273,7 +290,7 @@ public class ProductServiceImpl implements ProductService {
                 System.out.println("키워드 = " + key);
             }
             List<SearchResponse.ProductInfo> products =
-                    productRepository.findProductsByKeyword(keywords, userId, sortBy);
+                    productRepository.findProductsByKeyword(keywords, userId, sortBy, offset, size);
 
             if (!products.isEmpty()) {
                 return SearchResponse.builder()
@@ -289,6 +306,56 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    // 상품 검색 (커서 기반)
+    @Override
+    public SearchResponse searchProductsCursor(String keyword, Long userId, String sortBy, Long lastId, Integer lastValue, int size) {
+        String processedKeyword = preprocessKeyword(keyword);
+        System.out.println("커서 기반 검색어 : " + processedKeyword);
+        System.out.println("정렬 : " + sortBy);
+
+        // 브랜드 검색 먼저 시도
+        List<BrandResponse> brandList = brandRepository.findByBrandName(processedKeyword);
+
+        if (!brandList.isEmpty()) {
+            // 브랜드 검색인 경우
+            BrandResponse brand = brandList.getFirst();
+
+            // 브랜드 상품 불러오기 (커서 기반)
+            List<SearchResponse.ProductInfo> brandProducts =
+                    productRepository.findProductsByBrandIdCursor(brand.getBrandId(), userId, sortBy, lastId, lastValue, size);
+
+            SearchResponse.BrandInfo brandInfo = SearchResponse.BrandInfo.builder()
+                    .brandId(brand.getBrandId())
+                    .brandNameKr(brand.getBrandNameKr())
+                    .brandNameEn(brand.getBrandNameEn())
+                    .brandImage(brand.getBrandImage())
+                    .brandLikes(brand.getBrandLikes())
+                    .totalCount(brandProducts.size())
+                    .products(brandProducts)
+                    .build();
+
+            return SearchResponse.builder()
+                    .searchKeyword(keyword)
+                    .brandInfo(brandInfo)
+                    .build();
+        } else {
+            // 상품 검색인 경우 (커서 기반)
+            String[] keywords = keyword.trim().split("\\s+");
+            List<SearchResponse.ProductInfo> products =
+                    productRepository.findProductsByKeywordCursor(keywords, userId, sortBy, lastId, lastValue, size);
+
+            if (!products.isEmpty()) {
+                return SearchResponse.builder()
+                        .searchKeyword(keyword)
+                        .brandInfo(null)
+                        .totalCount(products.size())
+                        .products(products)
+                        .build();
+            } else {
+                return null;
+            }
+        }
+    }
 
     private String preprocessKeyword(String keyword) {
         System.out.println(keyword);

@@ -20,28 +20,35 @@
 
         body {
             font-family: 'Malgun Gothic', sans-serif;
-            background-color: #f8f8f8;
+            background-color: #ffffff;
             color: #333;
         }
 
         .container {
-            max-width: 1200px;
+            background: #fafafa;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 20px 40px;
             display: flex;
+            border: 1px solid #e9ecef;
             gap: 20px;
+            justify-content: center;
         }
 
         .left-section {
+            max-width: 700px;
             flex: 2;
-            background: white;
+            background: #ffffff;
+            border: 1px solid #e9ecef;
             border-radius: 8px;
             padding: 30px;
         }
 
         .right-section {
             flex: 1;
-            background: white;
+            max-width: 500px;
+            background: #ffffff;
+            border: 1px solid #e9ecef;
             border-radius: 8px;
             padding: 30px;
             height: fit-content;
@@ -198,7 +205,7 @@
         }
 
         .discount-rate {
-            color: #e74c3c;
+            color: #ff0000;
             font-size: 14px;
             font-weight: bold;
         }
@@ -218,10 +225,15 @@
         .summary-row.total {
             font-size: 18px;
             font-weight: bold;
-            color: #e74c3c;
+            color: #ff1200;
             border-top: 1px solid #e0e0e0;
             padding-top: 12px;
             margin-top: 12px;
+        }
+
+        .summary-row.total .label {
+            color: #333; /* 단어 검정색 */
+            font-weight: bold;
         }
 
         .points-section {
@@ -262,11 +274,11 @@
         }
 
         .points-input button.cancel {
-            background-color: #e74c3c;
+            background-color: #2934e6;
         }
 
         .points-input button.cancel:hover {
-            background-color: #c0392b;
+            background-color: #323232;
         }
 
         .order-button {
@@ -287,7 +299,7 @@
         }
 
         .discount-price {
-            color: #e74c3c;
+            color: #000fff;
         }
 
         .payment-info {
@@ -366,7 +378,7 @@
             font-size: 12px;
             font-weight: 400;
             background-color: transparent;
-            color: #4285f4;
+            color: #008dff;
             border: 1px solid #e0e0e0;
         }
     </style>
@@ -581,7 +593,7 @@
             </div>
 
             <div class="summary-row total">
-                <span>총 결제 금액</span>
+                <span class="label">총 결제 금액</span>
                 <span id="totalPrice">
                     <span id="finalAmount"><fmt:formatNumber value="${totalOrderPrice}" type="number"/>원</span>
                 </span>
@@ -604,7 +616,7 @@
                 <span>최대 <fmt:formatNumber value="${maxReviewPoints}" type="number"/>원</span>
             </div>
             <div class="summary-row total">
-                <span>총 적립 금액</span>
+                 <span class="label">총 적립 금액</span>
                 <span><fmt:formatNumber value="${totalEarnedPoints}" maxFractionDigits="0"/>원</span>
             </div>
         </div>
