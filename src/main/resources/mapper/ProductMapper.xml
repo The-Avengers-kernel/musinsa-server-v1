@@ -105,66 +105,146 @@
         <result property="discountRate" column="discountRate"/>
         <result property="isLiked" column="isLiked" javaType="java.lang.Boolean"/>
     </resultMap>
+    <!--    <select id="getRecommendationProductList" resultMap="RecommendationResultMap">-->
+    <!--        WITH global_rating AS (SELECT NVL(AVG(r.rating), 0) AS C, 10 AS m-->
+    <!--        FROM REVIEWS r)-->
 
+    <!--        SELECT p.product_id AS productId,-->
+    <!--        b.brand_id AS brandId,-->
+    <!--        p.product_name AS productName,-->
+    <!--        b.brand_name_kr AS productBrand,-->
+    <!--        FLOOR(((100 - b.BRAND_DISCOUNT) / 100) * p.price / 10) * 10 AS productPrice,-->
+    <!--        img.image_url AS productImage,-->
+    <!--        b.brand_discount as discountRate,-->
+    <!--        CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END AS isLiked-->
+
+    <!--        FROM products p-->
+    <!--        JOIN brands b-->
+    <!--        ON b.brand_id = p.brand_id-->
+
+    <!--        LEFT JOIN product_images img-->
+    <!--        ON p.product_id = img.product_id-->
+    <!--        AND img.image_type = 'MAIN'-->
+
+    <!--        LEFT JOIN USER_PRODUCT_LIKES upl-->
+    <!--        ON upl.PRODUCT_ID = p.PRODUCT_ID-->
+    <!--        AND upl.user_id = #{userId, jdbcType=VARCHAR}-->
+
+    <!--        LEFT JOIN (SELECT oi.PRODUCT_ID, SUM(oi.QUANTITY) AS total_sales-->
+    <!--        FROM ORDER_ITEMS oi-->
+    <!--        JOIN ORDERS O-->
+    <!--        ON o.ORDER_ID = oi.ORDER_ID-->
+    <!--        AND o.ORDER_STATUS IN ('PAID', 'COMPLETED')-->
+    <!--        GROUP BY oi.PRODUCT_ID) tp-->
+    <!--        ON tp.PRODUCT_ID = p.PRODUCT_ID-->
+
+    <!--        LEFT JOIN (SELECT r.PRODUCT_ID, COUNT(*) AS review_count, AVG(r.RATING) AS review_rating-->
+    <!--        FROM REVIEWS r-->
+    <!--        GROUP BY r.PRODUCT_ID) rp-->
+    <!--        ON rp.PRODUCT_ID = p.PRODUCT_ID-->
+
+    <!--        LEFT JOIN (SELECT upl.PRODUCT_ID, COUNT(*) AS like_count-->
+    <!--        FROM USER_PRODUCT_LIKES upl-->
+    <!--        GROUP BY upl.PRODUCT_ID) lp-->
+    <!--        ON lp.PRODUCT_ID = p.PRODUCT_ID-->
+
+    <!--        CROSS JOIN global_rating gr-->
+
+    <!--        WHERE p.gender = #{gender}-->
+    <!--        ORDER BY (-->
+    <!--        NVL(tp.total_sales, 0) * 0.3 +-->
+    <!--        NVL(rp.review_count, 0) * 0.2 +-->
+    <!--        NVL(lp.like_count, 0) * 0.2 +-->
+    <!--        &lt;!&ndash; 베이지안 평점 * 0.4 &ndash;&gt;-->
+    <!--        (-->
+    <!--        (NVL(rp.review_count, 0) / (NVL(rp.review_count, 0) + gr.m)) * NVL(rp.review_rating, gr.C) +-->
+    <!--        (gr.m / (NVL(rp.review_count, 0) + gr.m)) * gr.C-->
+    <!--        ) * 0.4-->
+    <!--        ) DESC,-->
+    <!--        p.created_at DESC-->
+    <!--        FETCH FIRST 32 ROWS ONLY-->
+    <!--    </select>-->
     <select id="getRecommendationProductList" resultMap="RecommendationResultMap">
-        WITH global_rating AS (SELECT NVL(AVG(r.rating), 0) AS C, 10 AS m
-        FROM REVIEWS r)
+        WITH
+            -- 1) 후보 집합 (필요시 is_active 등 추가)
+            product_set AS (SELECT p.product_id, p.brand_id, p.product_name, p.price, p.created_at
+                            FROM products p
+                            WHERE p.gender = #{gender}),
 
-        SELECT p.product_id AS productId,
-        b.brand_id AS brandId,
-        p.product_name AS productName,
-        b.brand_name_kr AS productBrand,
-        FLOOR(((100 - b.BRAND_DISCOUNT) / 100) * p.price / 10) * 10 AS productPrice,
-        img.image_url AS productImage,
-        b.brand_discount as discountRate,
-        CASE WHEN upl.LIKED = 1 THEN 1 ELSE 0 END AS isLiked
+            -- 2) 후보에 한정한 집계들
+            sales AS (SELECT oi.product_id, SUM(oi.quantity) AS total_sales
+                      FROM order_items oi
+                               JOIN orders o ON o.order_id = oi.order_id
+                          AND o.order_status IN ('PAID', 'COMPLETED')
+                      WHERE oi.product_id IN (SELECT product_id FROM product_set)
+                      GROUP BY oi.product_id),
+            rev AS (SELECT r.product_id,
+                           COUNT(*)      AS review_count,
+                           AVG(r.rating) AS review_rating
+                    FROM reviews r
+                    WHERE r.product_id IN (SELECT product_id FROM product_set)
+                    GROUP BY r.product_id),
+            lik AS (SELECT upl.product_id, COUNT(*) AS like_count
+                    FROM user_product_likes upl
+                    WHERE upl.product_id IN (SELECT product_id FROM product_set)
+                    GROUP BY upl.product_id),
+            gr AS ( -- 전역 베이지안 기준치(리뷰 전체) - 빈도 낮으면 캐시/머뷰 권장
+                SELECT NVL(AVG(r.rating), 0) AS C, 10 AS m
+                FROM reviews r),
 
-        FROM products p
-        JOIN brands b
-        ON b.brand_id = p.brand_id
+            -- 3) 점수 계산
+            scored AS (SELECT ps.product_id,
+                              ps.brand_id,
+                              ps.product_name,
+                              ps.price,
+                              ps.created_at,
+                              NVL(s.total_sales, 0)       AS total_sales,
+                              NVL(rv.review_count, 0)     AS review_count,
+                              NVL(rv.review_rating, gr.C) AS review_rating,
+                              NVL(lk.like_count, 0)       AS like_count,
+                              (
+                                  NVL(s.total_sales, 0) * 0.3
+                                      + NVL(rv.review_count, 0) * 0.2
+                                      + NVL(lk.like_count, 0) * 0.2
+                                      + (
+                                            (NVL(rv.review_count, 0) / (NVL(rv.review_count, 0) + gr.m)) *
+                                            NVL(rv.review_rating, gr.C)
+                                                + (gr.m / (NVL(rv.review_count, 0) + gr.m)) * gr.C
+                                            ) * 0.4
+                                  )                       AS score
+                       FROM product_set ps
+                                LEFT JOIN sales s ON s.product_id = ps.product_id
+                                LEFT JOIN rev rv ON rv.product_id = ps.product_id
+                                LEFT JOIN lik lk ON lk.product_id = ps.product_id
+                                CROSS JOIN gr),
 
-        LEFT JOIN product_images img
-        ON p.product_id = img.product_id
-        AND img.image_type = 'MAIN'
+            -- 4) TOP 32 먼저 자르기(정렬 비용 급감)
+            top32 AS (SELECT /*+ MATERIALIZE */ s.product_id, s.brand_id, s.product_name, s.price, s.created_at, s.score
+                      FROM scored s
+                      ORDER BY s.score DESC, s.created_at DESC
+                          FETCH FIRST 32 ROWS ONLY)
 
-        LEFT JOIN USER_PRODUCT_LIKES upl
-        ON upl.PRODUCT_ID = p.PRODUCT_ID
-        AND upl.user_id = #{userId, jdbcType=VARCHAR}
-
-        LEFT JOIN (SELECT oi.PRODUCT_ID, SUM(oi.QUANTITY) AS total_sales
-        FROM ORDER_ITEMS oi
-        JOIN ORDERS O
-        ON o.ORDER_ID = oi.ORDER_ID
-        AND o.ORDER_STATUS IN ('PAID', 'COMPLETED')
-        GROUP BY oi.PRODUCT_ID) tp
-        ON tp.PRODUCT_ID = p.PRODUCT_ID
-
-        LEFT JOIN (SELECT r.PRODUCT_ID, COUNT(*) AS review_count, AVG(r.RATING) AS review_rating
-        FROM REVIEWS r
-        GROUP BY r.PRODUCT_ID) rp
-        ON rp.PRODUCT_ID = p.PRODUCT_ID
-
-        LEFT JOIN (SELECT upl.PRODUCT_ID, COUNT(*) AS like_count
-        FROM USER_PRODUCT_LIKES upl
-        GROUP BY upl.PRODUCT_ID) lp
-        ON lp.PRODUCT_ID = p.PRODUCT_ID
-
-        CROSS JOIN global_rating gr
-
-        WHERE p.gender = #{gender}
-        ORDER BY (
-        NVL(tp.total_sales, 0) * 0.3 +
-        NVL(rp.review_count, 0) * 0.2 +
-        NVL(lp.like_count, 0) * 0.2 +
-        <!-- 베이지안 평점 * 0.4 -->
-        (
-        (NVL(rp.review_count, 0) / (NVL(rp.review_count, 0) + gr.m)) * NVL(rp.review_rating, gr.C) +
-        (gr.m / (NVL(rp.review_count, 0) + gr.m)) * gr.C
-        ) * 0.4
-        ) DESC,
-        p.created_at DESC
-        FETCH FIRST 32 ROWS ONLY
+        -- 5) 가벼운 조인들(브랜드/메인이미지) + 마지막에만 유저 좋아요 오버레이
+        SELECT t.product_id                                                AS productId,
+               b.brand_id                                                  AS brandId,
+               t.product_name                                              AS productName,
+               b.brand_name_kr                                             AS productBrand,
+               FLOOR(((100 - b.brand_discount) / 100) * t.price / 10) * 10 AS productPrice,
+               img.image_url                                               AS productImage,
+               b.brand_discount                                            AS discountRate,
+               CASE WHEN upl.product_id IS NOT NULL THEN 1 ELSE 0 END      AS isLiked
+        FROM top32 t
+                 JOIN brands b
+                      ON b.brand_id = t.brand_id
+                 LEFT JOIN product_images img
+                           ON img.product_id = t.product_id
+                               AND img.image_type = 'MAIN'
+                 LEFT JOIN user_product_likes upl
+                           ON upl.product_id = t.product_id
+                               AND upl.user_id = #{userId, jdbcType=VARCHAR}
+        ORDER BY t.score DESC, t.created_at DESC
     </select>
+
 
     <select id="findOptionsByProductIds"
             resultType="com.avengers.musinsa.domain.product.dto.ProductOptionRow">
