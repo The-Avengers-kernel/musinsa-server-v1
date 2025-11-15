@@ -1,89 +1,147 @@
-# 🛍️ MUSINSA 벤치마킹 프로젝트
+# 🛍️ 무신사 벤치마킹 서비스
 
-> 패션 이커머스 플랫폼을 벤치마킹한 웹 애플리케이션 개발 프로젝트
->
->
-> - [어벤져스_1팀_토이프로젝트1_erd.png:화면 정의서:발표자료.zip](https://github.com/user-attachments/files/22289218/_1._.1_erd.png.zip)
+<div align="center">
+<img width="1972" height="1650" alt="image" src="https://github.com/user-attachments/assets/22c9c253-5bcc-4c7c-8390-4b6f54f8207e" />
 
 
+![Java](https://img.shields.io/badge/Java-21-007396?style=flat-square&logo=java&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-6DB33F?style=flat-square&logo=spring-boot&logoColor=white)
+![Oracle](https://img.shields.io/badge/Oracle-19c-F80000?style=flat-square&logo=oracle&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.10-3776AB?style=flat-square&logo=python&logoColor=white)
 
-## 프로젝트 개요
-무신사(MUSINSA)의 핵심 기능들을 분석하고 벤치마킹하여 패션 이커머스 플랫폼을 구현하는 프로젝트입니다. 
-사용자 경험을 중심으로 한 현대적인 웹 애플리케이션 개발을 목표로 합니다.
+**무신사의 핵심 기능을 구현한 이커머스 프로젝트**
 
+[🔗 GitHub Repository](https://github.com/The-Avengers-kernel/musinsa-server-v1)
 
-
-### 주요 기능
-- 회원 관리 (회원가입, 로그인, 마이페이지)
-- 상품 관리 (카테고리별 조회, 상세보기, 검색)
-- 주문/결제 시스템
-- 리뷰 및 평점 시스템
----
-## 팀 구성
-| 역할 | 이름 |
-|------|------|
-| **팀장** | 최민영 |
-| **서기** | 조현희 |
-| **팀원** | 김진용 |
-| **팀원** | 김동균 |
-| **팀원** | 김희재 |
-| **팀원** | 박은정 |
+</div>
+https://github.com/mmingoo/Musinsa-Benchmarking/blob/main/README.md#-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%86%8C%EA%B0%9C
 ---
 
+## 📋 목차
 
-## 기술 스택
-### Frontend
-- **JSP** - Java Server Pages
-- **HTML5/CSS3** - 마크업 및 스타일링
-- **JavaScript** - 클라이언트 사이드 로직
+- [프로젝트 소개](#-프로젝트-소개)
+- [기술 스택](#-기술-스택)
+- [주요 기능](#-주요-기능)
+- [성능 개선](#-성능-개선)
+- [프로젝트 통계](#-프로젝트-통계)
+- [시작하기](#-시작하기)
+- [팀원](#-팀원)
+
+---
+
+## 🎯 프로젝트 소개
+
+무신사의 대표적인 기능들을 벤치마킹하여 구현한 토이 프로젝트입니다.
+
+- **프로젝트 기간**: 2024.09.17 ~ 2024.10.10 (24일)
+- **프로젝트 유형**: 팀 프로젝트
+- **목적**: 대규모 이커머스 플랫폼의 핵심 기능 구현 및 성능 최적화
+- **추가자료**: [어벤져스_1팀_토이프로젝트1_erd.png:화면 정의서:발표자료.zip](https://github.com/user-attachments/files/22289218/_1._.1_erd.png.zip)
+
+---
+
+## 🛠 기술 스택
 
 ### Backend
-- **Spring Framework** - 백엔드 프레임워크
-- **MyBatis** - 데이터베이스 ORM
+- **Language**: Java 21
+- **Framework**: Spring Boot 3.x
+- **ORM**: MyBatis
+- **Database**: Oracle 19c
 
-### Database
-- **Oracle Database** - 메인 데이터베이스
----
+### Frontend
+- **Template Engine**: JSP
 
-
-## 데이터베이스 설계
-### ERD 구조
-- **테이블 수**: 69개
-- **속성 수**: 384개  
-- **연관관계 수**: 65개
-
-- erd url : https://www.erdcloud.com/d/7oLQ2LsyDCxWJAMae
-
-<img width="5520" height="3542" alt="무신사-벤치마킹 프로젝트 (1)" src="https://github.com/user-attachments/assets/e4e5a05a-8a72-4a4e-aacf-6eb5df4c5fd5" />
-
-
-
-### 주요 도메인
-| 도메인 | 색상 구분 |
-|--------|-----------|
-| 회원 | 노란색 |
-| 상품 | 핑크색 |
-| 주문 & 결제 | 초록색 |
-| 브랜드 | 주황색 |
-| 쿠폰 | 보라색 |
-| 배송 | 파랑색 |
-| 좋아요 | 빨간색 |
-| 음성 & 리뷰 & 로그 & 운영자 관련 | 검정색 |
+### DevOps & Tools
+- **Performance Testing**: K6
+- **Data Crawling**: Python 3.10
 
 ---
-## 트러블 슈팅
-- https://www.notion.so/1-2664c6cf5e0c805fba2fcfe992b0f8dc?source=copy_link
+
+## ✨ 주요 기능
+
+### 🛒 상품 관리
+- 상품 목록 조회 및 정렬
+- 상품 상세 페이지
+- 무한 스크롤 구현
+
+### 🔍 검색 시스템
+- 상품 검색 기능
+- 최근 검색어 저장
+- 인기 검색어 제공
+
+### 🎯 추천 시스템
+- AI 기반 아이템 추천
+
+### 🛍️ 주문 시스템
+- 장바구니 담기 및 관리
+- 장바구니에서 구매하기
+- 상품 상세 페이지에서 즉시 구매
+
+### ❤️ 사용자 인터랙션
+- 상품 좋아요 기능
+- 베이지안 보정으로 소수 리뷰 평점 왜곡을 방지하고, 판매량(0.3), 리뷰 수(0.2), 좋아요(0.2), 보정 평점(0.4) 가중치 기반 추천 알고리즘 구현
 ---
 
+## 🚀 성능 개선
 
+### 1️⃣ 좋아요 기능 동시성 제어
 
+**문제 상황**
+- 동시 요청 환경에서 Lost Update 문제 발생
+- 데이터 정합성 이슈
 
+**해결 방안**
+- 원자적 UPDATE 쿼리 적용
 
-## 주요 구현 화면
+**개선 결과**
+```
+✅ 1000명 동시 좋아요 요청 시 정합성 100% 달성
+✅ 비관적 락 대비 46.4% 성능 개선
+   └─ 2,610ms → 1,398ms
+```
 
-### 메인 기능
-1. **메인 화면**: 전체 카테고리 조회
-2. **상품 목록 화면**: 브랜드 메인페이지  
-3. **상품 상세 화면**: 로그인 화면
-4. **좋아요 화면 - 상품**: 장바구니
-5. **주문 화면**: 마이페이지
+---
+
+### 2️⃣ 주문 기능 성능 최적화
+
+**문제 상황**
+- N+1 문제로 인한 과도한 DB 접근
+- 느린 처리 속도
+
+**해결 방안**
+- 배치 연산 적용
+- 쿼리 최적화
+
+**개선 결과**
+```
+✅ DB 접근 84% 감소
+   └─ 32회 → 5회
+   
+✅ 처리 시간 39.3% 단축
+   └─ 122,861ms → 74,627ms
+```
+
+**K6 부하 테스트 결과** (1000 VUs)
+| 지표 | 개선 전 | 개선 후 | 개선율 |
+|------|---------|---------|--------|
+| TPS | 28.27/s | 29.75/s | +5.2% |
+| Latency | 35.71s | 33.18s | -7.1% |
+
+---
+
+## 📊 프로젝트 통계
+
+```
+📌 총 SQL 쿼리: 84개
+📌 총 API 개수: 43개
+📌 상품 데이터: 약 60,000개
+```
+
+### 데이터 수집
+무신사 API를 Python으로 크롤링하여 INSERT 문을 생성하고, 약 6만 개의 실제 상품 데이터를 확보했습니다.
+
+---
+
+<div align="center">
+
+</div>
