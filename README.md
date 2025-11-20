@@ -82,6 +82,10 @@ https://github.com/mmingoo/Musinsa-Benchmarking/blob/main/README.md#-%ED%94%84%E
 - 베이지안 보정으로 소수 리뷰 평점 왜곡을 방지하고, 판매량(0.3), 리뷰 수(0.2), 좋아요(0.2), 보정 평점(0.4) 가중치 기반 추천 알고리즘 구현
 ---
 
+## 🖥️ 시연영상
+https://www.youtube.com/watch?v=C11V2Bo9dPc
+
+
 ## 🚀 성능 개선
 
 ### 1️⃣ 좋아요 기능 동시성 제어
